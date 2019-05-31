@@ -17,6 +17,8 @@ TODO (rbrady): remove comments above once everyone is comfortable with URLConfs
 from django.contrib import admin
 from django.urls import path
 
+admin.site.site_header = 'Gradify Administration'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
