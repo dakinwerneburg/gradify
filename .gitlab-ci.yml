@@ -31,7 +31,7 @@ bandit:
   stage: Security Audit
   allow_failure: true
   script:
-    - bandit ./
+    - bandit -r ./
 
 unit_test:
   stage: Test
