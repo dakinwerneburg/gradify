@@ -37,4 +37,26 @@ gradify is still under development and not packaged for release yet. ::
 Testing
 *******
 
-See https://docs.djangoproject.com/en/2.2/topics/testing/overview/
+See https://docs.djangoproject.com/en/2.2/topics/testing/overview/ for more
+information on testing in Django.
+
+For this project, all application directories will contain a tests directory
+where all of the unit tests should reside.  In most cases, there should be a
+1:1 relation of tests to python files.  E.g. if there is a views.py file,
+there should be a corresponding tests/test_views.py file.
+
+To run the tests, use the Django management command that exists for testing. ::
+
+    python manage.py test
+
+
+***************
+Static Analysis
+***************
+
+This project is configured to use flake8, pylint and bandit to provide static
+analysis of the code base.  You can run these individually by looking at how
+they are called in our .gitlab-ci.yml file in the project root.  You can install
+these tools by installing the test-requirements file in the project root. ::
+
+    pip install -r test-requirements.txt
