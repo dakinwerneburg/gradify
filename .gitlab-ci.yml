@@ -1,0 +1,40 @@
+image: python:latest
+
+variables:
+  NOOP: ci
+
+cache:
+  paths:
+  - ~/.cache/pip/
+
+before_script:
+  - python -V
+  - pip install -r test-requirements.txt
+
+stages:
+  - Static Analysis
+  - Test
+  - Security Audit
+
+flake8:
+  stage: Static Analysis
+  script:
+  - flake8 --max-line-length=120 ./
+
+pylint:
+  stage: Static Analysis
+  allow_failure: true
+  script:
+  - pylint ./*.py
+
+bandit:
+  stage: Security Audit
+  allow_failure: true
+  script:
+    - bandit -r ./
+
+unit_test:
+  stage: Test
+  script:
+  - python manage.py test --settings gradify.settings.ci
+
