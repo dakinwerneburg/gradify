@@ -1,8 +1,5 @@
 image: python:latest
 
-variables:
-  NOOP: ci
-
 cache:
   paths:
   - ~/.cache/pip/
@@ -36,5 +33,6 @@ bandit:
 unit_test:
   stage: Test
   script:
-  - python manage.py test --settings gradify.settings.ci
+  - coverage run --source="." manage.py test --settings gradify.settings.ci
+  - coverage report
 
