@@ -11,7 +11,7 @@ Installation
 
 gradify is still under development and not packaged for release yet. ::
 
-    # create anad source a virtualenv w/ Python 3 support
+    # create and source a virtualenv w/ Python 3 support
     virtualenv -p python3 .gradify
     source .gradify/bin/activate
 
