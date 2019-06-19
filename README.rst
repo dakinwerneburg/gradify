@@ -1,5 +1,5 @@
 =========
-gradify
+Gradify
 =========
 
 The purpose of this project is to provide a tool for teachers to aggregate
@@ -11,13 +11,13 @@ Installation
 
 Gradify is still under development and not packaged for release yet. ::
 
-    # create and source a virtualenv w/ Python 3 support
-    virtualenv -p python3 .gradify
-    source .gradify/bin/activate
-
     # clone the repository
     git clone git@gitlab.com:dlmarrero/gradify.git
     cd gradify
+
+    # create and source a virtualenv w/ Python 3 support
+    virtualenv -p python3 .venv
+    source .venv/bin/activate
 
     # install requirements
     pip install -r requirements.txt
