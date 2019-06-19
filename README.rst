@@ -9,7 +9,7 @@ selected grades for a given class.
 Installation
 ************
 
-gradify is still under development and not packaged for release yet. ::
+gradify is still under development and is not yet packaged for release. ::
 
     # create and source a virtualenv w/ Python 3 support
     virtualenv -p python3 .gradify
