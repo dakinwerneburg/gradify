@@ -91,3 +91,7 @@ ENV/
 
 # Intellij IDEA based editors
 .idea
+
+# Don't track the database
+db.sqlite3
+
