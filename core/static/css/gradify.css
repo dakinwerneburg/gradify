@@ -1,0 +1,4 @@
+/* example style to ensure static files are working. remove before flight. */
+body {
+    background-color: aquamarine;
+}
