@@ -15,4 +15,3 @@ class CourseListViewTests(TestCase):
         course_names = [course.name for course in response.context['course_list']]
         self.assertContains(response, course_names[0])
         self.assertContains(response, course_names[1])
-
