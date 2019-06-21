@@ -17,23 +17,23 @@ stages:
 flake8:
   stage: Static Analysis
   script:
-  - flake8 --max-line-length=120 ./
+  - flake8 --max-line-length=120 --exclude=.git,core/migrations ./
 
 pylint:
   stage: Static Analysis
   allow_failure: true
   script:
-  - pylint ./*.py
+  - pylint --ignore-patterns=.git,core/migrations,manage ./*.py
 
 bandit:
   stage: Security Audit
   allow_failure: true
   script:
-    - bandit -r ./
+    - bandit -r ./core ./gradify
 
 unit_test:
   stage: Test
   script:
-  - coverage run --source="." manage.py test --settings gradify.settings.ci
+  - coverage run --omit="core/migrations/*","manage.py","core/tests/*" --source="." manage.py test --settings gradify.settings.ci
   - coverage report
 

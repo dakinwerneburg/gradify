@@ -1,0 +1,12 @@
+<h1>Course List</h1>
+
+{% if course_list %}
+    <ul>
+    {% for course in course_list %}
+        <li>{{ course.name }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <h2>No courses found</h2>
+    <p>Create a course or import one from Google Classroom to begin!</p>
+{% endif %}
