@@ -1,10 +1,10 @@
-{% extends 'quicklink-base.html' %}
+{% extends 'quicklink_base.html' %}
 {% block main-content %}
     <div class="ql-content">
         <h1 class="bg-header bg-text">Your Courses</h1>
         {% if course_list %}
             {% for course in course_list %}
-                {% include 'course-overview-card.html' %}
+                {% include 'course_overview_card.html' %}
             {% endfor %}
         {% else %}
             <h2>No courses found</h2>
