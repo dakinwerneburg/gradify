@@ -1,4 +1,97 @@
-/* example style to ensure static files are working. remove before flight. */
 body {
-    background-color: aquamarine;
+    background-color: #e5e5e5;
+    font-family: Roboto, sans-serif;
+}
+
+/* Navigation bar */
+nav {
+    background: #345EB2;
+}
+
+/* Navigation links */
+nav a {
+    color: #E8EFFD;
+}
+
+/* Container for site content */
+.content {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+/* A header on the background (i.e. "Quick Links") */
+.bg-header {
+    margin: 0 0 8px 0;
+    font-size: 1.125rem;
+    font-weight: 400;
+}
+
+/* Container for pages that include Quick Links and centered content */
+.ql-content-container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    grid-gap: 1.25rem;
+    margin: auto;
+}
+
+/* Container for the Quick Links */
+.ql-container {
+    min-width: 12rem;
+}
+
+/* Remove default ul styling for quick links */
+.ql-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0 0 0 0.125rem;
+    line-height: 2.75rem;
+}
+
+.ql-list .ql-icon {
+    padding-right: 0.5rem;
+}
+
+/* Container for main content on a page that includes Quick Links */
+.ql-content {
+    min-width: 66%;
+}
+
+/* Sets color of text set against the background */
+.bg-text {
+    color: #59687D;
+}
+
+/* Sets a lighter font-weight for less important text */
+.light-text {
+    font-weight: 300;
+}
+
+/* Extends the Bootstrap card class */
+.card {
+    background: #FDFDFD;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08), 0 4px 4px rgba(0, 0, 0, 0.15);
+    border-radius: 5px;
+    margin-bottom: 1.25rem;
+}
+
+/* Element containing card title and any other necessary details */
+.card-header {
+    background: none;
+    border-bottom: none;
+    padding-bottom: 1rem;
+}
+
+/* Title element for a card */
+.card-title {
+    padding: 0;
+    margin: 0.5rem 0;
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+/* An table row with 3 evenly spaced columns */
+.generic-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
 }

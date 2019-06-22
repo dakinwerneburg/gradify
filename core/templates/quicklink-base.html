@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="ql-content-container">
+        <aside class="ql-container bg-text">
+            <h1 class="bg-header">Quick Links</h1>
+            <ul class="ql-list">
+                <li>
+                    <span class="ql-icon">
+                        {% include 'svg/online-course.svg' %}
+                    </span>
+                    <span>New Course</span>
+                </li>
+                <li>
+                    <span class="ql-icon">
+                        {% include 'svg/book.svg' %}
+                    </span>
+                    <span>
+                    New Assignment
+                    </span>
+                </li>
+                <li>
+                    <span class="ql-icon">
+                        {% include 'svg/invitation.svg' %}
+                    </span>
+                    <span>
+                        Send Invite
+                    </span>
+                </li>
+                <li>
+                    <span class="ql-icon" style="position: relative; left: -0.16rem">
+                        {% include 'svg/import.svg' %}
+                    </span>
+                    <span>
+                        Import Grades
+                    </span>
+                </li>
+                <li>
+                    <span class="ql-icon" style="position: relative; right: -0.16rem">
+                        {% include 'svg/export.svg' %}
+                    </span>
+                    <span>
+                        Export Grades
+                    </span>
+                </li>
+            </ul>
+        </aside>
+        <main>
+            {% block main-content %}{% endblock main-content %}
+        </main>
+    </div>
+{% endblock content %}
