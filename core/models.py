@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Course(models.Model):
@@ -42,3 +43,136 @@ class Course(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Classroom(models.Model):
+    """
+    A Classroom is a container of courses. Each
+    Classroom belongs to one Teacher.
+    """
+    # Required fields
+    classroomId = models.CharField(max_length=750, primary_key=True)
+    userId = models.ForeignKey(to='auth.User', on_delete=models.CASCADE)
+    name = models.CharField(max_length=750)
+
+    # Optional Fields
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+
+class CourseWork(models.Model):
+    """
+    Course work created by a teacher for students of the course.
+    https://developers.google.com/classroom/reference/rest/v1/courses.courseWork
+    """
+
+    # Required Fields
+    courseId = models.ForeignKey(to='Course', on_delete=models.CASCADE)
+    classrooomId = models.ForeignKey(to='Classroom', on_delete=models.CASCADE)
+    title = models.CharField(max_length=750)
+    creatorUserId = models.ForeignKey(to='auth.User', on_delete=models.SET_NULL, null=True)
+
+    # Optional Fields
+    description = models.TextField(max_length=30_000, blank=True)
+    max_points = models.IntegerField(blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    # Course work state choices enum
+    UNSPECIFIED = 'U'
+    PUBLISHED = 'P'
+    DRAFT = 'D'
+    DELETED = 'X'
+    COURSE_WORK_STATE_CHOICES = [
+        (UNSPECIFIED, 'Unspecified'),
+        (PUBLISHED, 'Published'),
+        (DRAFT, 'Draft'),
+        (DELETED, 'Deleted'),
+    ]
+    state = models.CharField(
+        max_length=1,
+        choices=COURSE_WORK_STATE_CHOICES,
+        default=UNSPECIFIED
+    )
+
+    # Course work type choices enum
+    UNSPECIFIED = 'U'
+    QUIZ = 'Q'
+    TEST = 'T'
+    WORKSHEET = 'W'
+    FINAL = 'F'
+    COURSE_WORK_TYPE_CHOICES = [
+        (UNSPECIFIED, 'Unspecified'),
+        (QUIZ, 'Quiz'),
+        (TEST, 'Test'),
+        (WORKSHEET, 'Worksheet'),
+        (FINAL, 'Final'),
+    ]
+    type = models.CharField(
+        max_length=1,
+        choices=COURSE_WORK_TYPE_CHOICES,
+        default=UNSPECIFIED
+    )
+
+    # Course Work Source enum
+    UNSPECIFIED = 'U'
+    GOOGLE = 'C'
+    GRADIFY = 'G'
+    COURSE_WORK_SOURCE_CHOICES = [
+        (UNSPECIFIED, 'Unspecified'),
+        (GOOGLE, 'Google Classroom'),
+        (GRADIFY, 'Gradify'),
+    ]
+    source = models.CharField(
+        max_length=1,
+        choices=COURSE_WORK_SOURCE_CHOICES,
+        default=UNSPECIFIED
+    )
+
+    def __str__(self):
+        return self.title
+
+
+class StudentSubmission(models.Model):
+    """
+    This model represents course work items that
+    have been completed by students.
+    https://developers.google.com/classroom/reference/rest/v1/courses.courseWork.studentSubmissions
+    """
+
+    # Required Fields
+    studentId = models.ForeignKey(to='auth.User', on_delete=models.CASCADE)
+    classroomId = models.ForeignKey(to='Classroom', on_delete=models.CASCADE)
+    courseId = models.ForeignKey(to='Course', on_delete=models.CASCADE)
+    courseworkId = models.ForeignKey(to='CourseWork', on_delete=models.CASCADE)
+
+    # Optional Fields
+    late = models.BooleanField(default=False)
+    draftGrade = models.FloatField(blank=True)
+    assignedGrade = models.FloatField(blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    # Student submission state choices enum
+    UNSPECIFIED = 'U'
+    NEW = 'N'
+    CREATED = 'C'
+    TURNED_IN = 'T'
+    RETURNED = 'R'
+    RECLAIMED_BY__STUDENT = 'S'
+    SUBMISSION_STATE_CHOICES = [
+        (UNSPECIFIED, 'Unspecified'),
+        (NEW, 'New'),
+        (CREATED, 'Created'),
+        (TURNED_IN, 'Turned In'),
+        (RETURNED, 'Returned'),
+        (RECLAIMED_BY__STUDENT, 'Reclaimed by Student'),
+    ]
+    state = models.CharField(
+        max_length=1,
+        choices=SUBMISSION_STATE_CHOICES,
+        default=UNSPECIFIED
+    )
