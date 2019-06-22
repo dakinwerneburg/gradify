@@ -1,11 +1,27 @@
-<h1>Course List</h1>
-
+<h1>Your Courses</h1>
 {% if course_list %}
-    <ul>
     {% for course in course_list %}
-        <li>{{ course.name }}</li>
+        <section>
+            <header>
+                <p>{{ course.section }}</p>
+                {# TODO add link to course details #}
+                <h2>{{ course.name }}</h2>
+                <time>{{ course.startDate | date:"M d, Y" }} - {{ course.endDate | date:"M d, Y" }}</time>
+            </header>
+            <details>
+                {# TODO add actual coursework and tests once model is created #}
+                <summary>Upcoming Coursework</summary>
+                <table>
+                    <tr>
+                        <td>Jun 4</td>
+                        <td>Assignment 1</td>
+                        {# TODO add link to assignment details #}
+                        <td>{% include 'svg/go-arrow.svg' %}</td>
+                    </tr>
+                </table>
+            </details>
+        </section>
     {% endfor %}
-    </ul>
 {% else %}
     <h2>No courses found</h2>
     <p>Create a course or import one from Google Classroom to begin!</p>
