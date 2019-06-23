@@ -1,0 +1,14 @@
+- model: core.classroom
+  pk: akjbndr3
+  fields:
+    user: 4
+    name: Teacher 2 Classroom
+    created: 2019-06-22 15:39:00.404928+00:00
+    updated: 2019-06-22 15:54:23.846216+00:00
+- model: core.classroom
+  pk: oia1238
+  fields:
+    user: 3
+    name: Teacher 1 Classroom
+    created: 2019-06-22 15:39:12.911327+00:00
+    updated: 2019-06-23 01:47:28.380964+00:00

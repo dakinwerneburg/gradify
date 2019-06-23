@@ -1,0 +1,57 @@
+- model: core.coursework
+  pk: 1
+  fields:
+    course: 1
+    title: Assignment 1
+    author: 3
+    description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+      eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
+      in culpa qui officia deserunt mollit anim id est laborum.
+    max_points: 25
+    dueDate: 2019-06-10
+    created: 2019-06-22 15:42:28.692445+00:00
+    updated: 2019-06-23 01:49:23.759913+00:00
+    state: P
+    type: W
+    source: G
+- model: core.coursework
+  pk: 2
+  fields:
+    course: 1
+    title: Assignment 2
+    author: 3
+    description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+      eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
+      in culpa qui officia deserunt mollit anim id est laborum.
+    max_points: 10
+    dueDate: 2019-06-17
+    created: 2019-06-22 15:43:10.596933+00:00
+    updated: 2019-06-23 01:49:30.694171+00:00
+    state: P
+    type: W
+    source: G
+- model: core.coursework
+  pk: 3
+  fields:
+    course: 1
+    title: Quiz 1
+    author: 3
+    description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+      eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
+      in culpa qui officia deserunt mollit anim id est laborum.
+    max_points: 100
+    dueDate: 2019-06-23
+    created: 2019-06-22 15:43:43.077872+00:00
+    updated: 2019-06-23 01:49:13.981928+00:00
+    state: P
+    type: Q
+    source: G

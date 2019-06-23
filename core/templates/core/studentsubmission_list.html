@@ -1,0 +1,38 @@
+{% extends 'quicklink_base.html' %}
+{% block main-content %}
+<div class="ql-content">
+    <h1 class="bg-header bg-text">Gradebook</h1>
+    {% if coursework %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th></th>
+                {% for assignment in coursework %}
+                <th> {{ assignment }} </th>
+                {% endfor %}
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for entry in gradebook %}
+            <tr>
+                <td>{{ entry.student }}</td>
+                {% for submission in entry.submissions %}
+                <td>
+                    {% if submission %}
+                    {{ submission.assignedGrade }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <h2>No student submissions</h2>
+    <p>Make sure students have turned in their work!</p>
+    {% endif %}
+</div>
+{% endblock main-content %}

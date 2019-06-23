@@ -1,0 +1,77 @@
+- model: core.studentsubmission
+  pk: 1
+  fields:
+    student: 5
+    coursework: 1
+    late: false
+    draftGrade: 0.0
+    assignedGrade: 10.0
+    created: 2019-06-22 15:46:06.803346+00:00
+    updated: 2019-06-22 15:55:28.965704+00:00
+    state: U
+- model: core.studentsubmission
+  pk: 2
+  fields:
+    student: 5
+    coursework: 2
+    late: false
+    draftGrade: 0.0
+    assignedGrade: 10.0
+    created: 2019-06-22 15:46:28.279480+00:00
+    updated: 2019-06-22 15:55:33.904150+00:00
+    state: T
+- model: core.studentsubmission
+  pk: 3
+  fields:
+    student: 5
+    coursework: 3
+    late: false
+    draftGrade: 100.0
+    assignedGrade: 100.0
+    created: 2019-06-22 15:46:52.585265+00:00
+    updated: 2019-06-22 15:55:38.683086+00:00
+    state: T
+- model: core.studentsubmission
+  pk: 4
+  fields:
+    student: 6
+    coursework: 1
+    late: false
+    draftGrade: 10.0
+    assignedGrade: 10.0
+    created: 2019-06-22 15:47:10.413475+00:00
+    updated: 2019-06-22 15:55:43.967564+00:00
+    state: U
+- model: core.studentsubmission
+  pk: 5
+  fields:
+    student: 6
+    coursework: 2
+    late: false
+    draftGrade: 10.0
+    assignedGrade: 10.0
+    created: 2019-06-22 15:47:28.116457+00:00
+    updated: 2019-06-22 15:55:51.736764+00:00
+    state: U
+- model: core.studentsubmission
+  pk: 6
+  fields:
+    student: 6
+    coursework: 3
+    late: false
+    draftGrade: 10.0
+    assignedGrade: 100.0
+    created: 2019-06-22 15:47:39.454855+00:00
+    updated: 2019-06-22 15:55:56.786067+00:00
+    state: U
+- model: core.studentsubmission
+  pk: 7
+  fields:
+    student: 7
+    coursework: 3
+    late: false
+    draftGrade: 0.0
+    assignedGrade: 95.0
+    created: 2019-06-22 15:47:53.021781+00:00
+    updated: 2019-06-22 15:56:01.462047+00:00
+    state: U
