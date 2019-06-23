@@ -51,7 +51,7 @@ class Classroom(models.Model):
     """
     # Required fields
     classroomId = models.CharField(max_length=750, primary_key=True)
-    userId = models.ForeignKey(to='auth.User', on_delete=models.CASCADE)
+    user = models.ForeignKey(to='auth.User', on_delete=models.CASCADE)
     name = models.CharField(max_length=750)
 
     # Optional Fields
@@ -69,14 +69,14 @@ class CourseWork(models.Model):
     """
 
     # Required Fields
-    courseId = models.ForeignKey(to='Course', on_delete=models.CASCADE)
-    classrooomId = models.ForeignKey(to='Classroom', on_delete=models.CASCADE)
+    course = models.ForeignKey(to='Course', on_delete=models.CASCADE)
     title = models.CharField(max_length=750)
-    creatorUserId = models.ForeignKey(to='auth.User', on_delete=models.SET_NULL, null=True)
+    author = models.ForeignKey(to='auth.User', on_delete=models.SET_NULL, null=True)
 
     # Optional Fields
     description = models.TextField(max_length=30_000, blank=True)
     max_points = models.IntegerField(blank=True)
+    dueDate = models.DateField(blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -143,10 +143,8 @@ class StudentSubmission(models.Model):
     """
 
     # Required Fields
-    studentId = models.ForeignKey(to='auth.User', on_delete=models.CASCADE)
-    classroomId = models.ForeignKey(to='Classroom', on_delete=models.CASCADE)
-    courseId = models.ForeignKey(to='Course', on_delete=models.CASCADE)
-    courseworkId = models.ForeignKey(to='CourseWork', on_delete=models.CASCADE)
+    student = models.ForeignKey(to='auth.User', on_delete=models.CASCADE)
+    coursework = models.ForeignKey(to='CourseWork', on_delete=models.CASCADE)
 
     # Optional Fields
     late = models.BooleanField(default=False)
