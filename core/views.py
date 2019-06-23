@@ -61,4 +61,5 @@ class StudentSubmissionsView(generic.ListView):
         """
         context = super().get_context_data(**kwargs)
         context['coursework'] = CourseWork.objects.filter(course_id=1)
+        context['course'] = Course.objects.get(pk=1)
         return context
