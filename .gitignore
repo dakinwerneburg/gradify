@@ -96,3 +96,8 @@ ENV/
 # Don't track the database
 db.sqlite3
 
+# apple
+.DS_Store 
+
+#visual studio code
+.vscode
