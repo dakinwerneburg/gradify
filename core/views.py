@@ -62,3 +62,8 @@ class StudentSubmissionsView(generic.ListView):
         context = super().get_context_data(**kwargs)
         context['coursework'] = CourseWork.objects.filter(course_id=1)
         return context
+
+
+class CourseDetailView(generic.DetailView):
+    model = Course
+    template_name = 'core/course_detail.html'
