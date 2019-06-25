@@ -1,7 +1,7 @@
 {% extends 'quicklink_base.html' %}
 {% block main-content %}
 <div class="ql-content">
-    <h1 class="bg-header bg-text">Gradebook:</h1>
+    <h1 class="bg-header bg-text">Gradebook</h1>
     <section class="card">
         <div class="card-body">
             <header class="card-header">
@@ -11,7 +11,7 @@
                 <time class="light-text">{{ course.startDate | date:"M d, Y" }} -
                     {{ course.endDate | date:"M d, Y" }}</time>
             </header>
-            {% if coursework %}
+            {% if gradebook %}
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
@@ -29,7 +29,7 @@
                     {% for entry in gradebook %}
                     <tr>
                         <td>{{ entry.student }}</td>
-                        <td></td>
+                        <td>{{ entry.average_grade }}</td>
                         {% for submission in entry.submissions %}
                         <td>
                             {% if submission %}
