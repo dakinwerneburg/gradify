@@ -41,8 +41,8 @@ class StudentSubmissionsView(generic.ListView):
 
         # Initialize the gradebook array with a dictionary element for each student (row).
         # The submissions array is initialized to None for every assignment (column) in this course
-        gradebook = [{'student': s,
-                      'submissions': [None for _ in range(len(coursework))]} for s in students]
+        gradebook = [{'student': s, 'submissions': [None for _ in range(len(coursework))]}
+                     for s in students]
 
         # Populate the gradebook
         for submission in submissions:
