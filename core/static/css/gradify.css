@@ -90,8 +90,44 @@ nav a {
     font-weight: 400;
 }
 
+/*No styling of card title link*/
+.card-title a{
+    text-decoration: none; 
+    color: inherit;
+}
+
 /* An table row with 3 evenly spaced columns */
 .generic-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+}
+
+/* Course Detail Navigaion*/
+.course-detail-nav {
+    font-size: 20px;
+    line-height: 23px;
+
+    color: #0C0C0C;
+    background:white;
+
+}
+
+/* Course Detail Navigaion description*/
+.course-detail-nav p {
+    padding-top:0;
+    padding-left: 60px;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 19px;
+    display: flex;
+    align-items: center;
+
+    color: #0C0C0C;
+
+}
+
+/*No Styling of course detail navivation links*/
+.course-detail-nav a {
+    text-decoration: none; 
+    color: inherit;
 }

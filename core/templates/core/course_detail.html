@@ -1,0 +1,65 @@
+{% extends 'quicklink_base.html' %}
+
+{% block main-content %}
+    <div class="ql-content">
+        <h1 class="bg-header bg-text">Course Details</h1>
+        <section class="card">
+            <div class="card-body">
+                <header class="card-header">
+                    <span class="light-text">{{ course.section }}</span>
+                    <h2 class="card-title"><a href="{% url 'course-detail' pk=course.pk %}">{{ course.name }}</a></h2>
+                    <time class="light-text">{{ course.startDate | date:"M d, Y" }} -
+                        {{ course.endDate | date:"M d, Y" }}</time>
+                </header>
+                <nav class="course-detail-nav">
+                    {# TODO add links to gradebook, assignments, and roster page once created #}
+
+                    <div>
+                        <span>{% include 'svg/course-details-gradebook.svg' %}<a href="#">View/Edit Gradebook</a></span>
+                        <p>Display all enrolled students and view/edit thier assignment grades in one convenient location.
+                        </p>
+                    </div>
+                    <div>
+                        <span>{% include 'svg/course-details-book.svg' %}<a href="#">View/Edit Assignments</a></span>
+                        <p>Display a list of course assignments. Add a new assignment or edit/delete exisiting assignments.
+                        </p>
+                    </div>
+                    <div>
+                        <span>{% include 'svg/course-details-people.svg' %}<a href="#">View/Edit Class Roster</a></span>
+                        <p>View a list of students enrolled in the class. Add or remove students from the class roster.</p>
+                    </div>
+                </nav>
+                <details>
+                {# TODO add actual coursework and tests once model is created #}
+
+                <summary class="light-text">Upcoming Assignments</summary>
+                <table class="table table-striped table-hover">
+                    <tbody>
+                        <tr class="generic-row">
+                            <td>Jun 4</td>
+                            <td style="text-align: center">Project Plan</td>
+                            {# TODO add link to assignment details #}
+                            <td style="text-align: right">{% include 'svg/go-arrow.svg' %}</td>
+                        </tr>
+                        <tr class="generic-row">
+                            <td>Jun 9</td>
+                            <td style="text-align: center">Test Plan</td>
+                            <td style="text-align: right">{% include 'svg/go-arrow.svg' %}</td>
+                        </tr>
+                        <tr class="generic-row">
+                            <td>Jun 16</td>
+                            <td style="text-align: center">Project Design</td>
+                            <td style="text-align: right">{% include 'svg/go-arrow.svg' %}</td>
+                        </tr>
+                        <tr class="generic-row">
+                            <td>Jun 23</td>
+                            <td style="text-align: center">Phase 1 Source</td>
+                            <td style="text-align: right">{% include 'svg/go-arrow.svg' %}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </details>
+            </div>
+        </section>
+    </div>
+{% endblock main-content %}

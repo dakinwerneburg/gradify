@@ -76,3 +76,8 @@ class StudentSubmissionsView(generic.ListView):
         # TODO use the course currently being viewed
         context['course'] = Course.objects.get(pk=1)
         return context
+
+
+class CourseDetailView(generic.DetailView):
+    model = Course
+    template_name = 'core/course_detail.html'
