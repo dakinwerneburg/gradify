@@ -6,6 +6,7 @@ from oauth2client.client import AccessTokenCredentials
 
 
 class ClassroomHelper:
+
     def get_credential(self, request):
         creds = None
         usr = request.user.id
@@ -50,12 +51,12 @@ class ClassroomHelper:
         user_details = SocialAccount.objects.filter(user=usr).first()
 
         ret_table = "<table><tr><td><img style='width:50px;height:50px' src='" \
-                   + user_details.extra_data["picture"] + "'></td>"
+            + user_details.extra_data["picture"] + "'></td>"
 
         ret_table = ret_table + "<td>" + user_details.extra_data["name"] \
-                   + "<br /><a href='mailto:" + user_details.extra_data["email"] \
-                   + "'>" + user_details.extra_data["email"] \
-                   + "</td></tr></table>"
+            + "<br /><a href='mailto:" + user_details.extra_data["email"] \
+            + "'>" + user_details.extra_data["email"] \
+            + "</td></tr></table>"
 
         ret_table = ret_table + "<h1>Courses</h1>"
 
@@ -83,15 +84,12 @@ class ClassroomHelper:
                             student_name = student_detail["fullName"]
                             if 'assignedGrade' in submissions_detail:
                                 ret_table = ret_table \
-                                           + "{0} ({1}) assignedGrade {2})<br />"\
-                                                .format(student_name,
-                                                        student_id,
-                                                        submissions_detail['assignedGrade'])
+                                    + "{0} ({1}) assignedGrade {2})<br />"\
+                                    .format(student_name, student_id, submissions_detail['assignedGrade'])
                             else:
                                 ret_table = ret_table\
-                                            + "{0} ({1}) assignedGrade (Not_Submitted)<br />"\
-                                                .format(student_name, student_id)
-            except:
+                                    + "{0} ({1}) assignedGrade (Not_Submitted)<br />".format(student_name, student_id)
+            except Exception:
                 ret_table = ret_table + "<span style='color:red'>No Permissions</span><br />"
 
         return(ret_table)

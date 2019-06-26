@@ -4,8 +4,10 @@ from django.views.generic import TemplateView
 from django.http import HttpResponse
 from core.ClassroomHelper import ClassroomHelper
 
+
 class IndexPageView(TemplateView):
     template_name = 'core/index.html'
+
 
 class CoursesView(generic.ListView):
     """
