@@ -26,4 +26,6 @@ admin.site.site_header = 'Gradify Administration'
 urlpatterns = [
     path('', include('core.urls')),
     path('admin/', admin.site.urls),
+    path('users/', include('users.urls')),
+    path('accounts/', include('allauth.urls')), # new for custom user object
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

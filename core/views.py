@@ -1,6 +1,11 @@
 from django.views import generic
 from .models import Course, StudentSubmission, CourseWork
+from django.views.generic import TemplateView
+from django.http import HttpResponse
+from core.ClassroomHelper import ClassroomHelper
 
+class IndexPageView(TemplateView):
+    template_name = 'core/index.html'
 
 class CoursesView(generic.ListView):
     """
@@ -67,3 +72,12 @@ class StudentSubmissionsView(generic.ListView):
 class CourseDetailView(generic.DetailView):
     model = Course
     template_name = 'core/course_detail.html'
+
+
+class TestGoogleLinkPageView(TemplateView):
+    template_name = 'test_google_link'
+
+    def get(self, request):
+        ch = ClassroomHelper()
+        response = ch.to_html(request)
+        return HttpResponse(response)

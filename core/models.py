@@ -51,7 +51,7 @@ class Classroom(models.Model):
     """
     # Required fields
     classroomId = models.CharField(max_length=750, primary_key=True)
-    user = models.ForeignKey(to='auth.User', on_delete=models.CASCADE)
+    user = models.ForeignKey(to='users.CustomUser', on_delete=models.CASCADE)
     name = models.CharField(max_length=750)
 
     # Optional Fields
@@ -71,7 +71,7 @@ class CourseWork(models.Model):
     # Required Fields
     course = models.ForeignKey(to='Course', on_delete=models.CASCADE)
     title = models.CharField(max_length=750)
-    author = models.ForeignKey(to='auth.User', on_delete=models.SET_NULL, null=True)
+    author = models.ForeignKey(to='users.CustomUser', on_delete=models.SET_NULL, null=True)
 
     # Optional Fields
     description = models.TextField(max_length=30_000, blank=True)
@@ -143,7 +143,7 @@ class StudentSubmission(models.Model):
     """
 
     # Required Fields
-    student = models.ForeignKey(to='auth.User', on_delete=models.CASCADE)
+    student = models.ForeignKey(to='users.CustomUser', on_delete=models.CASCADE)
     coursework = models.ForeignKey(to='CourseWork', on_delete=models.CASCADE)
 
     # Optional Fields

@@ -1,0 +1,16 @@
+{%  extends "base.html" %}
+
+{%  block site_title %}+Gradify Index{% endblock %}
+
+{% block content %}
+
+<div class="ql-content">
+  <h1 class="bg-header bg-text">Sign up</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Sign up</button>
+  </form>
+</div>
+
+{% endblock content %}
