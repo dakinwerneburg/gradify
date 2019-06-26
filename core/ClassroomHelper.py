@@ -39,7 +39,8 @@ class ClassroomHelper:
 
     def get_course_submissions(self, request, course_id, course_work_id):
         service = self.get_service(request)
-        sumbission_results = service.courses().courseWork().studentSubmissions().list(courseId=course_id, courseWorkId=course_work_id).execute()
+        sumbission_results = service.courses().courseWork().studentSubmissions()\
+            .list(courseId=course_id, courseWorkId=course_work_id).execute()
         submissions = sumbission_results.get('studentSubmissions', [])
         return submissions
 
@@ -47,7 +48,8 @@ class ClassroomHelper:
         usr = request.user.id
         userdetails = SocialAccount.objects.filter(user=usr).first()
 
-        retTable = "<table><tr><td><img style='width:50px;height:50px' src='" + userdetails.extra_data["picture"] + "'></td>"
+        retTable = "<table><tr><td><img style='width:50px;height:50px' src='" \
+                   + userdetails.extra_data["picture"] + "'></td>"
 
         retTable = retTable + "<td>" + userdetails.extra_data["name"] \
                    + "<br /><a href='mailto:" + userdetails.extra_data["email"] \
@@ -79,18 +81,16 @@ class ClassroomHelper:
                             student_detail = self.get_user_by_id(request, course_id, student_id)
                             student_name = student_detail["fullName"]
                             if 'assignedGrade' in submissions_detail:
-                                retTable = retTable + "{0} ({1}) assignedGrade {2})<br />".format(student_name, student_id, submissions_detail['assignedGrade'])
+                                retTable = retTable \
+                                           + "{0} ({1}) assignedGrade {2})<br />"\
+                                               .format(student_name,
+                                                       student_id,
+                                                       submissions_detail['assignedGrade'])
                             else:
-                                retTable = retTable + "{0} ({1}) assignedGrade (Not_Submitted)<br />".format(student_name, student_id)
+                                retTable = retTable \
+                                           + "{0} ({1}) assignedGrade (Not_Submitted)<br />"\
+                                               .format(student_name, student_id)
             except:
                 retTable = retTable + "<span style='color:red'>No Permissions</span><br />"
 
         return(retTable)
-
-
-
-
-
-
-
-

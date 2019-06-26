@@ -37,11 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites', # new for custom user model
-    'allauth', # new for custom user model
-    'allauth.account', # new for custom user model
-    'allauth.socialaccount', # new for custom user model
-    'allauth.socialaccount.providers.google', # new for custom user model
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     'users',
     'core',
 ]

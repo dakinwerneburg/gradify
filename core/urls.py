@@ -2,9 +2,7 @@
 URLs file for core Gradify app.
 """
 from django.urls import path
-from django.views.generic import TemplateView
 from . import views
-from .views import IndexPageView
 
 urlpatterns = [
     path('', views.IndexPageView.as_view(), name='index'),
