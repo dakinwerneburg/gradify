@@ -1,5 +1,6 @@
 from django.views import generic
-from .models import Course, StudentSubmission, CourseWork
+from django.shortcuts import get_object_or_404, render
+from .models import Course, StudentSubmission, CourseWork, CourseStudent
 
 
 class CoursesView(generic.ListView):
@@ -67,3 +68,15 @@ class StudentSubmissionsView(generic.ListView):
 class CourseDetailView(generic.DetailView):
     model = Course
     template_name = 'core/course_detail.html'
+
+
+def view_course_roster(request, pk):
+    course = Course.objects.get(id=pk)
+    roster = CourseStudent.objects.filter(course_id=pk).order_by('student__last_name', 'student__first_name')
+
+    context = {
+        'roster': roster,
+        'course': course,
+    }
+
+    return render(request, "core/coursestudent_list.html", context)

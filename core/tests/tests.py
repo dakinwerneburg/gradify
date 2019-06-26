@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from ..models import Course, CourseWork, StudentSubmission
+from ..models import Course, CourseWork, StudentSubmission, CourseStudent
 
 
 class CourseListViewTests(TestCase):
@@ -94,3 +94,29 @@ class CourseDetailViewTests(TestCase):
         response = self.client.get(reverse('course-detail', args={course.pk}))
         self.assertContains(response, "Current Trends and Projects in Computer Science")
         self.assertContains(response, "CMSC 495 6338")
+
+
+class CourseRosterTests(TestCase):
+
+    fixtures = ['classroom', 'courses', 'coursework', 'studentsubmission',
+                'user', 'coursestudent']
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/courses/1/roster/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        response = self.client.get(reverse('course-roster', kwargs={'pk': 1}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get('/courses/1/roster/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'core/coursestudent_list.html')
+
+    def test_all_students_listed(self):
+        response = self.client.get(reverse('course-roster', kwargs={'pk': 1}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(len(response.context['roster']) == CourseStudent.objects.filter(course_id=1).count())
+        self.assertContains(response, response.context['roster'][0].student.last_name)
+        self.assertContains(response, response.context['roster'][1].student.last_name)
