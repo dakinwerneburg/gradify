@@ -25,16 +25,16 @@ class StudentSubmissionsView(generic.ListView):
 
     def get_queryset(self):
         # Get a list of all course work for this course, returns and empty array if none exits
-        coursework = CourseWork.objects.filter(course_id=1).order_by('dueDate')
+        coursework = CourseWork.objects.filter(course_id=self.kwargs['pk']).order_by('dueDate')
         if not coursework:
             return []
 
         # Get a list of all student submissions
-        # TODO use the course currently being viewed
-        submissions = StudentSubmission.objects.filter(coursework__course_id=1)
+        submissions = StudentSubmission.objects.filter(coursework__course_id=self.kwargs['pk'])
 
         # Get a list of students in the course
-        # TODO replace this with a query for the complete class roster and move above submissions. Return [] if empty.
+        # TODO replace this with a query for the complete class roster and move above submissions. 
+        # Return [] if empty.
         students = set([s.student for s in submissions])
 
         return self.populate_gradebook(submissions, coursework, students)
@@ -89,9 +89,8 @@ class StudentSubmissionsView(generic.ListView):
         Augment the context with a list of course work in the correct order
         """
         context = super().get_context_data(**kwargs)
-        context['coursework'] = CourseWork.objects.filter(course_id=1).order_by('dueDate')
-        # TODO use the course currently being viewed
-        context['course'] = Course.objects.get(pk=1)
+        context['coursework'] = CourseWork.objects.filter(course_id=self.kwargs['pk']).order_by('dueDate')
+        context['course'] = Course.objects.get(pk=self.kwargs['pk'])
         return context
 
 
