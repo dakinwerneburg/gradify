@@ -1,4 +1,4 @@
 [flake8]
 ignore = F403, F405
 max-line-length = 120
-exclude = .git,core/migrations
+exclude = .git,core/migrations,users/migrations
