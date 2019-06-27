@@ -33,7 +33,7 @@ class StudentSubmissionsView(generic.ListView):
         submissions = StudentSubmission.objects.filter(coursework__course_id=self.kwargs['pk'])
 
         # Get a list of students in the course
-        # TODO replace this with a query for the complete class roster and move above submissions. 
+        # TODO replace this with a query for the complete class roster and move above submissions.
         # Return [] if empty.
         students = set([s.student for s in submissions])
 
