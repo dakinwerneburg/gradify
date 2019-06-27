@@ -9,6 +9,7 @@
 {% if user.is_authenticated %}
     <h1 class="bg-header bg-text">Welcome {{ user.username }}</h1>
 
+    <p><a href="{% url 'account_change_password' %}">Change Password</a></p>
     <p><a href="{% url 'account_logout' %}">Log out</a></p>
 {% else %}
     <h1 class="bg-header bg-text">Welcome to Gradify!</h1>

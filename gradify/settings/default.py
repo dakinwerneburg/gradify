@@ -41,11 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'core',
+    'users',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'users',
 ]
 
 # using custom user models
@@ -65,6 +65,7 @@ SITE_ID = 1
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 SOCIALACCOUNT_STORE_TOKENS = True
+ACCOUNT_LOGIN_ON_PASSWORD_RESET=True
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

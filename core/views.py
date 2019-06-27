@@ -3,6 +3,7 @@ from .models import Course, StudentSubmission, CourseWork
 from django.views.generic import TemplateView
 from django.http import HttpResponse
 from core.ClassroomHelper import ClassroomHelper
+from allauth.account.views import PasswordChangeView
 
 
 class IndexPageView(TemplateView):
@@ -83,3 +84,7 @@ class TestGoogleLinkPageView(TemplateView):
         ch = ClassroomHelper()
         response = ch.to_html(request)
         return HttpResponse(response)
+
+
+class CustomPasswordChangeView(PasswordChangeView):
+    success_url = '/'
