@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from ..models import Course, CourseWork
+from ..models import Course, CourseWork, CourseStudent
 from ..views import StudentSubmissionsView
 from .mocks import MockCoursework, MockSubmission, MockUser
 

@@ -174,6 +174,7 @@ class StudentSubmission(models.Model):
         default=UNSPECIFIED
     )
 
+
 class CourseStudent(models.Model):
     # Required Fields
     student = models.ForeignKey(to='auth.User', on_delete=models.CASCADE)
