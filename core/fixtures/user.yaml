@@ -1,4 +1,4 @@
-- model: auth.user
+- model: users.models.CustomUser
   pk: 1
   fields:
     password: pbkdf2_sha256$150000$iZqiGMcx5Bfk$HXeC0B0n0DXG8nZmP+QSGucSLqtX28/S+ud1BqdZ5Xk=
@@ -11,9 +11,10 @@
     is_staff: true
     is_active: true
     date_joined: 2019-05-31 21:40:42.875191+00:00
+    token: null
     groups: []
     user_permissions: []
-- model: auth.user
+- model: users.models.CustomUser
   pk: 3
   fields:
     password: pbkdf2_sha256$150000$b2yKSnPGWuDo$AuYnVwBsqTwhI+vFIrydqPi8mih5LT14OFX3t1uMsP0=
@@ -26,9 +27,10 @@
     is_staff: false
     is_active: true
     date_joined: 2019-06-22 15:38:35+00:00
+    token: ''
     groups: []
     user_permissions: []
-- model: auth.user
+- model: users.models.CustomUser
   pk: 4
   fields:
     password: pbkdf2_sha256$150000$TLaTvtmZiB5M$zV5Ah0ds29MubDz83hsv9q4Oe9x9j7Tbpa5QFxv96YY=
@@ -41,9 +43,10 @@
     is_staff: false
     is_active: true
     date_joined: 2019-06-22 15:38:47+00:00
+    token: ''
     groups: []
     user_permissions: []
-- model: auth.user
+- model: users.models.CustomUser
   pk: 5
   fields:
     password: pbkdf2_sha256$150000$PGyQsopPnb5W$hTGjshbM7hOsAvLyHmMbj8r3+3ljt/gV7UjeJ5IjXQI=
@@ -56,9 +59,10 @@
     is_staff: false
     is_active: true
     date_joined: 2019-06-22 15:44:08+00:00
+    token: ''
     groups: []
     user_permissions: []
-- model: auth.user
+- model: users.models.CustomUser
   pk: 6
   fields:
     password: pbkdf2_sha256$150000$cL4fkIqk8Ho7$zHz8aCchspMMCNshV8zpiQdIy7brhaEwgV3qME7ag8M=
@@ -71,9 +75,10 @@
     is_staff: false
     is_active: true
     date_joined: 2019-06-22 15:44:38+00:00
+    token: ''
     groups: []
     user_permissions: []
-- model: auth.user
+- model: users.models.CustomUser
   pk: 7
   fields:
     password: pbkdf2_sha256$150000$JZoQuCYCatD5$qM3q/p13whpyqTacRRtCszPI6LFuczUXh72u0Vay5jI=
@@ -86,5 +91,6 @@
     is_staff: false
     is_active: true
     date_joined: 2019-06-22 15:44:51+00:00
+    token: ''
     groups: []
     user_permissions: []
