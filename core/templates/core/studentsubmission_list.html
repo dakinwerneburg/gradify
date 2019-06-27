@@ -2,37 +2,52 @@
 {% block main-content %}
 <div class="ql-content">
     <h1 class="bg-header bg-text">Gradebook</h1>
-    {% if coursework %}
-    <table border="1">
-        <thead>
-            <tr>
-                <th></th>
-                {% for assignment in coursework %}
-                <th> {{ assignment }} </th>
-                {% endfor %}
-            </tr>
-        </thead>
+    <section class="card">
+        <div class="card-body">
+            <header class="card-header">
+                <span class="light-text">{{ course.section }}</span>
+                {# TODO add link to course details #}
+                <h2 class="card-title">{{ course.name }}</h2>
+                <time class="light-text">{{ course.startDate | date:"M d, Y" }} -
+                    {{ course.endDate | date:"M d, Y" }}</time>
+            </header>
+            {% if gradebook %}
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Average</th>
+                        {% for assignment in coursework %}
+                        <th> {{ assignment }} <br>
+                            {{assignment.max_points}} points<br>
+                            {{assignment.dueDate}} </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
 
-        <tbody>
-            {% for entry in gradebook %}
-            <tr>
-                <td>{{ entry.student }}</td>
-                {% for submission in entry.submissions %}
-                <td>
-                    {% if submission %}
-                    {{ submission.assignedGrade }}
-                    {% else %}
-                    -
-                    {% endif %}
-                </td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <h2>No student submissions</h2>
-    <p>Make sure students have turned in their work!</p>
-    {% endif %}
+                <tbody>
+                    {% for entry in gradebook %}
+                    <tr>
+                        <td>{{ entry.student }}</td>
+                        <td>{{ entry.average_grade }}</td>
+                        {% for submission in entry.submissions %}
+                        <td>
+                            {% if submission %}
+                            {{ submission.assignedGrade }}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <h2>No Assignments</h2>
+            <p>Add assignments to this course to view them here.</p>
+            {% endif %}
+        </div>
+    </section>
 </div>
 {% endblock main-content %}
