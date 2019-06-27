@@ -7,7 +7,7 @@
     draftGrade: 0.0
     assignedGrade: 10.0
     created: 2019-06-22 15:46:06.803346+00:00
-    updated: 2019-06-22 15:55:28.965704+00:00
+    updated: 2019-06-25 12:46:32.658718+00:00
     state: U
 - model: core.studentsubmission
   pk: 2
@@ -16,9 +16,9 @@
     coursework: 2
     late: false
     draftGrade: 0.0
-    assignedGrade: 10.0
+    assignedGrade: 25.0
     created: 2019-06-22 15:46:28.279480+00:00
-    updated: 2019-06-22 15:55:33.904150+00:00
+    updated: 2019-06-25 12:46:40.412057+00:00
     state: T
 - model: core.studentsubmission
   pk: 3
@@ -48,10 +48,10 @@
     student: 6
     coursework: 2
     late: false
-    draftGrade: 10.0
-    assignedGrade: 10.0
+    draftGrade: 25.0
+    assignedGrade: 23.0
     created: 2019-06-22 15:47:28.116457+00:00
-    updated: 2019-06-22 15:55:51.736764+00:00
+    updated: 2019-06-25 12:47:00.773724+00:00
     state: U
 - model: core.studentsubmission
   pk: 6
