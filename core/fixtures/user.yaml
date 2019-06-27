@@ -1,4 +1,4 @@
-- model: users.models.CustomUser
+- model: users.CustomUser
   pk: 1
   fields:
     password: pbkdf2_sha256$150000$iZqiGMcx5Bfk$HXeC0B0n0DXG8nZmP+QSGucSLqtX28/S+ud1BqdZ5Xk=
@@ -14,7 +14,7 @@
     token: null
     groups: []
     user_permissions: []
-- model: users.models.CustomUser
+- model: users.CustomUser
   pk: 3
   fields:
     password: pbkdf2_sha256$150000$b2yKSnPGWuDo$AuYnVwBsqTwhI+vFIrydqPi8mih5LT14OFX3t1uMsP0=
@@ -30,7 +30,7 @@
     token: ''
     groups: []
     user_permissions: []
-- model: users.models.CustomUser
+- model: users.CustomUser
   pk: 4
   fields:
     password: pbkdf2_sha256$150000$TLaTvtmZiB5M$zV5Ah0ds29MubDz83hsv9q4Oe9x9j7Tbpa5QFxv96YY=
@@ -46,7 +46,7 @@
     token: ''
     groups: []
     user_permissions: []
-- model: users.models.CustomUser
+- model: users.CustomUser
   pk: 5
   fields:
     password: pbkdf2_sha256$150000$PGyQsopPnb5W$hTGjshbM7hOsAvLyHmMbj8r3+3ljt/gV7UjeJ5IjXQI=
@@ -62,7 +62,7 @@
     token: ''
     groups: []
     user_permissions: []
-- model: users.models.CustomUser
+- model: users.CustomUser
   pk: 6
   fields:
     password: pbkdf2_sha256$150000$cL4fkIqk8Ho7$zHz8aCchspMMCNshV8zpiQdIy7brhaEwgV3qME7ag8M=
@@ -78,7 +78,7 @@
     token: ''
     groups: []
     user_permissions: []
-- model: users.models.CustomUser
+- model: users.CustomUser
   pk: 7
   fields:
     password: pbkdf2_sha256$150000$JZoQuCYCatD5$qM3q/p13whpyqTacRRtCszPI6LFuczUXh72u0Vay5jI=

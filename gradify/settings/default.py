@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Disable email validation
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # Application definition
 
