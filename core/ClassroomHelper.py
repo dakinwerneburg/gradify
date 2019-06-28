@@ -40,8 +40,9 @@ class ClassroomHelper:
 
     def get_course_submissions(self, request, course_id, course_work_id):
         service = self.get_service(request)
-        sumbission_results = service.courses().courseWork().studentSubmissions()\
+        submission_results = service.courses().courseWork().studentSubmissions()\
             .list(courseId=course_id, courseWorkId=course_work_id).execute()
+        submissions = submission_results.get('studentSubmissions', [])
         submissions = sumbission_results.get('studentSubmissions', [])
         return submissions
 
