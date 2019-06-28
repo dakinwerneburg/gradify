@@ -7,8 +7,8 @@ from allauth.account.views import PasswordChangeView
 class SignUp(CreateView):
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('login')
-    template_name = 'signup.html'
+    template_name = 'account/signup.html'
 
 
 class CustomPasswordChangeView(PasswordChangeView):
-    success_url = ""
+    success_url = "/"

@@ -2,6 +2,7 @@ from users.models import CustomUser
 from googleapiclient.discovery import build
 from allauth.socialaccount.models import SocialToken
 from oauth2client.client import AccessTokenCredentials
+from allauth.socialaccount.models import SocialAccount
 
 
 class ClassroomHelper:
@@ -46,15 +47,12 @@ class ClassroomHelper:
 
     def is_google_user(self, request):
         usr = request.user.id
-        users = CustomUser.objects.filter(id=usr)
+        user_details = SocialAccount.objects.filter(user=usr).first()
+        user = CustomUser.objects.filter(id=usr)
 
-        if not users:
+        if not user_details:
             return False
 
-        user = CustomUser.objects.filter(id=usr).first()
-        googleUser = SocialToken.objects.filter(account__user=user, account__provider='google')
+        google_user = SocialToken.objects.filter(account__user=user, account__provider='google')
 
-        if not googleUser:
-            return False
-        else:
-            return True
+        return google_user is not None

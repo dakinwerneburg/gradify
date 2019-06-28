@@ -1,0 +1,29 @@
+{%  extends "base.html" %}
+
+{% load socialaccount %}
+
+{% block site_title %}+Gradify{% endblock %}
+
+{% block content %}
+<div class="ql-content">
+{% if user.is_authenticated %}
+    {% if message != "" %}
+    <span style="color:red">{{ message }}</span>
+    {% else %}
+    <table>
+        <tr>
+            <td>
+                <img style='width:50px;height:50px' src='{{ picture }}'>
+            </td>
+            <td>
+                {{ name }}<br />
+                <a href='mailto:{{ email }}'>{{ email }}</a>
+            </td>
+        </tr>
+    </table>
+    <h3>courses</h3>
+    {{ courses }}
+    {% endif %}
+{% endif %}
+</div>
+{% endblock content %}
