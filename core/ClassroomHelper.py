@@ -8,7 +8,6 @@ from oauth2client.client import AccessTokenCredentials
 class ClassroomHelper:
 
     def get_credential(self, request):
-        creds = None
         usr = request.user.id
         user = CustomUser.objects.filter(id=usr).first()
         tokens = SocialToken.objects.filter(account__user=user, account__provider='google').first()
