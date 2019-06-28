@@ -20,7 +20,7 @@ class ClassroomHelper:
         service = build('classroom', 'v1', credentials=creds)
         return service
 
-    def get_user_by_id(self, request, course_id, student_id):
+    def get_user_by_id(self, request, student_id):
         service = self.get_service(request)
         user_profile_results = service.userProfiles().get(userId=student_id).execute()
         user_profile = user_profile_results.get('name', [])
