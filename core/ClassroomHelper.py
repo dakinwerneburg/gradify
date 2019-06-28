@@ -92,4 +92,4 @@ class ClassroomHelper:
             except Exception:
                 ret_table = ret_table + "<span style='color:red'>No Permissions</span><br />"
 
-        return(ret_table)
+        return ret_table
