@@ -1,0 +1,100 @@
+[
+  {
+    "model": "core.studentsubmission",
+    "pk": 1,
+    "fields": {
+      "student": 5,
+      "coursework": 1,
+      "late": false,
+      "draftGrade": 0.0,
+      "assignedGrade": 10.0,
+      "created": "2019-06-22T15:46:06.803Z",
+      "updated": "2019-06-25T12:46:32.658Z",
+      "state": "U"
+    }
+  },
+  {
+    "model": "core.studentsubmission",
+    "pk": 2,
+    "fields": {
+      "student": 5,
+      "coursework": 2,
+      "late": false,
+      "draftGrade": 0.0,
+      "assignedGrade": 25.0,
+      "created": "2019-06-22T15:46:28.279Z",
+      "updated": "2019-06-25T12:46:40.412Z",
+      "state": "T"
+    }
+  },
+  {
+    "model": "core.studentsubmission",
+    "pk": 3,
+    "fields": {
+      "student": 5,
+      "coursework": 3,
+      "late": false,
+      "draftGrade": 100.0,
+      "assignedGrade": 100.0,
+      "created": "2019-06-22T15:46:52.585Z",
+      "updated": "2019-06-22T15:55:38.683Z",
+      "state": "T"
+    }
+  },
+  {
+    "model": "core.studentsubmission",
+    "pk": 4,
+    "fields": {
+      "student": 6,
+      "coursework": 1,
+      "late": false,
+      "draftGrade": 10.0,
+      "assignedGrade": 10.0,
+      "created": "2019-06-22T15:47:10.413Z",
+      "updated": "2019-06-22T15:55:43.967Z",
+      "state": "U"
+    }
+  },
+  {
+    "model": "core.studentsubmission",
+    "pk": 5,
+    "fields": {
+      "student": 6,
+      "coursework": 2,
+      "late": false,
+      "draftGrade": 25.0,
+      "assignedGrade": 23.0,
+      "created": "2019-06-22T15:47:28.116Z",
+      "updated": "2019-06-25T12:47:00.773Z",
+      "state": "U"
+    }
+  },
+  {
+    "model": "core.studentsubmission",
+    "pk": 6,
+    "fields": {
+      "student": 6,
+      "coursework": 3,
+      "late": false,
+      "draftGrade": 10.0,
+      "assignedGrade": 100.0,
+      "created": "2019-06-22T15:47:39.454Z",
+      "updated": "2019-06-22T15:55:56.786Z",
+      "state": "U"
+    }
+  },
+  {
+    "model": "core.studentsubmission",
+    "pk": 7,
+    "fields": {
+      "student": 7,
+      "coursework": 3,
+      "late": false,
+      "draftGrade": 0.0,
+      "assignedGrade": 95.0,
+      "created": "2019-06-22T15:47:53.021Z",
+      "updated": "2019-06-22T15:56:01.462Z",
+      "state": "U"
+    }
+  }
+]

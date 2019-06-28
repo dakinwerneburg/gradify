@@ -25,7 +25,7 @@ SECRET_KEY = '2#del$&afvinwynag1fv%=fa!b9bx35w+^*)5zw5=ymyzn7nu&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Disable email validation
 ACCOUNT_EMAIL_VERIFICATION = 'none'
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'core',
     'users',
+    'googleclassroom',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -52,7 +53,8 @@ INSTALLED_APPS = [
 # https://wsvincent.com/django-allauth-tutorial-custom-user-model/
 AUTH_USER_MODEL = 'users.CustomUser'
 
-LOGIN_REDIRECT_URL = 'index'
+LOGIN_URL = 'index'
+LOGIN_REDIRECT_URL = '/course'
 LOGOUT_REDIRECT_URL = 'index'
 
 AUTHENTICATION_BACKENDS = (
