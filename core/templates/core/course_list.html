@@ -4,7 +4,7 @@
         <h1 class="bg-header bg-text">Your Courses</h1>
         {% if course_list %}
             {% for course in course_list %}
-                {% include 'course_overview_card.html' %}
+                {% include 'core/course_overview_card.html' %}
             {% endfor %}
         {% else %}
             <h2>No courses found</h2>
