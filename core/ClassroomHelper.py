@@ -35,8 +35,8 @@ class ClassroomHelper:
     def get_course_works(self, request, course_id):
         service = self.get_service(request)
         coursework_results = service.courses().courseWork().list(courseId=course_id).execute()
-        courseworks = coursework_results.get('courseWork', [])
-        return courseworks
+        coursework = coursework_results.get('courseWork', [])
+        return coursework
 
     def get_course_submissions(self, request, course_id, course_work_id):
         service = self.get_service(request)
