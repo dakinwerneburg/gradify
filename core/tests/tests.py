@@ -7,7 +7,7 @@ from .mocks import MockCoursework, MockSubmission, MockUser
 
 
 class CourseListViewTests(TestCase):
-    fixtures = ['courses']
+    fixtures = ['course']
 
     def test_course_list(self):
         """
@@ -33,7 +33,7 @@ class StudentSubmissionListViewTests(TestCase):
     """
     These test aspescts of the student submission view
     """
-    fixtures = ['classroom', 'courses', 'coursework', 'studentsubmission', 'user']
+    fixtures = ['classroom', 'course', 'coursework', 'studentsubmission', 'user']
 
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get('/courses/1/gradebook/')
@@ -170,7 +170,7 @@ class GradebookPopulationTests(TestCase):
 class CourseDetailViewTests(TestCase):
     #  - fields: {name: Current Trends and Projects in Computer Science
     #             section: CMSC 495 6338}
-    fixtures = ['courses']
+    fixtures = ['course']
 
     def test_no_course_exist(self):
         # Ensure  a non-existant PK throws a Not Found
