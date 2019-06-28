@@ -1,0 +1,22 @@
+[
+  {
+    "model": "core.classroom",
+    "pk": "akjbndr3",
+    "fields": {
+      "user": 4,
+      "name": "Teacher 2 Classroom",
+      "created": "2019-06-22T15:39:00.404Z",
+      "updated": "2019-06-22T15:54:23.846Z"
+    }
+  },
+  {
+    "model": "core.classroom",
+    "pk": "oia1238",
+    "fields": {
+      "user": 3,
+      "name": "Teacher 1 Classroom",
+      "created": "2019-06-22T15:39:12.911Z",
+      "updated": "2019-06-23T01:47:28.380Z"
+    }
+  }
+]
