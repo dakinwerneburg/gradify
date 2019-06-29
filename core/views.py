@@ -1,5 +1,4 @@
 from django.views import generic
-from django.shortcuts import render
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
 
 
