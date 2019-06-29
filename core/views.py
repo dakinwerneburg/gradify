@@ -1,4 +1,5 @@
 from django.views import generic
+
 from .models import Course, StudentSubmission, CourseWork
 from django.views.generic import TemplateView
 
