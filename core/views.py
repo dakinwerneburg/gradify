@@ -99,13 +99,14 @@ class CourseDetailView(generic.DetailView):
     template_name = 'core/course_detail.html'
 
 
-def view_course_roster(request, pk):
-    course = Course.objects.get(id=pk)
-    roster = CourseStudent.objects.filter(course_id=pk).order_by('student__last_name', 'student__first_name')
+class CourseRosterView(generic.TemplateView):
+    template_name = "core/coursestudent_list.html"
 
-    context = {
-        'roster': roster,
-        'course': course,
-    }
-
-    return render(request, "core/coursestudent_list.html", context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        course = Course.objects.get(id=self.kwargs['pk'])
+        roster = CourseStudent.objects.filter(course_id=self.kwargs['pk']).order_by(
+            'student__last_name', 'student__first_name')
+        context['roster'] = roster
+        context['course'] = course
+        return context
