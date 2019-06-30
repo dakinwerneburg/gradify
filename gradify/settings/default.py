@@ -166,3 +166,5 @@ STATIC_URL = '/static/'
 
 # Override the static files directory for production deployment
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
