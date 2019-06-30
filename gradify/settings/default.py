@@ -25,7 +25,7 @@ SECRET_KEY = '2#del$&afvinwynag1fv%=fa!b9bx35w+^*)5zw5=ymyzn7nu&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 # Disable email validation
 ACCOUNT_EMAIL_VERIFICATION = 'none'
@@ -68,6 +68,11 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 SOCIALACCOUNT_STORE_TOKENS = True
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
+
+ACCOUNT_FORMS = {
+    'signup': 'users.forms.CustomUserCreationForm',
+}
+
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
