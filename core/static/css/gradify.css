@@ -163,15 +163,19 @@ nav a {
     line-height: 42px;
     text-align: center;
     color: #666666;
+    margin: 0 0 15px;
     text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2);
 }
 
-.login-form form {
-    
-}
-
-.login-form h2 {
-    margin: 0 0 15px;
+.login-form h3 {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 24px;
+    line-height: 28px;
+    align-items: center;
+    text-align: center;
+    color: #666666;
 }
 
 .login-form .hint-text {
