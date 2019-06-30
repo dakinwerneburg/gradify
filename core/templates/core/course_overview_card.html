@@ -4,26 +4,29 @@
         <header class="card-header">
             <span class="light-text">{{ course.section }}</span>
             {# TODO add link to course details #}
-            <h2 class="card-title">{{ course.name }}</h2>
+            <h2 class="card-title"><a href="{% url 'course-detail' pk=course.pk %}">{{ course.name }}</a></h2>
             <time class="light-text">{{ course.startDate | date:"M d, Y" }} - {{ course.endDate | date:"M d, Y" }}</time>
         </header>
         <details>
             {# TODO add actual coursework and tests once model is created #}
             <summary class="light-text">Upcoming Coursework</summary>
             <table class="table table-striped table-hover">
-                <tbody>
-                <tr class="generic-row">
-                    <td>Jun 4</td>
-                    <td style="text-align: center">Assignment 1</td>
-                    {# TODO add link to assignment details #}
-                    <td style="text-align: right">{% include 'svg/go-arrow.svg' %}</td>
-                </tr>
-                <tr class="generic-row">
-                    <td>Jun 11</td>
-                    <td style="text-align: center">Assignment 2</td>
-                    <td style="text-align: right">{% include 'svg/go-arrow.svg' %}</td>
-                </tr>
-                </tbody>
+                    <tbody>
+                        {% if course.coursework_set.all%}  
+                            {% for assignment in course.coursework_set.all %}
+                                <tr class="generic-row">
+                                    <td>{{assignment.dueDate}}</td>
+                                    <td style="text-align: center">{{assignment.title}}</td>
+                                    <td style="text-align: right"><a href="{% url 'coursework-detail' pk=course.pk pk2=assignment.pk%}">{% include 'svg/go-arrow.svg' %}</a></td>
+                                    </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr class="generic-row">
+                                <td>No Assignments</td> 
+                            </tr> 
+                        {% endif %}
+                    </tbody>
+                </table>
             </table>
         </details>
     </div>
