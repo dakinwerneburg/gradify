@@ -1,3 +1,26 @@
 {%  extends "base.html" %}
 
-{%  block site_title %}+Gradify Index{% endblock %}
+{% load socialaccount %}
+
+{% block site_title %}+Gradify{% endblock %}
+
+{% block content %}
+<div class="ql-content">
+{% if user.is_authenticated %}
+    <h1 class="bg-header bg-text">Welcome {{ user.username }}</h1>
+
+    <p><a href="{% url 'account_change_password' %}">Change Password</a></p>
+    <p><a href="{% url 'account_logout' %}">Log out</a></p>
+    <br />
+    <p><a target="_blank" href="{% url 'google_classroom_list' %}">Perform Google Integration Test</a></p>
+{% else %}
+    <h1 class="bg-header bg-text">Welcome to Gradify!</h1>
+    <br />
+    <a href="{% url 'account_signup' %}">Sign Up</a>
+    <br /><br />
+    <a href="{% url 'account_login' %}">Log In </a>
+    <br /><br />
+    <a href="{% provider_login_url 'google' %}">Log In with Gmail</a>
+{% endif %}
+</div>
+{% endblock content %}

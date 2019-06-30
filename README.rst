@@ -33,6 +33,29 @@ Gradify is still under development and not packaged for release yet. ::
 
 
 
+
+***********************************
+Configure Google Social Application
+***********************************
+
+1- Open admin site http://127.0.0.1:8000/admin/
+
+2- Rename "Example" site in http://127.0.0.1:8000/admin/sites/site/ to use a Domaian Name of localhost
+
+3- Create a new Social Application on http://127.0.0.1:8000/admin/socialaccount/socialapp/ to be as follows
+    a- Provider: Google
+
+    b- Name: Google
+
+    c- Client Id: [client id of Google API integration]
+
+    d- Secret key: [secret key of Google API integration]
+
+Instructions on how to configure a Google API integration can be found here:
+https://django-allauth.readthedocs.io/en/latest/configuration.html
+
+
+
 *******
 Testing
 *******

@@ -11,7 +11,7 @@ class StudentSubmissionListViewTests(TestCase):
     fixtures = ['classroom', 'course', 'coursework', 'studentsubmission', 'user']
 
     def test_view_url_exists_at_desired_location(self):
-        response = self.client.get('/courses/1/gradebook/')
+        response = self.client.get('/course/1/gradebook/')
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name(self):

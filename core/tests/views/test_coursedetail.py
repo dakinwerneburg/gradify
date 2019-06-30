@@ -11,7 +11,7 @@ class CourseDetailViewTests(TestCase):
 
     def test_no_course_exist(self):
         # Ensure  a non-existant PK throws a Not Found
-        response = self.client.post('courses/1000')
+        response = self.client.post('course/1000')
         self.assertEqual(response.status_code, 404)
 
     def test_course_exist(self):

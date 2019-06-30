@@ -25,8 +25,10 @@ SECRET_KEY = '2#del$&afvinwynag1fv%=fa!b9bx35w+^*)5zw5=ymyzn7nu&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
+# Disable email validation
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # Application definition
 
@@ -37,8 +39,50 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'core',
+    'users',
+    'googleclassroom',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
+
+# using custom user models
+# https://wsvincent.com/django-allauth-tutorial-custom-user-model/
+AUTH_USER_MODEL = 'users.CustomUser'
+
+LOGIN_URL = 'index'
+LOGIN_REDIRECT_URL = '/course'
+LOGOUT_REDIRECT_URL = 'index'
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
+SITE_ID = 1
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+SOCIALACCOUNT_STORE_TOKENS = True
+ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+            'https://www.googleapis.com/auth/classroom.courses.readonly',
+            'https://www.googleapis.com/auth/classroom.coursework.students',
+            'https://www.googleapis.com/auth/classroom.rosters',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

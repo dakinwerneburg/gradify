@@ -17,7 +17,6 @@ TODO (rbrady): remove comments above once everyone is comfortable with URLConfs
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
-
 from gradify.settings import default as settings
 
 
@@ -26,4 +25,7 @@ admin.site.site_header = 'Gradify Administration'
 urlpatterns = [
     path('', include('core.urls')),
     path('admin/', admin.site.urls),
+    path('users/', include('users.urls')),
+    path('googleclassroom/', include('googleclassroom.urls')),
+    path('accounts/', include('allauth.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
