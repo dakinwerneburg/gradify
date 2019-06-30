@@ -1,0 +1,21 @@
+{% extends 'core/quicklink_base.html' %}
+
+{% block main-content %}
+    <div class="ql-content coursework">
+        <h1 class="bg-header bg-text">Assingment Detail</h1>
+        <section class="card">
+            <div class="card-body">
+                <header class="card-header">
+                    <span class="light-text"><a href="{% url 'course-detail' pk=course.pk %}">{{ course.name }}</a></span>
+                    <h2 class="card-title">{{ coursework.title }}</h2>                  
+                </header>
+                <div class="coursework-detail"> 
+                    <h3>Instructions:</h3>
+                    <p>{{ coursework.description}}</p>  
+                    <p>Due Date: <time class="light-text">{{ coursework.dueDate | date:"M d, Y" }}</time></p>
+                    <span>Max Points:  {{ coursework.max_points }}</span>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock main-content %}

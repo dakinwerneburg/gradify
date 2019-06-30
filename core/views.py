@@ -103,6 +103,11 @@ class CourseDetailView(generic.DetailView):
     model = Course
     template_name = 'core/course_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(CourseDetailView, self).get_context_data(**kwargs)
+        context['coursework'] = CourseWork.objects.filter(course=self.kwargs['pk']).order_by('dueDate')
+        return context
+
 
 class CourseRosterView(generic.TemplateView):
     template_name = "core/coursestudent_list.html"
@@ -114,4 +119,18 @@ class CourseRosterView(generic.TemplateView):
             'student__last_name', 'student__first_name')
         context['roster'] = roster
         context['course'] = course
+        return context
+
+
+class CourseWorkDetailView(generic.DetailView):
+    model = CourseWork
+    context_object_name = 'assignment'
+    template_name = 'core/coursework_detail.html'
+    pk_url_kwarg = 'pk2'
+
+    def get_context_data(self, **kwargs):
+        # Provides access to Assignemnt and Course info for the entered course_id and coursework_id
+        context = super().get_context_data(**kwargs)
+        context['coursework'] = CourseWork.objects.get(pk=self.kwargs['pk2'])
+        context['course'] = Course.objects.get(pk=self.kwargs['pk'])
         return context
