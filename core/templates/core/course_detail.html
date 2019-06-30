@@ -38,6 +38,9 @@
                                     <tr class="generic-row">
                                         <td>{{assignment.dueDate}}</td>
                                         <td style="text-align: center">{{assignment.title}}</td>
+                                        <td style="text-align: right">
+                                            <a href="{% url 'coursework-detail' pk=course.pk pk2=assignment.pk%}">{% include 'svg/go-arrow.svg' %}</a>
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 {% else %}

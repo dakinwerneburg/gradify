@@ -127,24 +127,24 @@ nav a {
 
 }
 
-/*No Styling of course detail navivation links*/
+/* No Styling of course detail navivation links*/
 .course-detail-nav a {
     text-decoration: none; 
     color: inherit;
 }
 
-/*Width of coursework detail*/
+/* Width of coursework detail*/
 .coursework{
     max-width: 80%;
 }
 
-/*No Styling of course detail navivation links*/
+/* No Styling of course detail navivation links*/
 .coursework a{
     text-decoration: none; 
     color: inherit;
 }
 
-/*Aligns coursework detail with card header */
+/* Aligns coursework detail with card header */
 .coursework-detail{
     margin-left:1em;
 }
