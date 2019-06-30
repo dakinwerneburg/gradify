@@ -3,16 +3,14 @@
     <div class="card-body">
         <header class="card-header">
             <span class="light-text">{{ course.section }}</span>
-            {# TODO add link to course details #}
             <h2 class="card-title"><a href="{% url 'course-detail' pk=course.pk %}">{{ course.name }}</a></h2>
             <time class="light-text">{{ course.startDate | date:"M d, Y" }} - {{ course.endDate | date:"M d, Y" }}</time>
         </header>
         <details>
-            {# TODO add actual coursework and tests once model is created #}
             <summary class="light-text">Upcoming Coursework</summary>
             <table class="table table-striped table-hover">
                     <tbody>
-                        {% if course.coursework_set.all%}  
+                        {% if course.coursework_set.all%}
                             {% for assignment in course.coursework_set.all %}
                                 <tr class="generic-row">
                                     <td>{{assignment.dueDate}}</td>
@@ -22,8 +20,8 @@
                             {% endfor %}
                         {% else %}
                             <tr class="generic-row">
-                                <td>No Assignments</td> 
-                            </tr> 
+                                <td>No Assignments</td>
+                            </tr>
                         {% endif %}
                     </tbody>
                 </table>
