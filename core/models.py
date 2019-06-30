@@ -173,13 +173,3 @@ class StudentSubmission(models.Model):
         choices=SUBMISSION_STATE_CHOICES,
         default=UNSPECIFIED
     )
-
-
-class CourseStudent(models.Model):
-    # Required Fields
-    student = models.ForeignKey(to='auth.User', on_delete=models.CASCADE)
-    course = models.ForeignKey(to='Course', on_delete=models.CASCADE)
-
-    # Optional Fields
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
