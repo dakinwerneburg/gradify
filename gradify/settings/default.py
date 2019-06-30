@@ -77,6 +77,11 @@ ACCOUNT_FORMS = {
 }
 
 
+ACCOUNT_FORMS = {
+    'signup': 'users.forms.CustomUserCreationForm',
+}
+
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
