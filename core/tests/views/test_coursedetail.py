@@ -33,7 +33,7 @@ class CourseDetailViewTests(TestCase):
         course_link = '<a href="%s">' + course.name + '</a>'
         self.assertContains(response, course_link % reverse('course-detail', kwargs={'pk': 1}), html=True)
         self.assertContains(response, '<a href="%s">' % reverse('coursework-detail', kwargs={'pk': 1, 'pk2': 1}))
-        self.assertContains(response, '<a href="%s">View/Edit Gradebook</a>' % 
+        self.assertContains(response, '<a href="%s">View/Edit Gradebook</a>' %
                             reverse('studentsubmission-list', kwargs={'pk': 1}), html=True)
 
     def test_all_assignments_listed(self):
