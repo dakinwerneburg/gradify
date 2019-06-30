@@ -38,6 +38,7 @@ nav a {
 /* Container for the Quick Links */
 .ql-container {
     min-width: 12rem;
+    margin-left: 5rem;
 }
 
 /* Remove default ul styling for quick links */
@@ -130,4 +131,25 @@ nav a {
 .course-detail-nav a {
     text-decoration: none; 
     color: inherit;
+}
+
+/*Width of coursework detail*/
+.coursework{
+    max-width: 80%;
+}
+
+/*No Styling of course detail navivation links*/
+.coursework a{
+    text-decoration: none; 
+    color: inherit;
+}
+
+/*Aligns coursework detail with card header */
+.coursework-detail{
+    margin-left:1em;
+}
+
+.coursework h3, span{
+    font-size: 1.2rem;
+    padding-bottom: 1rem;
 }
