@@ -22,11 +22,8 @@ class CoursesView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'course_list'
 
     def get_queryset(self):
-        # TODO use the ownerId of the currently logged on user
-        if self.request.user.is_authenticated:
-            return Course.objects.filter(ownerId=self.request.user.email)
-        else:
-            return Course.objects.filter(ownerId='teacher@gmail.com')
+        user_id = self.request.user.id
+        return Course.objects.filter(owner_id=user_id)
 
 
 class StudentSubmissionsView(LoginRequiredMixin, generic.ListView):
@@ -38,6 +35,11 @@ class StudentSubmissionsView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'gradebook'
 
     def get_queryset(self):
+        # Get a list of Students in the course
+        students = [s.student for s in CourseStudent.objects.filter(course_id=self.kwargs['pk'])]
+        if not students:
+            return []
+
         # Get a list of all course work for this course, returns and empty array if none exits
         coursework = CourseWork.objects.filter(course_id=self.kwargs['pk']).order_by('dueDate')
         if not coursework:
@@ -45,11 +47,6 @@ class StudentSubmissionsView(LoginRequiredMixin, generic.ListView):
 
         # Get a list of all student submissions
         submissions = StudentSubmission.objects.filter(coursework__course_id=self.kwargs['pk'])
-
-        # Get a list of students in the course
-        # TODO replace this with a query for the complete class roster and move above submissions.
-        # Return [] if empty.
-        students = set([s.student for s in submissions])
 
         return self.populate_gradebook(submissions, coursework, students)
 

@@ -9,7 +9,7 @@ class Course(models.Model):
     """
     # Required fields
     name = models.CharField(max_length=750)
-    ownerId = models.CharField(max_length=254)
+    owner = models.ForeignKey(to='users.CustomUser', on_delete=models.CASCADE)
     enrollmentCode = models.CharField(max_length=64)
 
     # Optional fields
@@ -18,10 +18,15 @@ class Course(models.Model):
     description = models.TextField(max_length=30_000, blank=True)
     room = models.CharField(max_length=650, blank=True)
     alternateLink = models.CharField(max_length=650, blank=True)
-    startDate = models.DateTimeField(blank=True)
-    endDate = models.DateTimeField(blank=True)
+    startDate = models.DateTimeField(blank=True, null=True)
+    endDate = models.DateTimeField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    # Google Classroom specific
+    creationTime = models.DateTimeField(blank=True, null=True)
+    updateTime = models.DateTimeField(blank=True, null=True)
+    ownerId = models.CharField(max_length=254)
 
     # Course state choices enum
     UNSPECIFIED = 'U'
@@ -42,6 +47,16 @@ class Course(models.Model):
 
     def __str__(self):
         return self.name
+
+    @classmethod
+    def create_gc_course(cls, course_dict, owner):
+        # Remove fields we don't care about
+        del course_dict['teacherGroupEmail']
+        del course_dict['courseGroupEmail']
+        del course_dict['guardiansEnabled']
+        del course_dict['calendarId']
+
+        return cls(**course_dict, owner=owner)
 
 
 class Classroom(models.Model):
@@ -174,6 +189,9 @@ class StudentSubmission(models.Model):
         default=UNSPECIFIED
     )
 
+    def __str__(self):
+        return "%d: %s - %s" % (self.id, self.student, self.coursework)
+
 
 class CourseStudent(models.Model):
     # Required Fields
@@ -183,3 +201,6 @@ class CourseStudent(models.Model):
     # Optional Fields
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return "%d: %s - %s" % (self.id, self.student, self.course)
