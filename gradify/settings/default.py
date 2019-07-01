@@ -40,8 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'core',
     'users',
+    'core',
     'googleclassroom',
     'allauth',
     'allauth.account',
@@ -53,9 +53,11 @@ INSTALLED_APPS = [
 # https://wsvincent.com/django-allauth-tutorial-custom-user-model/
 AUTH_USER_MODEL = 'users.CustomUser'
 
-LOGIN_URL = 'index'
+LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = '/course'
-LOGOUT_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = '/'
+ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
+ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
@@ -64,10 +66,11 @@ AUTHENTICATION_BACKENDS = (
 
 SITE_ID = 1
 
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_USERNAME_REQUIRED = True
 SOCIALACCOUNT_STORE_TOKENS = True
-ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
+
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
