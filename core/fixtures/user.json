@@ -22,7 +22,7 @@
     "model": "users.CustomUser",
     "pk": 3,
     "fields": {
-      "password": "pbkdf2_sha256$150000$b2yKSnPGWuDo$AuYnVwBsqTwhI+vFIrydqPi8mih5LT14OFX3t1uMsP0=",
+      "password": "pbkdf2_sha256$150000$IFvsorn6KpM3$YGi116ZL3T8RmYJkB1Z0SpkfkMHNl5x88HLF1U0Bmho=",
       "last_login": null,
       "is_superuser": false,
       "username": "teacher1",
