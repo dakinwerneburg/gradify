@@ -1,7 +1,9 @@
 from django.views import generic
+from django.utils.crypto import get_random_string
+from django.views.generic import TemplateView
 
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
-from django.views.generic import TemplateView
+from .forms import CourseCreateForm
 
 
 class IndexPageView(TemplateView):
@@ -17,7 +19,11 @@ class CoursesView(generic.ListView):
 
     def get_queryset(self):
         # TODO use the ownerId of the currently logged on user
-        return Course.objects.filter(ownerId='teacher@gmail.com')
+        if self.request.user.is_authenticated:
+            return Course.objects.filter(ownerId=self.request.user.email)
+        else:
+            return Course.objects.filter(ownerId='teacher@gmail.com')
+
 
 
 class StudentSubmissionsView(generic.ListView):
@@ -134,3 +140,17 @@ class CourseWorkDetailView(generic.DetailView):
         context['coursework'] = CourseWork.objects.get(pk=self.kwargs['pk2'])
         context['course'] = Course.objects.get(pk=self.kwargs['pk'])
         return context
+
+
+class CourseCreateView(generic.CreateView):
+    model = Course
+    form_class = CourseCreateForm
+    template_name = 'core/course_create.html'
+    success_url = '/course/'
+
+    def form_valid(self, form):
+        course = form.save(commit=False)
+        course.enrollmentCode = get_random_string(length=6)
+        course.ownerId = self.request.user.email
+        course.save()
+        return super(CourseCreateView, self).form_valid(form)
