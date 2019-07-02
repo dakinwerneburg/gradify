@@ -140,38 +140,13 @@ nav a {
     color: #0C0C0C;
 }
 
-<<<<<<< HEAD
-/* No Styling of course detail navivation links*/
-=======
 /*No Styling of course detail navivation links*/
 
->>>>>>> Formats index page stying
 .course-detail-nav a {
     text-decoration: none;
     color: inherit;
 }
 
-<<<<<<< HEAD
-/* Width of coursework detail*/
-.coursework{
-    max-width: 80%;
-}
-
-/* No Styling of course detail navivation links*/
-.coursework a{
-    text-decoration: none; 
-    color: inherit;
-}
-
-/* Aligns coursework detail with card header */
-.coursework-detail{
-    margin-left:1em;
-}
-
-.coursework h3, span{
-    font-size: 1.2rem;
-    padding-bottom: 1rem;
-=======
 .login-form {
     width: 340px;
     margin: 30px auto;
@@ -254,5 +229,4 @@ nav a {
 
 .input-group-addon .fa {
     font-size: 18px;
->>>>>>> Formats index page stying
 }
