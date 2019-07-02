@@ -1,12 +1,18 @@
 {% extends "base.html" %}
 
+{% load django_bootstrap_breadcrumbs %}
 {% load i18n %}
 
 {% block site_title %}{% trans "Signup" %}{% endblock %}
 
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Sign Up" "account_login" %}
+{% endblock %}
+
 {% block content %}
 <div class="ql-content">
-  <h1>{% trans "Sign Up" %}</h1>
+  <h1 class="bg-header bg-text">{% trans "Sign Up" %}</h1>
 
   <p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
 
