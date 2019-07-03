@@ -132,6 +132,33 @@ DATABASES = {
 }
 
 
+# Logging
+# https://docs.djangoproject.com/en/2.2/topics/logging/
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '[{asctime}] {message}',
+            'datefmt': '%d/%b/%Y %H:%M:%S',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+    },
+    'loggers': {
+        'gradify': {
+            'handlers': ['console'],
+            'level': os.getenv('GRADIFY_LOG_LEVEL', 'INFO'),
+        }
+    },
+}
+
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
