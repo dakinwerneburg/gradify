@@ -25,7 +25,7 @@ SECRET_KEY = '2#del$&afvinwynag1fv%=fa!b9bx35w+^*)5zw5=ymyzn7nu&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 # Disable email validation
 ACCOUNT_EMAIL_VERIFICATION = 'none'
@@ -73,6 +73,16 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 SOCIALACCOUNT_STORE_TOKENS = True
+
+
+ACCOUNT_FORMS = {
+    'signup': 'users.forms.CustomUserCreationForm',
+}
+
+
+ACCOUNT_FORMS = {
+    'signup': 'users.forms.CustomUserCreationForm',
+}
 
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -199,3 +209,5 @@ STATIC_URL = '/static/'
 
 # Override the static files directory for production deployment
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
