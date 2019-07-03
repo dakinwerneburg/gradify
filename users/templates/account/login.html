@@ -20,7 +20,7 @@
     <form class="login" method="POST" action="{% url 'account_login' %}">
         {% csrf_token %}
         {{ form.non_field_errors }}
-        <input id="id_login" class="form-control" maxlength="30" name="login" placeholder="Username" type="text" />{{ form.login.errors }}<br>
+        <input id="id_login" class="form-control" maxlength="30" name="login" placeholder="E-mail address" type="text" />{{ form.login.errors }}<br>
         <input id="id_password"  class="form-control" name="password" placeholder="Password" type="password" />{{ form.password.errors }}<br>
         {% if redirect_field_value %}
         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />

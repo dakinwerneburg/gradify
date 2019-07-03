@@ -10,7 +10,7 @@ class LoginFormTest(TestCase):
 
     def test_username_placeholder_text(self):
         form = LoginForm()
-        self.assertTrue(form.fields['login'].widget.attrs['placeholder'] == 'Username')
+        self.assertTrue(form.fields['login'].widget.attrs['placeholder'] == 'E-mail address')
 
     def test_password_placeholder_text(self):
         form = LoginForm()
