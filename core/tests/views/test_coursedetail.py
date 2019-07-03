@@ -2,10 +2,14 @@ from django.test import TestCase
 from django.urls import reverse
 
 from core.models import Course, CourseWork
+from users.models import CustomUser
 
 
 class CourseDetailViewTests(TestCase):
     fixtures = ['classroom', 'course', 'coursework', 'user']
+
+    def setUp(self):
+        self.client.force_login(CustomUser.objects.get(username='teacher1'))
 
     def test_no_course_exist(self):
         response = self.client.post('course/1000')
