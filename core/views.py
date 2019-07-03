@@ -1,11 +1,18 @@
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
+from oauth2client.client import AccessTokenCredentialsError
 
+from core import gc_import_utils
+from googleclassroom.google_classroom import ClassroomHelper
+from users.models import CustomUser
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
-from django.views.generic import TemplateView
 
 
-class IndexPageView(TemplateView):
+class IndexPageView(generic.TemplateView):
     template_name = 'core/index.html'
 
 
@@ -18,7 +25,7 @@ class CoursesView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         user_id = self.request.user.id
-        return Course.objects.filter(owner_id=user_id)
+        return Course.objects.filter(Q(owner_id=user_id) | Q(coursestudent__student_id=user_id))
 
 
 class StudentSubmissionsView(LoginRequiredMixin, generic.ListView):
@@ -130,8 +137,30 @@ class CourseWorkDetailView(LoginRequiredMixin, generic.DetailView):
     pk_url_kwarg = 'pk2'
 
     def get_context_data(self, **kwargs):
-        # Provides access to Assignemnt and Course info for the entered course_id and coursework_id
+        # Provides access to Assignment and Course info for the entered course_id and coursework_id
         context = super().get_context_data(**kwargs)
         context['coursework'] = CourseWork.objects.get(pk=self.kwargs['pk2'])
         context['course'] = Course.objects.get(pk=self.kwargs['pk'])
         return context
+
+
+@login_required
+def gc_ingest_and_redirect(request):
+    gc = ClassroomHelper()
+
+    if not gc.is_google_user(request):
+        # TODO change google_classroom_list to an error page
+        # Redirect to error page
+        return redirect(reverse('google_classroom_list'))
+
+    # Make necessary requests to Google API and save the data in the db
+    try:
+        gc_courses = gc.get_courses(request)
+    except AccessTokenCredentialsError:
+        return redirect(reverse('google_classroom_list'))
+
+    current_user = CustomUser.objects.get(id=request.user.id)
+    for course in gc_courses:
+        gc_import_utils.import_course(course, current_user)
+
+    return redirect(reverse('course-list'))
