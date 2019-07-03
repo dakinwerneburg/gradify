@@ -1,5 +1,13 @@
 {% extends 'core/quicklink_base.html' %}
 
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Your Courses" "course-list" %}
+    {% breadcrumb "Course Details" "course-detail" %}
+{% endblock %}
+
 {% block main-content %}
     <div class="ql-content">
         <h1 class="bg-header bg-text">Course Details</h1>
