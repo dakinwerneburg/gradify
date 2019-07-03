@@ -9,8 +9,11 @@ class Course(models.Model):
     """
     # Required fields
     name = models.CharField(max_length=750)
-    owner = models.ForeignKey(to='users.CustomUser', on_delete=models.CASCADE)
     enrollmentCode = models.CharField(max_length=64)
+
+    # Owner may be set to the default if a user imports a course for which the user is not the owner
+    # If the actual owner later imports the same course, the owner field will be updated
+    owner = models.ForeignKey(to='users.CustomUser', on_delete=models.CASCADE, default=1)
 
     # Optional fields
     section = models.CharField(max_length=2800, blank=True)
@@ -53,9 +56,12 @@ class Course(models.Model):
         # Remove fields we don't care about
         del course_dict['teacherGroupEmail']
         del course_dict['courseGroupEmail']
+        del course_dict['teacherFolder']
+        del course_dict['courseMaterialSets']
         del course_dict['guardiansEnabled']
         del course_dict['calendarId']
 
+        # Return the modified course
         return cls(**course_dict, owner=owner)
 
 

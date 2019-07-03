@@ -1,39 +1,12 @@
 from allauth.socialaccount.models import SocialAccount
-from django.db import IntegrityError
-from django.shortcuts import redirect
-from django.urls import reverse
 from django.views.generic.base import TemplateView
-from oauth2client.client import AccessTokenCredentialsError
+from logging import getLogger
 
-from core.models import Course
 from googleclassroom.google_classroom import ClassroomHelper
-from users.models import CustomUser
 
 
-def gc_ingest_and_redirect(request):
-    gc = ClassroomHelper()
 
-    if not gc.is_google_user(request):
-        # TODO change google_classroom_list to an error page
-        # Redirect to error page
-        return redirect(reverse('google_classroom_list'))
 
-    # Make necessary requests to Google API and save the data in the db
-    try:
-        gc_courses = gc.get_courses(request)
-    except AccessTokenCredentialsError:
-        return redirect(reverse('google_classroom_list'))
-
-    current_user = CustomUser.objects.get(id=request.user.id)
-    new_courses = map(lambda c: Course.create_gc_course(c, owner=current_user), gc_courses)
-
-    try:
-        Course.objects.bulk_create(new_courses, batch_size=100)
-    except IntegrityError:
-        # TODO occurs when PK already exists. does it still create any new courses?
-        pass
-
-    return redirect(reverse('course-list'))
 
 
 class CourseTestView(TemplateView):
