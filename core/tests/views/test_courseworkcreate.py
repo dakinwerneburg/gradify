@@ -1,7 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from core.views import CoursesView
 from users.models import CustomUser
 
 
