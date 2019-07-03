@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.urls import reverse
 
 from core.models import CourseWork, CourseStudent
+from core.models import CourseWork
+from users.models import CustomUser
 
 
 class StudentSubmissionListViewTests(TestCase):
@@ -9,6 +11,9 @@ class StudentSubmissionListViewTests(TestCase):
     These test aspects of the student submission view
     """
     fixtures = ['classroom', 'course', 'coursework', 'studentsubmission', 'user', 'coursestudent']
+
+    def setUp(self):
+        self.client.force_login(CustomUser.objects.get(username='teacher1'))
 
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get('/course/1/gradebook/')
