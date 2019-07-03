@@ -2,10 +2,14 @@ from django.test import TestCase
 from django.urls import reverse
 
 from core.models import Course, CourseWork
+from users.models import CustomUser
 
 
 class CourseListViewTests(TestCase):
     fixtures = ['classroom', 'course', 'coursework', 'user']
+
+    def setUp(self):
+        self.client.force_login(CustomUser.objects.get(username='teacher1'))
 
     def test_course_list(self):
         """

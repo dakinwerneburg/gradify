@@ -4,13 +4,18 @@ body {
 }
 
 /* Navigation bar */
-nav {
-    background: #345EB2;
+.nav-icon {
+    height:28pt;
 }
 
-/* Navigation links */
-nav a {
-    color: #E8EFFD;
+nav, .navbar-nav, .breadcrumb  {
+    background: #345EB2;
+    vertical-align: bottom;
+}
+
+.breadcrumb {
+    padding-top:18pt;
+    padding-bottom:0;
 }
 
 /* Container for site content */
@@ -18,6 +23,7 @@ nav a {
     display: flex;
     justify-content: center;
     margin-top: 2rem;
+    text-aligh:left;
 }
 
 /* A header on the background (i.e. "Quick Links") */
@@ -146,8 +152,42 @@ nav a {
     padding-bottom: 1rem;
 }
 
+
+/* Navigation links */
+nav a, .breadcrumb a {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 21px;
+    display: flex;
+    align-items: center;
+
+    color: #E8EFFD;
+    padding-right:3px;
+}
+
+.breadcrumb li, .breadcrumb li .divider {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 21px;
+    display: flex;
+    align-items: center;
+
+    color: #E8EFFD;
+    padding-left:3px;
+    padding-bottom:none;
+}
+
+.card {
+    min-width:30em;
+}
+
 aside a {
     text-decoration: none; 
     color: inherit;
 }
+
 

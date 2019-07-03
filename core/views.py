@@ -1,4 +1,5 @@
 from django.views import generic
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
 from django.views.generic import TemplateView
@@ -9,7 +10,7 @@ class IndexPageView(TemplateView):
     template_name = 'core/index.html'
 
 
-class CoursesView(generic.ListView):
+class CoursesView(LoginRequiredMixin, generic.ListView):
     """
     This view lists all courses associated with a Classroom.
     """
@@ -24,7 +25,7 @@ class CoursesView(generic.ListView):
             return Course.objects.filter(ownerId='teacher@gmail.com')
 
 
-class StudentSubmissionsView(generic.ListView):
+class StudentSubmissionsView(LoginRequiredMixin, generic.ListView):
     """
     This view represents the student submissions for a course.
     It is the gradebook overview for viewing all grades for a course.
@@ -103,7 +104,7 @@ class StudentSubmissionsView(generic.ListView):
         return context
 
 
-class CourseDetailView(generic.DetailView):
+class CourseDetailView(LoginRequiredMixin, generic.DetailView):
     model = Course
     template_name = 'core/course_detail.html'
 
@@ -113,7 +114,7 @@ class CourseDetailView(generic.DetailView):
         return context
 
 
-class CourseRosterView(generic.TemplateView):
+class CourseRosterView(LoginRequiredMixin, generic.TemplateView):
     template_name = "core/coursestudent_list.html"
 
     def get_context_data(self, **kwargs):
@@ -126,7 +127,7 @@ class CourseRosterView(generic.TemplateView):
         return context
 
 
-class CourseWorkDetailView(generic.DetailView):
+class CourseWorkDetailView(LoginRequiredMixin, generic.DetailView):
     model = CourseWork
     context_object_name = 'assignment'
     template_name = 'core/coursework_detail.html'
