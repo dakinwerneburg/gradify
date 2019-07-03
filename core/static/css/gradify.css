@@ -4,30 +4,19 @@ body {
 }
 
 /* Navigation bar */
-<<<<<<< HEAD
 
-nav {
-=======
 .nav-icon {
-    height:28pt;
+    height: 28pt;
 }
 
-nav, .navbar-nav, .breadcrumb  {
->>>>>>> master
+nav, .navbar-nav, .breadcrumb {
     background: #345EB2;
     vertical-align: bottom;
 }
 
-<<<<<<< HEAD
-/* Navigation links */
-
-nav a {
-    color: #E8EFFD;
-=======
 .breadcrumb {
-    padding-top:18pt;
-    padding-bottom:0;
->>>>>>> master
+    padding-top: 18pt;
+    padding-bottom: 0;
 }
 
 /* Container for site content */
@@ -36,7 +25,7 @@ nav a {
     display: flex;
     justify-content: center;
     margin-top: 2rem;
-    text-aligh:left;
+    text-aligh: left;
 }
 
 /* A header on the background (i.e. "Quick Links") */
@@ -156,11 +145,65 @@ nav a {
     color: #0C0C0C;
 }
 
-/*No Styling of course detail navivation links*/
+/* No Styling of course detail navivation links*/
 
 .course-detail-nav a {
     text-decoration: none;
     color: inherit;
+}
+
+/* Width of coursework detail*/
+
+.coursework {
+    max-width: 80%;
+}
+
+/* No Styling of course detail navivation links*/
+
+.coursework a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Aligns coursework detail with card header */
+
+.coursework-detail {
+    margin-left: 1em;
+}
+
+.coursework h3, span {
+    font-size: 1.2rem;
+}
+
+/* Navigation links */
+
+nav a, .breadcrumb a {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 21px;
+    display: flex;
+    align-items: center;
+    color: #E8EFFD;
+    padding-right: 3px;
+}
+
+.breadcrumb li, .breadcrumb li .divider {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 21px;
+    display: flex;
+    align-items: center;
+    color: #E8EFFD;
+    padding-left: 3px;
+    padding-bottom: none;
+}
+
+.card {
+    min-width: 30em;
 }
 
 .login-form {
@@ -183,12 +226,9 @@ nav a {
     text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2);
 }
 
-.login-form form {
-    
-}
+.login-form form {}
 
-<<<<<<< HEAD
-.login-form h2 {
+<<<<<<< HEAD .login-form h2 {
     margin: 0 0 15px;
 }
 
@@ -247,41 +287,3 @@ nav a {
 .input-group-addon .fa {
     font-size: 18px;
 }
-=======
-.coursework h3, span{
-    font-size: 1.2rem;
-}
-
-
-/* Navigation links */
-nav a, .breadcrumb a {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: 300;
-    font-size: 18px;
-    line-height: 21px;
-    display: flex;
-    align-items: center;
-
-    color: #E8EFFD;
-    padding-right:3px;
-}
-
-.breadcrumb li, .breadcrumb li .divider {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 18px;
-    line-height: 21px;
-    display: flex;
-    align-items: center;
-
-    color: #E8EFFD;
-    padding-left:3px;
-    padding-bottom:none;
-}
-
-.card {
-    min-width:30em;
-}
->>>>>>> master
