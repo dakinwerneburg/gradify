@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
 from django.views.generic import TemplateView
+from .forms import CourseWorkCreateForm
 
 
 class IndexPageView(TemplateView):
@@ -18,7 +19,10 @@ class CoursesView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         # TODO use the ownerId of the currently logged on user
-        return Course.objects.filter(ownerId='teacher@gmail.com')
+        if self.request.user.is_authenticated:
+            return Course.objects.filter(ownerId=self.request.user.email)
+        else:
+            return Course.objects.filter(ownerId='teacher@gmail.com')
 
 
 class StudentSubmissionsView(LoginRequiredMixin, generic.ListView):
@@ -135,3 +139,22 @@ class CourseWorkDetailView(LoginRequiredMixin, generic.DetailView):
         context['coursework'] = CourseWork.objects.get(pk=self.kwargs['pk2'])
         context['course'] = Course.objects.get(pk=self.kwargs['pk'])
         return context
+
+
+class CourseWorkCreateView(generic.CreateView):
+    model = CourseWork
+    form_class = CourseWorkCreateForm
+    template_name = 'core/coursework_create.html'
+    success_url = '/course/'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        coursework = form.save(commit=False)
+        coursework.source = 'G'
+        coursework.author = self.request.user
+        coursework.save()
+        return super(CourseWorkCreateView, self).form_valid(form)

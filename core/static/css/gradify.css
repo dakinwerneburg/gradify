@@ -92,6 +92,11 @@ nav, .navbar-nav, .breadcrumb {
     margin-bottom: 1.25rem;
 }
 
+.card a{
+    text-decoration: none; 
+    color: inherit;
+}
+
 /* Element containing card title and any other necessary details */
 
 .card-header {
@@ -130,6 +135,11 @@ nav, .navbar-nav, .breadcrumb {
     line-height: 23px;
     color: #0C0C0C;
     background: white;
+}
+
+.course-detail-nav a{
+    text-decoration: none; 
+    color: inherit;
 }
 
 /* Course Detail Navigaion description*/
@@ -173,6 +183,7 @@ nav, .navbar-nav, .breadcrumb {
 
 .coursework h3, span {
     font-size: 1.2rem;
+    padding-bottom: 1rem;
 }
 
 /* Navigation links */

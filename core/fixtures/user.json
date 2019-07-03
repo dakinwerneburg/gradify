@@ -28,7 +28,7 @@
       "username": "teacher1",
       "first_name": "Harry",
       "last_name": "Potter",
-      "email": "potter@example.com",
+      "email": "teacher@gmail.com",
       "is_staff": false,
       "is_active": true,
       "date_joined": "2019-06-22T15:38:35Z",
