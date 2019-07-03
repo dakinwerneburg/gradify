@@ -1,8 +1,11 @@
 from django.views import generic
-from django.utils.crypto import get_random_string
 from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.crypto import get_random_string
+
 
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
+from .forms import CourseWorkCreateForm
 from .forms import CourseCreateForm
 
 
@@ -10,7 +13,7 @@ class IndexPageView(TemplateView):
     template_name = 'core/index.html'
 
 
-class CoursesView(generic.ListView):
+class CoursesView(LoginRequiredMixin, generic.ListView):
     """
     This view lists all courses associated with a Classroom.
     """
@@ -25,8 +28,7 @@ class CoursesView(generic.ListView):
             return Course.objects.filter(ownerId='teacher@gmail.com')
 
 
-
-class StudentSubmissionsView(generic.ListView):
+class StudentSubmissionsView(LoginRequiredMixin, generic.ListView):
     """
     This view represents the student submissions for a course.
     It is the gradebook overview for viewing all grades for a course.
@@ -105,7 +107,7 @@ class StudentSubmissionsView(generic.ListView):
         return context
 
 
-class CourseDetailView(generic.DetailView):
+class CourseDetailView(LoginRequiredMixin, generic.DetailView):
     model = Course
     template_name = 'core/course_detail.html'
 
@@ -115,7 +117,7 @@ class CourseDetailView(generic.DetailView):
         return context
 
 
-class CourseRosterView(generic.TemplateView):
+class CourseRosterView(LoginRequiredMixin, generic.TemplateView):
     template_name = "core/coursestudent_list.html"
 
     def get_context_data(self, **kwargs):
@@ -128,7 +130,7 @@ class CourseRosterView(generic.TemplateView):
         return context
 
 
-class CourseWorkDetailView(generic.DetailView):
+class CourseWorkDetailView(LoginRequiredMixin, generic.DetailView):
     model = CourseWork
     context_object_name = 'assignment'
     template_name = 'core/coursework_detail.html'
@@ -142,7 +144,26 @@ class CourseWorkDetailView(generic.DetailView):
         return context
 
 
-class CourseCreateView(generic.CreateView):
+class CourseWorkCreateView(generic.CreateView):
+    model = CourseWork
+    form_class = CourseWorkCreateForm
+    template_name = 'core/coursework_create.html'
+    success_url = '/course/'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        coursework = form.save(commit=False)
+        coursework.source = 'G'
+        coursework.author = self.request.user
+        coursework.save()
+        return super(CourseWorkCreateView, self).form_valid(form)
+
+
+class CourseCreateView(LoginRequiredMixin, generic.CreateView):
     model = Course
     form_class = CourseCreateForm
     template_name = 'core/course_create.html'

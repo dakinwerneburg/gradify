@@ -2,11 +2,15 @@ from django.test import TestCase
 from django.urls import reverse
 
 from core.models import CourseWork
+from users.models import CustomUser
 
 
 class CourseWorkDetailViewTests(TestCase):
 
     fixtures = ['classroom', 'course', 'coursework', 'user']
+
+    def setUp(self):
+        self.client.force_login(CustomUser.objects.get(username='teacher1'))
 
     def test_coursework_exists(self):
         response = self.client.get('/course/1/1/')
