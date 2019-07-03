@@ -1,4 +1,11 @@
 {% load static %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {% clear_breadcrumbs %}
+    {% breadcrumb "Home" "/" %}
+{% endblock %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -34,10 +41,24 @@
 </head>
 
 <body>
-        {% include 'navbar.html' %}
-        <div class="content">
-                {% block content %}{% endblock content %}
-        </div>
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <img class="nav-icon" src="{% static 'images/gradify_icon.png' %}" alt="" />
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+        {% block navbar_content %}
+            {% render_breadcrumbs %}
+        {% endblock %}
+        </ul>
+    </div>
+</nav>
+<div class="content">
+    {% block content %}{% endblock content %}
+</div>
 </body>
 
 </html>

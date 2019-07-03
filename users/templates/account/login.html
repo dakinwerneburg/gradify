@@ -1,9 +1,15 @@
 {% extends "base.html" %}
 
+{% load django_bootstrap_breadcrumbs %}
 {% load i18n %}
 {% load account socialaccount %}
 
 {% block site_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Sign In" "account_login" %}
+{% endblock %}
 
 {% block content %}
 <div class="ql-content">

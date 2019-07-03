@@ -4,15 +4,30 @@ body {
 }
 
 /* Navigation bar */
+<<<<<<< HEAD
 
 nav {
-    background: #345EB2;
+=======
+.nav-icon {
+    height:28pt;
 }
 
+nav, .navbar-nav, .breadcrumb  {
+>>>>>>> master
+    background: #345EB2;
+    vertical-align: bottom;
+}
+
+<<<<<<< HEAD
 /* Navigation links */
 
 nav a {
     color: #E8EFFD;
+=======
+.breadcrumb {
+    padding-top:18pt;
+    padding-bottom:0;
+>>>>>>> master
 }
 
 /* Container for site content */
@@ -21,6 +36,7 @@ nav a {
     display: flex;
     justify-content: center;
     margin-top: 2rem;
+    text-aligh:left;
 }
 
 /* A header on the background (i.e. "Quick Links") */
@@ -171,6 +187,7 @@ nav a {
     
 }
 
+<<<<<<< HEAD
 .login-form h2 {
     margin: 0 0 15px;
 }
@@ -230,3 +247,41 @@ nav a {
 .input-group-addon .fa {
     font-size: 18px;
 }
+=======
+.coursework h3, span{
+    font-size: 1.2rem;
+}
+
+
+/* Navigation links */
+nav a, .breadcrumb a {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 21px;
+    display: flex;
+    align-items: center;
+
+    color: #E8EFFD;
+    padding-right:3px;
+}
+
+.breadcrumb li, .breadcrumb li .divider {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 21px;
+    display: flex;
+    align-items: center;
+
+    color: #E8EFFD;
+    padding-left:3px;
+    padding-bottom:none;
+}
+
+.card {
+    min-width:30em;
+}
+>>>>>>> master
