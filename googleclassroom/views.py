@@ -1,12 +1,7 @@
 from allauth.socialaccount.models import SocialAccount
 from django.views.generic.base import TemplateView
-from logging import getLogger
 
 from googleclassroom.google_classroom import ClassroomHelper
-
-
-
-
 
 
 class CourseTestView(TemplateView):
