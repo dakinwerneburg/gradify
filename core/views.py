@@ -1,9 +1,12 @@
 from django.views import generic
+from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.crypto import get_random_string
+
 
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
-from django.views.generic import TemplateView
 from .forms import CourseWorkCreateForm
+from .forms import CourseCreateForm
 
 
 class IndexPageView(TemplateView):
@@ -158,3 +161,17 @@ class CourseWorkCreateView(generic.CreateView):
         coursework.author = self.request.user
         coursework.save()
         return super(CourseWorkCreateView, self).form_valid(form)
+
+
+class CourseCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Course
+    form_class = CourseCreateForm
+    template_name = 'core/course_create.html'
+    success_url = '/course/'
+
+    def form_valid(self, form):
+        course = form.save(commit=False)
+        course.enrollmentCode = get_random_string(length=6)
+        course.ownerId = self.request.user.email
+        course.save()
+        return super(CourseCreateView, self).form_valid(form)

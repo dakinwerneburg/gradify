@@ -25,7 +25,7 @@ nav, .navbar-nav, .breadcrumb {
     display: flex;
     justify-content: center;
     margin-top: 2rem;
-    text-aligh: left;
+    text-align: left;
 }
 
 /* A header on the background (i.e. "Quick Links") */
@@ -186,6 +186,7 @@ nav, .navbar-nav, .breadcrumb {
     padding-bottom: 1rem;
 }
 
+
 /* Navigation links */
 
 nav a, .breadcrumb a {
@@ -291,4 +292,14 @@ nav a, .breadcrumb a {
 
 .input-group-addon .fa {
     font-size: 18px;
+}
+
+/* No Styling of quick links */
+aside a {
+    text-decoration: none; 
+    color: inherit;
+}
+
+main {
+    width: auto;
 }
