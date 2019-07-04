@@ -1,5 +1,6 @@
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
 
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
 from django.views.generic import TemplateView
@@ -136,8 +137,12 @@ class CourseWorkDetailView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         # Provides access to Assignemnt and Course info for the entered course_id and coursework_id
         context = super().get_context_data(**kwargs)
-        context['coursework'] = CourseWork.objects.get(pk=self.kwargs['pk2'])
-        context['course'] = Course.objects.get(pk=self.kwargs['pk'])
+        author = self.request.user.pk
+        ownerId = self.request.user.email
+        context['coursework'] = get_object_or_404(
+            CourseWork, course=self.kwargs['pk'], author=author, pk=self.kwargs['pk2']
+        )
+        context['course'] = get_object_or_404(Course, pk=self.kwargs['pk'], ownerId=ownerId)
         return context
 
 
