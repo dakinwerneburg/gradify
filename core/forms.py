@@ -28,3 +28,19 @@ class CourseWorkCreateForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         self.fields['course'] = forms.ModelChoiceField(queryset=Course.objects.filter(ownerId=user.email))
+
+
+class CourseCreateForm(forms.ModelForm):
+
+    class Meta:
+        model = Course
+        fields = [
+            'name',
+            'section',
+            'descriptionHeading',
+            'description',
+            'room',
+            'alternateLink',
+            'startDate',
+            'endDate',
+        ]
