@@ -92,8 +92,8 @@ nav, .navbar-nav, .breadcrumb {
     margin-bottom: 1.25rem;
 }
 
-.card a{
-    text-decoration: none; 
+.card a {
+    text-decoration: none;
     color: inherit;
 }
 
@@ -137,8 +137,8 @@ nav, .navbar-nav, .breadcrumb {
     background: white;
 }
 
-.course-detail-nav a{
-    text-decoration: none; 
+.course-detail-nav a {
+    text-decoration: none;
     color: inherit;
 }
 
@@ -185,7 +185,6 @@ nav, .navbar-nav, .breadcrumb {
     font-size: 1.2rem;
     padding-bottom: 1rem;
 }
-
 
 /* Navigation links */
 
@@ -295,11 +294,24 @@ nav a, .breadcrumb a {
 }
 
 /* No Styling of quick links */
+
 aside a {
-    text-decoration: none; 
+    text-decoration: none;
     color: inherit;
 }
 
 main {
     width: auto;
+}
+
+.nav-user {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 21px;
+    display: flex;
+    align-items: center;
+    text-align: right;
+    color: #E8EFFD;
 }
