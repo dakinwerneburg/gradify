@@ -22,7 +22,7 @@
                 <nav class="course-detail-nav">
                     <div>
                         <span>{% include 'svg/course-details-gradebook.svg' %}<a href="{% url 'studentsubmission-list' pk=course.pk %}">View/Edit Gradebook</a></span>
-                        <p>Display all enrolled students and view/edit their assignment grades in one convenient location.
+                        <p>Display all enrolled students and view/edit thier assignment grades in one convenient location.
                         </p>
                     </div>
                     {# TODO need to decide on what to do with view/edit assignment navigation link #}
@@ -35,11 +35,6 @@
                         {# TODO add link to class roster #}
                         <span>{% include 'svg/course-details-people.svg' %}<a href="{% url 'course-roster' pk=course.pk %}">View/Edit Class Roster</a></span>
                         <p>View a list of students enrolled in the class. Add or remove students from the class roster.</p>
-                    </div>
-                    <div>
-                        {# TODO add link to class roster #}
-                        <span>{% include 'svg/rubbish-bin.svg' %}<a href="{% url 'course-delete' pk=course.pk %}">Delete This Course</a></span>
-                        <p>Delete this course and all associated data.</p>
                     </div>
                 </nav>
                 <details>
