@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 
 
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
-from .forms import CourseCreateForm, CourseWorkCreateForm, CourseWorkListForm
+from .forms import CourseCreateForm, CourseWorkCreateForm, CourseWorkListForm, CourseWorkUpdateForm
 
 
 class IndexPageView(TemplateView):
@@ -211,3 +211,15 @@ class CourseWorkListView(LoginRequiredMixin, generic.DetailView):
         queryset = self.get_queryset()
         queryset.delete()
         return HttpResponseRedirect('/course/'+str(self.kwargs['pk'])+'/assignment/')
+
+
+class CourseWorkUpdateView(generic.UpdateView):
+    model = CourseWork
+    form_class = CourseWorkCreateForm
+    template_name = 'core/coursework_update.html'
+    success_url = reverse_lazy('course-list')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs

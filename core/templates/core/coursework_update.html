@@ -1,17 +1,16 @@
 {% extends 'core/quicklink_base.html' %}
-
 {% load django_bootstrap_breadcrumbs %}
 
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Your Courses" "course-list" %}
     {% breadcrumb "Course Detail" "../" %}
-    {% breadcrumb "Assignments List" "coursework-list" %}
+    {% breadcrumb "Edit Assignment" "coursework-list" %}
 {% endblock %}
 
 {% block main-content %}
     <div class="ql-content coursework">
-        <h1 class="bg-header bg-text">Create New Assignemnt</h1>
+        <h1 class="bg-header bg-text">Edit Assignemnt</h1>
         <section class="card">
             <div class="card-body">
                     <header class="card-header">
@@ -21,7 +20,8 @@
                     <table>
                         {{ form }}
                     </table>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    
                 </form>
             </div>
         </section>

@@ -26,11 +26,11 @@
                         </p>
                     </div>
                     {# TODO need to decide on what to do with view/edit assignment navigation link #}
-                    <!-- <div>
-                        <span>{% include 'svg/course-details-book.svg' %}<a href="#">View/Edit Assignments</a></span>
+                    <div>
+                        <span>{% include 'svg/course-details-book.svg' %}<a href="{% url 'coursework-list' pk=course.pk%}">View/Edit Assignments</a></span>
                         <p>Display a list of course assignments. Add a new assignment or edit/delete exisiting assignments.
                         </p>
-                    </div> -->
+                    </div>
                     <div>
                         {# TODO add link to class roster #}
                         <span>{% include 'svg/course-details-people.svg' %}<a href="{% url 'course-roster' pk=course.pk %}">View/Edit Class Roster</a></span>
