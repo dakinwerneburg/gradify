@@ -144,7 +144,7 @@ class CourseWorkDetailView(LoginRequiredMixin, generic.DetailView):
         return context
 
 
-class CourseWorkCreateView(generic.CreateView):
+class CourseWorkCreateView(LoginRequiredMixin, generic.CreateView):
     model = CourseWork
     form_class = CourseWorkCreateForm
     template_name = 'core/coursework_create.html'
@@ -170,6 +170,9 @@ class CourseCreateView(LoginRequiredMixin, generic.CreateView):
     success_url = '/course/'
 
     def form_valid(self, form):
+        if form["startDate"] == "":
+            return False;
+
         course = form.save(commit=False)
         course.enrollmentCode = get_random_string(length=6)
         course.ownerId = self.request.user.email
