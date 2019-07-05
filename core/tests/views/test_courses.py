@@ -29,7 +29,7 @@ class CourseListViewTests(TestCase):
         """
         Course.objects.all().delete()
         owned_course = Course.objects.create(name='Owned Course', enrollmentCode='12345', owner=self.test_user)
-        enrolled_course = Course.objects.create(name='Owned Course', enrollmentCode='12345')
+        enrolled_course = Course.objects.create(name='Enrolled Course', enrollmentCode='12345')
         CourseStudent.objects.create(student=self.test_user, course=enrolled_course)
 
         response = self.client.get(reverse('course-list'))
