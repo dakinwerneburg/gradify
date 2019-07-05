@@ -51,19 +51,6 @@ class Course(models.Model):
     def __str__(self):
         return self.name
 
-    @classmethod
-    def create_gc_course(cls, course_dict, owner):
-        # Remove fields we don't care about
-        del course_dict['teacherGroupEmail']
-        del course_dict['courseGroupEmail']
-        del course_dict['teacherFolder']
-        del course_dict['courseMaterialSets']
-        del course_dict['guardiansEnabled']
-        del course_dict['calendarId']
-
-        # Return the modified course
-        return cls(**course_dict, owner=owner)
-
 
 class Classroom(models.Model):
     """
