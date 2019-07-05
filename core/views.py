@@ -3,6 +3,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
+from django.urls import reverse_lazy
 
 
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
@@ -116,6 +117,11 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
         context = super(CourseDetailView, self).get_context_data(**kwargs)
         context['coursework'] = CourseWork.objects.filter(course=self.kwargs['pk']).order_by('dueDate')
         return context
+
+
+class CourseDeleteView(generic.DeleteView):
+    model = Course
+    success_url = reverse_lazy('course-list')
 
 
 class CourseRosterView(LoginRequiredMixin, generic.TemplateView):

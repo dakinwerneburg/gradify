@@ -303,3 +303,13 @@ aside a {
 main {
     width: auto;
 }
+
+.delete-confirm-buttons {
+    text-align: center;
+    display: block;
+    border: solid 1px red;
+}
+
+.delete-confirm-buttons a {
+    padding: 10px;
+}
