@@ -51,7 +51,7 @@
                 {% endblock %}
             </ul>
             {% if user.is_authenticated %}
-            <div class="nav-user">
+            <div class="nav-user breadcrumb">
                 <a href="{% url 'account_change_password' %}">Change Password</a> /
                 <a href="{% url 'account_logout' %}">Logout</a> / 
                 {{ user.first_name }} {{ user.last_name }} &nbsp;
