@@ -125,9 +125,9 @@ class ClassroomIngestViewTests(TestCase):
 
     def test_import_orphaned_course_as_owner(self):
         """
-        Imported courses that do not exist in the database and are not owned by the current user
-        should be created as "orphaned" courses with a default owner of 1 (id of the admin user).
-        The user should then be enrolled in the course
+        Orphaned courses that exist in the database should have the owner FK
+        updated when the true owner imports the course. Enrolled students should
+        not be affected
         """
         mock_student = CustomUser.objects.get(username='student1')
         SocialAccount.objects.create(user=mock_student, provider='Google1')
