@@ -8,7 +8,6 @@ from oauth2client.client import AccessTokenCredentialsError
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
 
-
 from core import gc_import_utils
 from googleclassroom.google_classroom import ClassroomHelper
 from users.models import CustomUser

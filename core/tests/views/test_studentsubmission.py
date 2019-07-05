@@ -50,3 +50,12 @@ class StudentSubmissionListViewTests(TestCase):
         response = self.client.get(reverse('studentsubmission-list', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'No Assignments')
+
+    def test_no_students(self):
+        """
+        If no students are enrolled in the course, the appropriate message should be displayed
+        """
+        CourseStudent.objects.all().delete()
+        response = self.client.get(reverse('studentsubmission-list', kwargs={'pk': 1}))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'No Assignments')
