@@ -3,7 +3,7 @@
 
 {% block breadcrumbs %}
     {% clear_breadcrumbs %}
-    {% breadcrumb "Home" "course-list" %}
+    {% breadcrumb "Home" "/" %}
 {% endblock %}
 
 <!DOCTYPE html>
@@ -52,7 +52,8 @@
             </ul>
             {% if user.is_authenticated %}
             <div class="nav-user">
-                <a href="{% url 'account_logout' %}">Logout</a> /
+                <a href="{% url 'account_change_password' %}">Change Password</a> /
+                <a href="{% url 'account_logout' %}">Logout</a> / 
                 {{ user.first_name }} {{ user.last_name }} &nbsp;
                 {% include 'svg/user.svg' %}
             </div>
