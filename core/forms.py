@@ -51,6 +51,7 @@ class CourseWorkListForm(forms.Form):
         widget=forms.CheckboxSelectMultiple,
     )
 
+
 class CourseWorkUpdateForm(forms.ModelForm):
 
     class Meta:
@@ -63,15 +64,9 @@ class CourseWorkUpdateForm(forms.ModelForm):
             'type',
         ]
         widgets = {
-            'course': forms.Select(attrs={'class': 'form-control'}),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'}),
             'max_points': forms.NumberInput(attrs={'class': 'form-control'}),
-            'dueDate': forms.DateTimeInput(attrs={'class': 'form-control', 'required': True}),
+            'dueDate': forms.DateInput(attrs={'class': 'form-control', 'required': True}),
             'type': forms.Select(attrs={'class': 'form-control'}),
         }
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-        super().__init__(*args, **kwargs)
-        self.fields['course'] = forms.ModelChoiceField(queryset=Course.objects.filter(ownerId=user.email))

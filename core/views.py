@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 
 
@@ -210,16 +210,11 @@ class CourseWorkListView(LoginRequiredMixin, generic.DetailView):
         self.courseworks = self.request.POST.getlist('assignments')
         queryset = self.get_queryset()
         queryset.delete()
-        return HttpResponseRedirect('/course/'+str(self.kwargs['pk'])+'/assignment/')
+        return HttpResponseRedirect('/course/' + str(self.kwargs['pk']) + '/assignment/')
 
 
 class CourseWorkUpdateView(generic.UpdateView):
     model = CourseWork
-    form_class = CourseWorkCreateForm
+    form_class = CourseWorkUpdateForm
     template_name = 'core/coursework_update.html'
     success_url = reverse_lazy('course-list')
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
