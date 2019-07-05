@@ -44,3 +44,9 @@ class CourseCreateForm(forms.ModelForm):
             'startDate',
             'endDate',
         ]
+
+
+class CourseWorkListForm(forms.Form):
+    assignments = forms.MultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+    )

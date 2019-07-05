@@ -3,11 +3,12 @@ from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
+from django.urls import reverse_lazy, reverse
+from django.http import HttpResponseRedirect
 
 
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
-from .forms import CourseWorkCreateForm
-from .forms import CourseCreateForm
+from .forms import CourseCreateForm, CourseWorkCreateForm, CourseWorkListForm
 
 
 class IndexPageView(TemplateView):
@@ -180,3 +181,33 @@ class CourseCreateView(LoginRequiredMixin, generic.CreateView):
         course.ownerId = self.request.user.email
         course.save()
         return super(CourseCreateView, self).form_valid(form)
+
+
+class CourseWorkListView(LoginRequiredMixin, generic.DetailView):
+    model = Course
+    template_name = 'core/coursework_list.html'
+    form_class = CourseWorkListForm
+    courseworks = []
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        author = self.request.user.pk
+        ownerId = self.request.user.email
+        context['coursework'] = CourseWork.objects.filter(course=self.kwargs['pk'], author=author)
+        context['course'] = get_object_or_404(Course, pk=self.kwargs['pk'], ownerId=ownerId)
+        return context
+
+    def get_queryset(self):
+        queryset = CourseWork.objects.filter(course=self.kwargs['pk'])
+        self.queryset = queryset.filter(pk__in=self.courseworks)
+        print(self.queryset)
+        return self.queryset
+
+    def get_object(self, queryset=None):
+        return self.get_queryset()
+
+    def post(self, request, *args, **kwargs):
+        self.courseworks = self.request.POST.getlist('assignments')
+        queryset = self.get_queryset()
+        queryset.delete()
+        return HttpResponseRedirect('/course/'+str(self.kwargs['pk'])+'/assignment/')
