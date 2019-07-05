@@ -56,7 +56,6 @@ class CourseWorkUpdateForm(forms.ModelForm):
     class Meta:
         model = CourseWork
         fields = [
-            'course',
             'title',
             'description',
             'max_points',
