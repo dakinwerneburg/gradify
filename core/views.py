@@ -170,9 +170,6 @@ class CourseCreateView(LoginRequiredMixin, generic.CreateView):
     success_url = '/course/'
 
     def form_valid(self, form):
-        if form["startDate"] == "":
-            return False;
-
         course = form.save(commit=False)
         course.enrollmentCode = get_random_string(length=6)
         course.ownerId = self.request.user.email
