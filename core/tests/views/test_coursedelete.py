@@ -3,7 +3,7 @@ from django.urls import reverse
 
 
 class CourseDeleteViewTests(TestCase):
-    fixtures = ['classroom', 'course', 'coursework', 'user']
+    fixtures = ['course', 'user']
 
     def test_my_get_request(self):
         response = self.client.get(reverse('course-delete', args=(1,)), follow=True)
