@@ -128,6 +128,11 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
         return context
 
 
+class CourseDeleteView(generic.DeleteView):
+    model = Course
+    success_url = reverse_lazy('course-list')
+
+
 class CourseRosterView(LoginRequiredMixin, generic.TemplateView):
     template_name = "core/coursestudent_list.html"
 

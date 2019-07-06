@@ -9,6 +9,7 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name="core/index.html")),
     path('import/', views.gc_ingest_and_redirect, name='gc_ingest'),
     path('course/', views.CoursesView.as_view(), name='course-list'),
+    path('course/<int:pk>/delete/', views.CourseDeleteView.as_view(), name="course-delete"),
     path('course/<int:pk>/gradebook/', views.StudentSubmissionsView.as_view(),
          name='studentsubmission-list'),
     path('course/<int:pk>/', views.CourseDetailView.as_view(), name='course-detail'),
