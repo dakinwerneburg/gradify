@@ -219,6 +219,6 @@ class CourseCreateView(LoginRequiredMixin, generic.CreateView):
     def form_valid(self, form):
         course = form.save(commit=False)
         course.enrollmentCode = get_random_string(length=6)
-        course.ownerId = self.request.user.email
+        course.owner = self.request.user
         course.save()
         return super(CourseCreateView, self).form_valid(form)

@@ -27,7 +27,7 @@ class CourseWorkCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        self.fields['course'] = forms.ModelChoiceField(queryset=Course.objects.filter(ownerId=user.email))
+        self.fields['course'] = forms.ModelChoiceField(queryset=Course.objects.filter(owner=user))
 
 
 class CourseCreateForm(forms.ModelForm):
