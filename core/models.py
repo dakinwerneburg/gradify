@@ -65,8 +65,13 @@ class CourseWork(models.Model):
 
     # Optional Fields
     description = models.TextField(max_length=30_000, blank=True)
-    max_points = models.IntegerField(blank=True)
-    dueDate = models.DateField(blank=True)
+    alternateLink = models.TextField(max_length=650, blank=True)
+    maxPoints = models.IntegerField(blank=True)
+    dueDate = models.DateTimeField(blank=True, null=True)
+    creationTime = models.DateTimeField(blank=True, null=True)
+    updateTime = models.DateTimeField(blank=True, null=True)
+    creatorUserId = models.CharField(max_length=254)
+
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -100,7 +105,7 @@ class CourseWork(models.Model):
         (WORKSHEET, 'Worksheet'),
         (FINAL, 'Final'),
     ]
-    type = models.CharField(
+    workType = models.CharField(
         max_length=1,
         choices=COURSE_WORK_TYPE_CHOICES,
         default=UNSPECIFIED
