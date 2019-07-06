@@ -9,7 +9,7 @@ class StudentSubmissionListViewTests(TestCase):
     """
     These test aspects of the student submission view
     """
-    fixtures = ['classroom', 'course', 'coursework', 'studentsubmission', 'user', 'coursestudent']
+    fixtures = ['course', 'coursework', 'studentsubmission', 'user', 'coursestudent']
 
     def setUp(self):
         self.client.force_login(CustomUser.objects.get(username='teacher1'))

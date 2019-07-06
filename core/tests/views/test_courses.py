@@ -6,7 +6,7 @@ from users.models import CustomUser
 
 
 class CourseListViewTests(TestCase):
-    fixtures = ['classroom', 'course', 'coursework', 'user']
+    fixtures = ['course', 'coursework', 'user']
 
     def setUp(self):
         self.test_user = CustomUser.objects.get(username='teacher1')
