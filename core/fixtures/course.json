@@ -4,6 +4,7 @@
     "pk": 1,
     "fields": {
       "name": "Current Trends and Projects in Computer Science",
+      "owner": "3",
       "ownerId": "teacher@gmail.com",
       "enrollmentCode": "abc123",
       "section": "CMSC 495 6338",
@@ -23,6 +24,7 @@
     "pk": 2,
     "fields": {
       "name": "Software Security Testing",
+      "owner": "3",
       "ownerId": "teacher@gmail.com",
       "enrollmentCode": "cba234",
       "section": "SDEV 460 6456",
