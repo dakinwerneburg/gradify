@@ -52,24 +52,6 @@ class Course(models.Model):
         return self.name
 
 
-class Classroom(models.Model):
-    """
-    A Classroom is a container of courses. Each
-    Classroom belongs to one Teacher.
-    """
-    # Required fields
-    classroomId = models.CharField(max_length=750, primary_key=True)
-    user = models.ForeignKey(to='users.CustomUser', on_delete=models.CASCADE)
-    name = models.CharField(max_length=750)
-
-    # Optional Fields
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
-
-
 class CourseWork(models.Model):
     """
     Course work created by a teacher for students of the course.
