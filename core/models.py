@@ -9,8 +9,11 @@ class Course(models.Model):
     """
     # Required fields
     name = models.CharField(max_length=750)
-    ownerId = models.CharField(max_length=254)
     enrollmentCode = models.CharField(max_length=64)
+
+    # Owner may be set to the default if a user imports a course for which the user is not the owner
+    # If the actual owner later imports the same course, the owner field will be updated
+    owner = models.ForeignKey(to='users.CustomUser', on_delete=models.CASCADE, default=1)
 
     # Optional fields
     section = models.CharField(max_length=2800, blank=True)
@@ -18,10 +21,15 @@ class Course(models.Model):
     description = models.TextField(max_length=30_000, blank=True)
     room = models.CharField(max_length=650, blank=True)
     alternateLink = models.CharField(max_length=650, blank=True)
-    startDate = models.DateTimeField(blank=True)
-    endDate = models.DateTimeField(blank=True)
+    startDate = models.DateTimeField(blank=True, null=True)
+    endDate = models.DateTimeField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    # Google Classroom specific
+    creationTime = models.DateTimeField(blank=True, null=True)
+    updateTime = models.DateTimeField(blank=True, null=True)
+    ownerId = models.CharField(max_length=254)
 
     # Course state choices enum
     UNSPECIFIED = 'U'
@@ -44,24 +52,6 @@ class Course(models.Model):
         return self.name
 
 
-class Classroom(models.Model):
-    """
-    A Classroom is a container of courses. Each
-    Classroom belongs to one Teacher.
-    """
-    # Required fields
-    classroomId = models.CharField(max_length=750, primary_key=True)
-    user = models.ForeignKey(to='users.CustomUser', on_delete=models.CASCADE)
-    name = models.CharField(max_length=750)
-
-    # Optional Fields
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
-
-
 class CourseWork(models.Model):
     """
     Course work created by a teacher for students of the course.
@@ -75,8 +65,13 @@ class CourseWork(models.Model):
 
     # Optional Fields
     description = models.TextField(max_length=30_000, blank=True)
-    max_points = models.IntegerField(blank=True)
-    dueDate = models.DateField(blank=True)
+    alternateLink = models.TextField(max_length=650, blank=True)
+    maxPoints = models.IntegerField(blank=True)
+    dueDate = models.DateTimeField(blank=True, null=True)
+    creationTime = models.DateTimeField(blank=True, null=True)
+    updateTime = models.DateTimeField(blank=True, null=True)
+    creatorUserId = models.CharField(max_length=254)
+
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -110,7 +105,7 @@ class CourseWork(models.Model):
         (WORKSHEET, 'Worksheet'),
         (FINAL, 'Final'),
     ]
-    type = models.CharField(
+    workType = models.CharField(
         max_length=1,
         choices=COURSE_WORK_TYPE_CHOICES,
         default=UNSPECIFIED
@@ -174,6 +169,9 @@ class StudentSubmission(models.Model):
         default=UNSPECIFIED
     )
 
+    def __str__(self):
+        return "%d: %s - %s" % (self.id, self.student, self.coursework)
+
 
 class CourseStudent(models.Model):
     # Required Fields
@@ -183,3 +181,6 @@ class CourseStudent(models.Model):
     # Optional Fields
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return "%d: %s - %s" % (self.id, self.student, self.course)

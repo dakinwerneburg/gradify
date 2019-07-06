@@ -1,17 +1,28 @@
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.views import generic
-from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from googleapiclient.errors import HttpError
+from oauth2client.client import AccessTokenCredentialsError
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
 from django.urls import reverse_lazy
 
-
+from core import gc_import_utils
+from googleclassroom.google_classroom import ClassroomHelper
+from users.models import CustomUser
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
 from .forms import CourseWorkCreateForm
 from .forms import CourseCreateForm
 
+import logging
 
-class IndexPageView(TemplateView):
+logger = logging.getLogger('gradify')
+
+
+class IndexPageView(generic.TemplateView):
     template_name = 'core/index.html'
 
 
@@ -23,11 +34,8 @@ class CoursesView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'course_list'
 
     def get_queryset(self):
-        # TODO use the ownerId of the currently logged on user
-        if self.request.user.is_authenticated:
-            return Course.objects.filter(ownerId=self.request.user.email)
-        else:
-            return Course.objects.filter(ownerId='teacher@gmail.com')
+        user_id = self.request.user.id
+        return Course.objects.filter(Q(owner_id=user_id) | Q(coursestudent__student_id=user_id))
 
 
 class StudentSubmissionsView(LoginRequiredMixin, generic.ListView):
@@ -39,6 +47,11 @@ class StudentSubmissionsView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'gradebook'
 
     def get_queryset(self):
+        # Get a list of Students in the course
+        students = [s.student for s in CourseStudent.objects.filter(course_id=self.kwargs['pk'])]
+        if not students:
+            return []
+
         # Get a list of all course work for this course, returns and empty array if none exits
         coursework = CourseWork.objects.filter(course_id=self.kwargs['pk']).order_by('dueDate')
         if not coursework:
@@ -46,11 +59,6 @@ class StudentSubmissionsView(LoginRequiredMixin, generic.ListView):
 
         # Get a list of all student submissions
         submissions = StudentSubmission.objects.filter(coursework__course_id=self.kwargs['pk'])
-
-        # Get a list of students in the course
-        # TODO replace this with a query for the complete class roster and move above submissions.
-        # Return [] if empty.
-        students = set([s.student for s in submissions])
 
         return self.populate_gradebook(submissions, coursework, students)
 
@@ -86,10 +94,10 @@ class StudentSubmissionsView(LoginRequiredMixin, generic.ListView):
             # We only count points for submissions that have an assigned grade
             if submission.assignedGrade:
                 if gradebook[row]['max_points']:
-                    gradebook[row]['max_points'] += submission.coursework.max_points
+                    gradebook[row]['max_points'] += submission.coursework.maxPoints
                     gradebook[row]['points_earned'] += submission.assignedGrade
                 else:
-                    gradebook[row]['max_points'] = submission.coursework.max_points
+                    gradebook[row]['max_points'] = submission.coursework.maxPoints
                     gradebook[row]['points_earned'] = submission.assignedGrade
 
         # Calculate each student's average grade (must have at least one graded assignment)
@@ -144,15 +152,47 @@ class CourseWorkDetailView(LoginRequiredMixin, generic.DetailView):
     pk_url_kwarg = 'pk2'
 
     def get_context_data(self, **kwargs):
-        # Provides access to Assignemnt and Course info for the entered course_id and coursework_id
+        # Provides access to Assignment and Course info for the entered course_id and coursework_id
         context = super().get_context_data(**kwargs)
-        author = self.request.user.pk
-        ownerId = self.request.user.email
         context['coursework'] = get_object_or_404(
-            CourseWork, course=self.kwargs['pk'], author=author, pk=self.kwargs['pk2']
+            CourseWork, course=self.kwargs['pk'], pk=self.kwargs['pk2']
         )
-        context['course'] = get_object_or_404(Course, pk=self.kwargs['pk'], ownerId=ownerId)
+        context['course'] = get_object_or_404(Course, pk=self.kwargs['pk'])
         return context
+
+
+@login_required
+def gc_ingest_and_redirect(request):
+    gc = ClassroomHelper()
+
+    if not gc.is_google_user(request):
+        # TODO change google_classroom_list to an error page
+        # Redirect to error page
+        return redirect(reverse('google_classroom_list'))
+
+    # Make necessary requests to Google API and save the data in the db
+    try:
+        gc_courses = gc.get_courses(request)
+    except AccessTokenCredentialsError:
+        return redirect(reverse('google_classroom_list'))
+
+    current_user = CustomUser.objects.get(id=request.user.id)
+    for course in gc_courses:
+        # Save the course to the database
+        saved_course = gc_import_utils.import_course(course, current_user)
+
+        # Get the coursework for this course
+        try:
+            gc_coursework = gc.get_coursework(request, saved_course.id)
+        except HttpError:
+            # User does not have permission to get coursework for this course
+            logger.debug('No permissions for coursework in %s' % saved_course)
+            continue
+
+        for assignment in gc_coursework:
+            gc_import_utils.import_assignment(assignment, saved_course)
+
+    return redirect(reverse('course-list'))
 
 
 class CourseWorkCreateView(generic.CreateView):
@@ -183,6 +223,6 @@ class CourseCreateView(LoginRequiredMixin, generic.CreateView):
     def form_valid(self, form):
         course = form.save(commit=False)
         course.enrollmentCode = get_random_string(length=6)
-        course.ownerId = self.request.user.email
+        course.owner = self.request.user
         course.save()
         return super(CourseCreateView, self).form_valid(form)
