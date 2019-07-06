@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from googleapiclient.errors import HttpError
 from oauth2client.client import AccessTokenCredentialsError
 from django.shortcuts import get_object_or_404
+from django.shortcuts import get_list_or_404
 from django.utils.crypto import get_random_string
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
@@ -15,7 +16,7 @@ from core import gc_import_utils
 from googleclassroom.google_classroom import ClassroomHelper
 from users.models import CustomUser
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
-from .forms import CourseCreateForm, CourseWorkCreateForm, CourseWorkListForm, CourseWorkUpdateForm
+from .forms import CourseCreateForm, CourseWorkCreateForm, CourseWorkDeleteForm, CourseWorkUpdateForm
 
 import logging
 
@@ -225,38 +226,49 @@ class CourseCreateView(LoginRequiredMixin, generic.CreateView):
         return super(CourseCreateView, self).form_valid(form)
 
 
-class CourseWorkListView(LoginRequiredMixin, generic.DetailView):
-    model = Course
-    template_name = 'core/coursework_list.html'
-    form_class = CourseWorkListForm
-    courseworks = []
+class CourseWorkListView(LoginRequiredMixin, generic.ListView):
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        author = self.request.user.pk
-        owner = self.request.user
-        context['coursework'] = CourseWork.objects.filter(course=self.kwargs['pk'], author=author)
-        context['course'] = get_object_or_404(Course, pk=self.kwargs['pk'], owner=owner)
-        return context
+    template_name = 'core/coursework_list.html'
+    context_object_name = 'coursework_list'
+    select_for_delete = []
 
     def get_queryset(self):
-        queryset = CourseWork.objects.filter(course=self.kwargs['pk'])
-        self.queryset = queryset.filter(pk__in=self.courseworks)
-        print(self.queryset)
+        return get_list_or_404(CourseWork, course=self.kwargs['pk'])
+
+
+class CourseWorkDeleteView(LoginRequiredMixin, generic.DeleteView):
+
+    form_class = CourseWorkDeleteForm
+    courseworks = []
+
+    def get_queryset(self):
+        self.queryset = CourseWork.objects.filter(pk__in=self.courseworks)
         return self.queryset
 
     def get_object(self, queryset=None):
         return self.get_queryset()
 
     def post(self, request, *args, **kwargs):
-        self.courseworks = self.request.POST.getlist('assignments')
+        self.courseworks = self.request.POST.getlist('selected_assignments')
         queryset = self.get_queryset()
+        course = queryset.values_list('course', flat=True)[0]
         queryset.delete()
-        return HttpResponseRedirect('/course/' + str(self.kwargs['pk']) + '/assignment/')
+        return HttpResponseRedirect(reverse_lazy('coursework-list', kwargs={'pk': course}))
 
 
 class CourseWorkUpdateView(generic.UpdateView):
     model = CourseWork
     form_class = CourseWorkUpdateForm
     template_name = 'core/coursework_update.html'
-    success_url = reverse_lazy('course-list')
+
+    def get_queryset(self):
+        self.queryset = CourseWork.objects.filter(pk=self.kwargs['pk'])
+        return self.queryset
+
+    def get_object(self, queryset=None):
+        return super().get_object(queryset=queryset)
+
+    def post(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        course = queryset.values_list('course', flat=True)[0]
+        return HttpResponseRedirect(reverse_lazy('coursework-list', kwargs={'pk': course}))

@@ -4,8 +4,9 @@
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Your Courses" "course-list" %}
-    {% breadcrumb "Course Detail" "../" %}
-    {% breadcrumb "Edit Assignment" "coursework-list" %}
+    {% breadcrumb "Course Detail" "course_detail" %}
+    {% breadcrumb "Assignments" "coursework_list" %}
+    {% breadcrumb "Edit Assignment" "coursework-update" %}
 {% endblock %}
 
 {% block main-content %}

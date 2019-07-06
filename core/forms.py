@@ -46,7 +46,7 @@ class CourseCreateForm(forms.ModelForm):
         ]
 
 
-class CourseWorkListForm(forms.Form):
+class CourseWorkDeleteForm(forms.Form):
     assignments = forms.MultipleChoiceField(
         widget=forms.CheckboxSelectMultiple,
     )
