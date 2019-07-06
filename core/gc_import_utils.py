@@ -118,7 +118,6 @@ def get_or_create_account(student: dict) -> CustomUser:
             'email': profile['emailAddress'],
             'first_name': profile['name']['givenName'],
             'last_name': profile['name']['familyName'],
-            'username': profile['emailAddress'],
         }
 
         student_account = CustomUser(**acct_details)
