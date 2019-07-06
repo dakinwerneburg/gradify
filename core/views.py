@@ -8,6 +8,7 @@ from googleapiclient.errors import HttpError
 from oauth2client.client import AccessTokenCredentialsError
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
+from django.urls import reverse_lazy
 
 from core import gc_import_utils
 from googleclassroom.google_classroom import ClassroomHelper
@@ -124,6 +125,11 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
         context = super(CourseDetailView, self).get_context_data(**kwargs)
         context['coursework'] = CourseWork.objects.filter(course=self.kwargs['pk']).order_by('dueDate')
         return context
+
+
+class CourseDeleteView(generic.DeleteView):
+    model = Course
+    success_url = reverse_lazy('course-list')
 
 
 class CourseRosterView(LoginRequiredMixin, generic.TemplateView):
