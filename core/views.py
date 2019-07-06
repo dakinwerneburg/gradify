@@ -8,6 +8,7 @@ from googleapiclient.errors import HttpError
 from oauth2client.client import AccessTokenCredentialsError
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
+from django.urls import reverse_lazy
 
 from core import gc_import_utils
 from googleclassroom.google_classroom import ClassroomHelper
@@ -126,6 +127,11 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
         return context
 
 
+class CourseDeleteView(generic.DeleteView):
+    model = Course
+    success_url = reverse_lazy('course-list')
+
+
 class CourseRosterView(LoginRequiredMixin, generic.TemplateView):
     template_name = "core/coursestudent_list.html"
 
@@ -148,12 +154,10 @@ class CourseWorkDetailView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         # Provides access to Assignment and Course info for the entered course_id and coursework_id
         context = super().get_context_data(**kwargs)
-        author = self.request.user.pk
-        ownerId = self.request.user.email
         context['coursework'] = get_object_or_404(
-            CourseWork, course=self.kwargs['pk'], author=author, pk=self.kwargs['pk2']
+            CourseWork, course=self.kwargs['pk'], pk=self.kwargs['pk2']
         )
-        context['course'] = get_object_or_404(Course, pk=self.kwargs['pk'], ownerId=ownerId)
+        context['course'] = get_object_or_404(Course, pk=self.kwargs['pk'])
         return context
 
 

@@ -114,6 +114,7 @@ def get_or_create_account(student: dict) -> CustomUser:
         profile = student['profile']
         logger.debug(str(profile))
         acct_details = {
+            'username': profile['emailAddress'],
             'email': profile['emailAddress'],
             'first_name': profile['name']['givenName'],
             'last_name': profile['name']['familyName'],
