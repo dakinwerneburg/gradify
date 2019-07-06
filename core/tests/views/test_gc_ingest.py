@@ -336,6 +336,32 @@ class StudentIngestTests(TestCase):
         new_enrollment = CourseStudent.objects.get(student=new_acct, course=self.mock_course)
         self.assertTrue(new_enrollment is not None)
 
+    def test_ingest_multiple_students(self):
+        """
+        The app should be able to import multiple students without issue
+        """
+        og_student_count = len(CourseStudent.objects.filter(course=self.mock_course))
+        student1 = self.mock_gc_student
+        student2 = {
+            'courseId': str(self.mock_course.id),
+            'userId': 'student2@gmail.com',
+            'profile': {
+                'id': '69420',  # Google ID used to check if acct exists
+                'name': {'givenName': 'Teddy', 'familyName': 'Userman', 'fullName': 'Teddy Userman'},
+                'emailAddress': 'ted@gmail.com',
+                'photoUrl': 'https://someLink',
+                'permissions': [],
+                'verifiedTeacher': False
+            },
+            'studentWorkFolder': {}
+        }
+
+        import_student(student1, self.mock_course)
+        import_student(student2, self.mock_course)
+
+        new_student_count = len(CourseStudent.objects.filter(course=self.mock_course))
+        self.assertTrue(new_student_count == og_student_count + 2)
+
     def test_acct_exists_but_student_is_new(self):
         """
         If a student being imported has an existing user account, the existing
