@@ -7,12 +7,13 @@
       "title": "Assignment 1",
       "author": 3,
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      "max_points": 10,
-      "dueDate": "2019-06-10",
+      "maxPoints": 10,
+      "dueDate": "2019-06-10T15:43:10.596Z",
+      "creatorUserId": "12345",
       "created": "2019-06-22T15:42:28.692Z",
       "updated": "2019-06-25T12:48:14.817Z",
       "state": "P",
-      "type": "W",
+      "workType": "W",
       "source": "G"
     }
   },
@@ -24,12 +25,13 @@
       "title": "Assignment 2",
       "author": 3,
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      "max_points": 25,
-      "dueDate": "2019-05-17",
+      "maxPoints": 25,
+      "dueDate": "2019-05-17T15:43:10.596Z",
+      "creatorUserId": "12345",
       "created": "2019-06-22T15:43:10.596Z",
       "updated": "2019-06-25T12:46:23.689Z",
       "state": "P",
-      "type": "W",
+      "workType": "W",
       "source": "G"
     }
   },
@@ -41,12 +43,13 @@
       "title": "Quiz 1",
       "author": 3,
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      "max_points": 100,
-      "dueDate": "2019-06-23",
+      "maxPoints": 100,
+      "dueDate": "2019-06-23T15:43:10.596Z",
+      "creatorUserId": "12345",
       "created": "2019-06-22T15:43:43.077Z",
       "updated": "2019-06-23T01:49:13.981Z",
       "state": "P",
-      "type": "Q",
+      "workType": "Q",
       "source": "G"
     }
   }

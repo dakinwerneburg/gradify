@@ -3,6 +3,7 @@ body {
     font-family: Roboto, sans-serif;
 }
 
+
 /* Navigation bar */
 
 .nav-icon {
@@ -18,6 +19,21 @@ nav, .navbar-nav, .breadcrumb {
     padding-top: 18pt;
     padding-bottom: 0;
 }
+
+.nav-user {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 21px;
+    display: flex;
+    align-items: center;
+    text-align: right;
+    color: #E8EFFD;
+    margin-bottom: -1.25em;
+    cursor: pointer;
+}
+
 
 /* Container for site content */
 
@@ -185,7 +201,9 @@ nav, .navbar-nav, .breadcrumb {
 
 .coursework h3, span {
     font-size: 1.2rem;
+    /* Not Needed
     padding-bottom: 1rem;
+    */
 }
 
 
@@ -217,7 +235,7 @@ nav a, .breadcrumb a {
 }
 
 .card {
-    min-width: 30em;
+    min-width: 35em;
 }
 
 .login-form {
