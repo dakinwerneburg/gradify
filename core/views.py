@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
+from googleapiclient.errors import HttpError
 from oauth2client.client import AccessTokenCredentialsError
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
@@ -14,6 +15,10 @@ from users.models import CustomUser
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
 from .forms import CourseWorkCreateForm
 from .forms import CourseCreateForm
+
+import logging
+
+logger = logging.getLogger('gradify')
 
 
 class IndexPageView(generic.TemplateView):
@@ -88,10 +93,10 @@ class StudentSubmissionsView(LoginRequiredMixin, generic.ListView):
             # We only count points for submissions that have an assigned grade
             if submission.assignedGrade:
                 if gradebook[row]['max_points']:
-                    gradebook[row]['max_points'] += submission.coursework.max_points
+                    gradebook[row]['max_points'] += submission.coursework.maxPoints
                     gradebook[row]['points_earned'] += submission.assignedGrade
                 else:
-                    gradebook[row]['max_points'] = submission.coursework.max_points
+                    gradebook[row]['max_points'] = submission.coursework.maxPoints
                     gradebook[row]['points_earned'] = submission.assignedGrade
 
         # Calculate each student's average grade (must have at least one graded assignment)
@@ -169,7 +174,19 @@ def gc_ingest_and_redirect(request):
 
     current_user = CustomUser.objects.get(id=request.user.id)
     for course in gc_courses:
-        gc_import_utils.import_course(course, current_user)
+        # Save the course to the database
+        saved_course = gc_import_utils.import_course(course, current_user)
+
+        # Get the coursework for this course
+        try:
+            gc_coursework = gc.get_coursework(request, saved_course.id)
+        except HttpError:
+            # User does not have permission to get coursework for this course
+            logger.debug('No permissions for coursework in %s' % saved_course)
+            continue
+
+        for assignment in gc_coursework:
+            gc_import_utils.import_assignment(assignment, saved_course)
 
     return redirect(reverse('course-list'))
 
@@ -202,6 +219,6 @@ class CourseCreateView(LoginRequiredMixin, generic.CreateView):
     def form_valid(self, form):
         course = form.save(commit=False)
         course.enrollmentCode = get_random_string(length=6)
-        course.ownerId = self.request.user.email
+        course.owner = self.request.user
         course.save()
         return super(CourseCreateView, self).form_valid(form)

@@ -2,7 +2,7 @@ from logging import getLogger
 
 from allauth.socialaccount.models import SocialAccount
 
-from core.models import Course, CourseStudent
+from core.models import Course, CourseStudent, CourseWork
 from users.models import CustomUser
 
 logger = getLogger('gradify')
@@ -16,13 +16,12 @@ def import_course(course: dict, user: CustomUser):
 
     Returns the imported/updated/enrolled course
     """
+    # Remove any fields we don't want
+    course = filter_course_fields(course)
     users_google_id = SocialAccount.objects.get(user=user).uid
     if users_google_id == course['ownerId']:
         # User is course owner
         course['owner'] = user
-
-        # Remove any fields we don't want
-        course = filter_course_fields(course)
 
         # Check if the course id exists in the database. If so, it gets updated. If not, it gets created.
         updated_course, created = Course.objects.update_or_create(id=course['id'], defaults=course)
@@ -35,7 +34,11 @@ def import_course(course: dict, user: CustomUser):
     else:
         try:
             # Add user as a student enrolled in the course
+            course_updated = Course.objects.filter(id=course['id']).update(**course) > 0
             existing_course = Course.objects.get(id=course['id'])
+            if course_updated:
+                logger.info('Updated course %s' % existing_course)
+
             enrolled_student, created = CourseStudent.objects.get_or_create(student=user, course=existing_course)
             if created:
                 logger.info("Added new student %s to course %s" % (user, course['name']))
@@ -47,7 +50,6 @@ def import_course(course: dict, user: CustomUser):
             # Current user is importing this course before the user that actually owns it
             # Create the course, but let the owner be set as the default.
             # If the true owner ever imports it, it will be updated.
-            course = filter_course_fields(course)
             new_course = Course.objects.create(**course)
             logger.info("Student %s imported a course with no owner on Gradify: %s" % (user, new_course))
 
@@ -58,17 +60,69 @@ def import_course(course: dict, user: CustomUser):
             return new_course
 
 
+def import_assignment(assignment: dict, course: Course):
+    """
+    Returns a CourseWork object which is created if it does not already exist
+    """
+    assignment = dict(assignment)
+    assignment['course'] = course
+    assignment['author'] = course.owner
+    assignment['source'] = CourseWork.GOOGLE
+    assignment['dueDate'] = assemble_due_date(assignment)
+
+    filtered_assignment = filter_assignment_fields(assignment)
+
+    saved_assignment, created = CourseWork.objects.update_or_create(id=filtered_assignment['id'],
+                                                                    defaults=filtered_assignment)
+    if created:
+        logger.info('Saved new %s assignment: %s' % (course, saved_assignment))
+    else:
+        logger.debug('No changes to existing %s assignment: %s' % (course, saved_assignment))
+
+    return saved_assignment
+
+
 def filter_course_fields(course: dict):
-    # Copy the course to a new var to prevent modifying the original
-    filtered_course = dict(course)
+    filtered_attrs = ['teacherGroupEmail', 'courseGroupEmail', 'teacherFolder', 'courseMaterialSets',
+                      'guardiansEnabled', 'calendarId']
 
-    # Delete any attrs which may be present and are not needed
+    return filter_data(course, filtered_attrs)
 
-    for attr in ['teacherGroupEmail', 'courseGroupEmail', 'teacherFolder',
-                 'courseMaterialSets', 'guardiansEnabled', 'calendarId']:
+
+def filter_assignment_fields(assignment: dict):
+    filtered_attrs = ['courseId', 'materials', 'scheduledTime', 'associatedWithDeveloper', 'assigneeMode',
+                      'individualStudentOptions', 'submissionModificationMode', 'topicId', 'assignment',
+                      'multipleChoiceQuestion', 'dueTime']
+
+    return filter_data(assignment, filtered_attrs)
+
+
+def filter_data(data: dict, filtered_attrs):
+    filtered_data = dict(data)
+    for attr in filtered_attrs:
         try:
-            del filtered_course[attr]
+            del filtered_data[attr]
         except KeyError:
             continue
+    return filtered_data
 
-    return filtered_course
+
+def assemble_due_date(assignment: dict):
+    """
+    Returns a timestamp string from the dueDate and dueTime dict attributes, if present.
+    Returns None if there is no dueDate attribute.
+    """
+    try:
+        date = assignment['dueDate']
+    except KeyError:
+        return None
+
+    due_date = "%04d-%02d-%02d" % (date['year'], date['month'], date['day'])
+    try:
+        time = assignment['dueTime']
+        due_date += " %02d:%02d:%02d.%03dZ" % (time['hours'], time['minutes'], time['seconds'], time['nanos'])
+    except KeyError:
+        # If no dueTime specified, default to the end of the day on the dueDate
+        due_date += " 23:59:59.999Z"
+
+    return due_date
