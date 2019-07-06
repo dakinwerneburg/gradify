@@ -82,6 +82,54 @@ def import_assignment(assignment: dict, course: Course):
     return saved_assignment
 
 
+def import_student(student: dict, course: Course):
+    """
+    Gets or creates a user account associated with the student data from GC and saves/updates
+    the user as a CourseStudent.
+    """
+    student_account = get_or_create_account(student)
+
+    # Add student to the class roster
+    enrollment, created = CourseStudent.objects.get_or_create(student=student_account, course=course)
+    if created:
+        logger.info('Enrolled student %s in %s' % (student_account, course))
+    else:
+        logger.debug('Student %s already enrolled in %s' % (student_account, course))
+
+    return enrollment
+
+
+def get_or_create_account(student: dict) -> CustomUser:
+    """
+    Given a student object from GC, returns the associated user account. if it exists.
+    Otherwise, returns a newly created user account.
+    """
+    student_id = student['profile']['id']
+    try:
+        # Get the student's User instance via the student's google id
+        student_account = SocialAccount.objects.get(uid=student_id).user
+        logger.info('Found existing account for user %s' % student_account)
+    except SocialAccount.DoesNotExist:
+        # Create an oAuth account for the new student
+        profile = student['profile']
+        acct_details = {
+            'email': profile['emailAddress'],
+            'first_name': profile['name']['givenName'],
+            'last_name': profile['name']['familyName'],
+        }
+
+        student_account = CustomUser(**acct_details)
+        student_account.set_unusable_password()
+        student_account.save()
+
+        # Create a SocialAccount for the new User
+        SocialAccount.objects.create(uid=student_id, user=student_account, provider='google')
+
+        logger.info('Created new account for user %s' % student_account)
+
+    return student_account
+
+
 def filter_course_fields(course: dict):
     filtered_attrs = ['teacherGroupEmail', 'courseGroupEmail', 'teacherFolder', 'courseMaterialSets',
                       'guardiansEnabled', 'calendarId']
