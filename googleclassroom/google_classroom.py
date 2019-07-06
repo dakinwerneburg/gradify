@@ -44,10 +44,10 @@ class ClassroomHelper:
         students = students_results.get('students', [])
         return students
 
-    def get_course_submissions(self, request, course_id, course_work_id):
+    def get_course_submissions(self, request, course_id):
         service = self.get_service(request)
         submission_results = service.courses().courseWork().studentSubmissions()\
-            .list(courseId=course_id, courseWorkId=course_work_id).execute()
+            .list(courseId=course_id, courseWorkId='-').execute()
         submissions = submission_results.get('studentSubmissions', [])
         return submissions
 

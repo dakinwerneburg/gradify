@@ -7,7 +7,7 @@ from oauth2client.client import AccessTokenCredentialsError
 
 from core.gc_import_utils import *
 from core.models import Course
-from core.tests.mocks import MockCourse, MockCoursework, MockUser
+from core.tests.mocks import MockCourse, MockCoursework, MockUser, MockSubmission
 from users.models import CustomUser
 
 import logging
@@ -113,20 +113,49 @@ class ClassroomIngestViewTests(TestCase):
     @patch('core.views.gc_import_utils.import_assignment')
     @patch('core.views.gc_import_utils.import_course')
     @patch('core.views.ClassroomHelper')
+    def test_continues_ingesting_submissions_on_http_error(self, mock_classroom, mock_import_course,
+                                                           mock_import_assignment, mock_import_student):
+        """
+        If the user does not have permissions to view submissions to a given course,
+        it should not break the ingest
+        """
+        gc_instance = mock_classroom.return_value
+        gc_instance.is_google_user.return_value = True
+        gc_instance.get_courses.return_value = [{'data': 'is_fake'}]
+        gc_instance.get_coursework.return_value = self.mock_gc_course
+        gc_instance.get_students.return_value = []
+        gc_instance.get_course_submissions.side_effect = HttpError('', b'')
+        mock_import_course.return_value = MockCourse(12345, owner=self.mock_user)
+        mock_import_assignment.returnValue = None
+        mock_import_student.returnValue = None
+
+        response = self.client.get('/import', follow=True)
+
+        gc_instance.get_course_submissions.assert_called()
+        self.assertTemplateUsed(response, 'core/course_list.html')
+
+    @patch('core.views.gc_import_utils.import_submission')
+    @patch('core.views.gc_import_utils.import_student')
+    @patch('core.views.gc_import_utils.import_assignment')
+    @patch('core.views.gc_import_utils.import_course')
+    @patch('core.views.ClassroomHelper')
     def test_redirects_after_import(self, mock_classroom, mock_import_course, mock_import_assignment,
-                                    mock_import_student):
+                                    mock_import_student, mock_import_submission):
         """
         If the API call to GC is successful, the import function should be called
         and the user should be redirected to the course list page
         """
+        mock_coursework = MockCoursework(54321, max_points=10)
         gc_instance = mock_classroom.return_value
         gc_instance.is_google_user.return_value = True
         gc_instance.get_courses.return_value = [{'data': 'is_fake'}]
         gc_instance.get_coursework.return_value = [{'data': 'is_fake'}]
         gc_instance.get_students.return_value = [{'data': 'is_fake'}]
+        gc_instance.get_course_submissions.return_value = [{'data': 'is_fake'}]
         mock_import_course.return_value = MockCourse(12345, owner=self.mock_user)
-        mock_import_assignment.returnValue = MockCoursework(54321, max_points=10)
+        mock_import_assignment.returnValue = mock_coursework
         mock_import_student.returnValue = MockUser(19503)
+        mock_import_submission.returnValue = MockSubmission(19503, mock_coursework, 5)
 
         response = self.client.get('/import', follow=True)
 
@@ -241,7 +270,7 @@ class AssignmentIngestTests(TestCase):
             'dueTime': {'hours': 11, 'minutes': 30, 'seconds': 0, 'nanos': 0},
             'scheduledTime': '2019-07-05 12:00Z',
             'maxPoints': 10,
-            'workType': 1,
+            'courseWorkType': 1,
             'associatedWithDeveloper': True,
             'assigneeMode': 1,
             'individualStudentOptions': {},
@@ -389,6 +418,9 @@ class StudentIngestTests(TestCase):
         self.assertEqual(self.mock_student, imported_enrollment.student)
 
     def test_import_can_later_be_viewed_by_new_user(self):
+        """
+        A submission should be associated with a user if the user signs in after the submission is imported
+        """
         import_student(self.mock_gc_student, self.mock_course)
         new_acct = SocialAccount.objects.get(uid=self.mock_gc_student['profile']['id']).user
         self.client.force_login(new_acct)
@@ -396,3 +428,94 @@ class StudentIngestTests(TestCase):
         response = self.client.get(reverse('course-list'))
 
         self.assertContains(response, self.mock_course)
+
+
+class SubmissionIngestTests(TestCase):
+    fixtures = ['user', 'course', 'coursework']
+
+    def setUp(self):
+        self.mock_course = Course.objects.first()
+        self.mock_coursework = CourseWork.objects.filter(course=self.mock_course).first()
+        self.mock_student = CustomUser.objects.first()
+        self.mock_gc_submission = {
+            'courseId': str(self.mock_course.id),
+            'courseWorkId': str(self.mock_coursework.id),
+            'id': 'Cg4IjpW9iYoBEIrS6qSKAQ',
+            'userId': '12345',  # Google ID
+            'creationTime': '',
+            'updateTime': '',
+            'state': 1,
+            'late': False,
+            'draftGrade': 8,
+            'assignedGrade': 8,
+            'alternateLink': 'https://somelink',
+            'courseWorkType': 1,
+            'associatedWithDeveloper': True,
+            'submissionHistory': [],
+            'assignmentSubmission': {},
+            'shortAnswerSubmission': {},
+            'multipleChoiceSubmission': {}
+        }
+        SocialAccount.objects.create(uid=self.mock_gc_submission['userId'], provider='google', user=self.mock_student)
+
+    def test_import_new_submission(self):
+        """
+        New submissions should be saved to the database
+        """
+        og_submission_count = len(
+            StudentSubmission.objects.filter(coursework_id=self.mock_gc_submission['courseWorkId']))
+
+        import_submission(self.mock_gc_submission)
+
+        updated_submission_count = len(
+            StudentSubmission.objects.filter(coursework_id=self.mock_gc_submission['courseWorkId']))
+        self.assertEqual(og_submission_count + 1, updated_submission_count)
+
+    def test_import_existing_submission(self):
+        """
+        Importing a submission that already exists in the database should have no effect
+        """
+        existing_submission = import_submission(self.mock_gc_submission)
+        og_submission_count = len(
+            StudentSubmission.objects.filter(coursework_id=self.mock_gc_submission['courseWorkId']))
+
+        resubmission = import_submission(self.mock_gc_submission)
+
+        updated_submission_count = len(
+            StudentSubmission.objects.filter(coursework_id=self.mock_gc_submission['courseWorkId']))
+        self.assertEqual(og_submission_count, updated_submission_count)
+        self.assertEqual(existing_submission, resubmission)
+
+    def test_import_multiple_submissions(self):
+        """
+        Multiple submissions should be imported without issue
+        """
+        mock_google_id = 69420
+        og_submission_count = len(StudentSubmission.objects.filter(coursework=self.mock_coursework))
+        SocialAccount.objects.create(uid=mock_google_id, provider='google', user=CustomUser.objects.all()[1])
+        submission1 = self.mock_gc_submission
+        submission2 = {
+            'courseId': str(self.mock_course.id),
+            'courseWorkId': str(self.mock_coursework.id),
+            'id': 'asdfasfda01924',
+            'userId': mock_google_id,  # Google ID
+            'creationTime': '',
+            'updateTime': '',
+            'state': 1,
+            'late': False,
+            'draftGrade': 8,
+            'assignedGrade': 8,
+            'alternateLink': 'https://somelink',
+            'courseWorkType': 1,
+            'associatedWithDeveloper': True,
+            'submissionHistory': [],
+            'assignmentSubmission': {},
+            'shortAnswerSubmission': {},
+            'multipleChoiceSubmission': {}
+        }
+
+        import_submission(submission1)
+        import_submission(submission2)
+
+        new_submission_count = len(StudentSubmission.objects.filter(coursework=self.mock_coursework))
+        self.assertEqual(new_submission_count, og_submission_count + 2)

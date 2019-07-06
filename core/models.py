@@ -105,7 +105,7 @@ class CourseWork(models.Model):
         (WORKSHEET, 'Worksheet'),
         (FINAL, 'Final'),
     ]
-    workType = models.CharField(
+    courseWorkType = models.CharField(
         max_length=1,
         choices=COURSE_WORK_TYPE_CHOICES,
         default=UNSPECIFIED
@@ -143,10 +143,14 @@ class StudentSubmission(models.Model):
 
     # Optional Fields
     late = models.BooleanField(default=False)
-    draftGrade = models.FloatField(blank=True)
-    assignedGrade = models.FloatField(blank=True)
+    draftGrade = models.FloatField(blank=True, null=True)
+    assignedGrade = models.FloatField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    alternateLink = models.TextField(max_length=650, blank=True)
+
+    # GC specific
+    gcSubmissionId = models.TextField(max_length=650, blank=True)
 
     # Student submission state choices enum
     UNSPECIFIED = 'U'
@@ -170,7 +174,7 @@ class StudentSubmission(models.Model):
     )
 
     def __str__(self):
-        return "%d: %s - %s" % (self.id, self.student, self.coursework)
+        return "%s: %s - %s" % (self.id, self.student, self.coursework)
 
 
 class CourseStudent(models.Model):

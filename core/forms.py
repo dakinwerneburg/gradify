@@ -13,7 +13,7 @@ class CourseWorkCreateForm(forms.ModelForm):
             'description',
             'maxPoints',
             'dueDate',
-            'workType',
+            'courseWorkType',
         ]
         widgets = {
             'course': forms.Select(attrs={'class': 'form-control'}),
@@ -21,7 +21,7 @@ class CourseWorkCreateForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control'}),
             'maxPoints': forms.NumberInput(attrs={'class': 'form-control', 'value': 0}),
             'dueDate': forms.DateTimeInput(attrs={'class': 'form-control', 'required': True}),
-            'workType': forms.Select(attrs={'class': 'form-control'}),
+            'courseWorkType': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
