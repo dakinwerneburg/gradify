@@ -32,7 +32,7 @@ class ClassroomHelper:
         courses = course_results.get('courses', [])
         return courses
 
-    def get_course_works(self, request, course_id):
+    def get_coursework(self, request, course_id):
         service = self.get_service(request)
         coursework_results = service.courses().courseWork().list(courseId=course_id).execute()
         coursework = coursework_results.get('courseWork', [])
