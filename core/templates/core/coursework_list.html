@@ -30,7 +30,7 @@
                                 {% for assignment in coursework %}
                                     <tr>
                                         <td style="width: 80%">{{assignment.title}}</td>
-                                        <td><a href="{% url 'coursework-update' pk=65 %}">{% include 'svg/pencil-edit-button.svg' %}</a></td>
+                                        <td><a href="{% url 'coursework-update' pk=assignment.pk %}">{% include 'svg/pencil-edit-button.svg' %}</a></td>
                                         <td style="text-align: right">
                                             <input type="checkbox" value="{{assignment.pk}}" name="assignments">
                                         </td>
