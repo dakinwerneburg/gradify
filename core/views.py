@@ -148,12 +148,10 @@ class CourseWorkDetailView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         # Provides access to Assignment and Course info for the entered course_id and coursework_id
         context = super().get_context_data(**kwargs)
-        author = self.request.user.pk
-        owner = self.request.user
         context['coursework'] = get_object_or_404(
-            CourseWork, course=self.kwargs['pk'], author=author, pk=self.kwargs['pk2']
+            CourseWork, course=self.kwargs['pk'], pk=self.kwargs['pk2']
         )
-        context['course'] = get_object_or_404(Course, pk=self.kwargs['pk'], owner=owner)
+        context['course'] = get_object_or_404(Course, pk=self.kwargs['pk'])
         return context
 
 
