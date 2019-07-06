@@ -94,6 +94,7 @@ SOCIALACCOUNT_PROVIDERS = {
             'https://www.googleapis.com/auth/classroom.coursework.me',
             'https://www.googleapis.com/auth/classroom.coursework.students',
             'https://www.googleapis.com/auth/classroom.rosters',
+            'https://www.googleapis.com/auth/classroom.profile.emails',
         ],
         'AUTH_PARAMS': {
             'access_type': 'online',

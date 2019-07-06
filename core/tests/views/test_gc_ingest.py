@@ -1,12 +1,13 @@
 from unittest.mock import patch
 
 from django.test import TestCase
+from django.urls import reverse
 from googleapiclient.errors import HttpError
 from oauth2client.client import AccessTokenCredentialsError
 
 from core.gc_import_utils import *
 from core.models import Course
-from core.tests.mocks import MockCourse, MockCoursework
+from core.tests.mocks import MockCourse, MockCoursework, MockUser
 from users.models import CustomUser
 
 import logging
@@ -89,7 +90,31 @@ class ClassroomIngestViewTests(TestCase):
     @patch('core.views.gc_import_utils.import_assignment')
     @patch('core.views.gc_import_utils.import_course')
     @patch('core.views.ClassroomHelper')
-    def test_redirects_after_import(self, mock_classroom, mock_import_course, mock_import_assignment):
+    def test_continues_ingesting_students_on_http_error(self, mock_classroom, mock_import_course,
+                                                        mock_import_assignment):
+        """
+        If the user does not have permissions to view students in a given course,
+        it should not break the ingest
+        """
+        gc_instance = mock_classroom.return_value
+        gc_instance.is_google_user.return_value = True
+        gc_instance.get_courses.return_value = [{'data': 'is_fake'}]
+        gc_instance.get_coursework.return_value = self.mock_gc_course
+        gc_instance.get_students.side_effect = HttpError('', b'')
+        mock_import_course.return_value = MockCourse(12345, owner=self.mock_user)
+        mock_import_assignment.returnValue = None
+
+        response = self.client.get('/import', follow=True)
+
+        gc_instance.get_students.assert_called()
+        self.assertTemplateUsed(response, 'core/course_list.html')
+
+    @patch('core.views.gc_import_utils.import_student')
+    @patch('core.views.gc_import_utils.import_assignment')
+    @patch('core.views.gc_import_utils.import_course')
+    @patch('core.views.ClassroomHelper')
+    def test_redirects_after_import(self, mock_classroom, mock_import_course, mock_import_assignment,
+                                    mock_import_student):
         """
         If the API call to GC is successful, the import function should be called
         and the user should be redirected to the course list page
@@ -98,12 +123,16 @@ class ClassroomIngestViewTests(TestCase):
         gc_instance.is_google_user.return_value = True
         gc_instance.get_courses.return_value = [{'data': 'is_fake'}]
         gc_instance.get_coursework.return_value = [{'data': 'is_fake'}]
+        gc_instance.get_students.return_value = [{'data': 'is_fake'}]
         mock_import_course.return_value = MockCourse(12345, owner=self.mock_user)
         mock_import_assignment.returnValue = MockCoursework(54321, max_points=10)
+        mock_import_student.returnValue = MockUser(19503)
 
         response = self.client.get('/import', follow=True)
 
         mock_import_course.assert_called()
+        mock_import_assignment.assert_called()
+        mock_import_student.assert_called()
         self.assertTemplateUsed(response, 'core/course_list.html')
 
     def test_import_course_owned_by_user(self):
@@ -265,3 +294,105 @@ class AssignmentIngestTests(TestCase):
         del self.mock_gc_assignment['dueTime']
         saved_assignment: CourseWork = import_assignment(self.mock_gc_assignment, self.mock_course)
         self.assertEqual(saved_assignment.dueDate, None)
+
+
+class StudentIngestTests(TestCase):
+    fixtures = ['user', 'course']
+
+    def setUp(self):
+        self.mock_course: Course = Course.objects.first()
+        self.mock_student: CustomUser = CustomUser.objects.first()
+        self.client.force_login(self.mock_student)
+        self.mock_gc_student = {
+            'courseId': str(self.mock_course.id),
+            'userId': self.mock_student.email,
+            'profile': {
+                'id': '12345',  # Google ID used to check if acct exists
+                'name': {'givenName': 'John', 'familyName': 'Doe', 'fullName': 'John Doe'},
+                'emailAddress': 'john.doe@gmail.com',
+                'photoUrl': 'https://someLink',
+                'permissions': [],
+                'verifiedTeacher': False
+            },
+            'studentWorkFolder': {}
+        }
+
+    def test_ingest_new_student_no_acct(self):
+        """
+        If the student does not have an account in the database, one should be created
+        and the new user should be enrolled as a CourseStudent
+        """
+        expected_first_name = self.mock_gc_student['profile']['name']['givenName']
+        expected_last_name = self.mock_gc_student['profile']['name']['familyName']
+        expected_email_addr = self.mock_gc_student['profile']['emailAddress']
+
+        import_student(self.mock_gc_student, self.mock_course)
+
+        new_acct = SocialAccount.objects.get(uid=self.mock_gc_student['profile']['id']).user
+        self.assertEqual(new_acct.first_name, expected_first_name)
+        self.assertEqual(new_acct.last_name, expected_last_name)
+        self.assertEqual(new_acct.email, expected_email_addr)
+
+        new_enrollment = CourseStudent.objects.get(student=new_acct, course=self.mock_course)
+        self.assertTrue(new_enrollment is not None)
+
+    def test_ingest_multiple_students(self):
+        """
+        The app should be able to import multiple students without issue
+        """
+        og_student_count = len(CourseStudent.objects.filter(course=self.mock_course))
+        student1 = self.mock_gc_student
+        student2 = {
+            'courseId': str(self.mock_course.id),
+            'userId': 'student2@gmail.com',
+            'profile': {
+                'id': '69420',  # Google ID used to check if acct exists
+                'name': {'givenName': 'Teddy', 'familyName': 'Userman', 'fullName': 'Teddy Userman'},
+                'emailAddress': 'ted@gmail.com',
+                'photoUrl': 'https://someLink',
+                'permissions': [],
+                'verifiedTeacher': False
+            },
+            'studentWorkFolder': {}
+        }
+
+        import_student(student1, self.mock_course)
+        import_student(student2, self.mock_course)
+
+        new_student_count = len(CourseStudent.objects.filter(course=self.mock_course))
+        self.assertTrue(new_student_count == og_student_count + 2)
+
+    def test_acct_exists_but_student_is_new(self):
+        """
+        If a student being imported has an existing user account, the existing
+        account should be used to enroll the student (no new acct created)
+        """
+        existing_acct = SocialAccount.objects.create(uid=self.mock_gc_student['profile']['id'], provider='google',
+                                                     user=self.mock_student).user
+        og_acct_count = len(CustomUser.objects.all())
+
+        new_enrollment = import_student(self.mock_gc_student, self.mock_course)
+
+        self.assertEqual(new_enrollment.student, existing_acct)
+        self.assertEqual(len(CustomUser.objects.all()), og_acct_count)
+
+    def test_student_exists_and_is_enrolled(self):
+        """
+        If the student is already enrolled with a valid account, no action is necessary
+        """
+        SocialAccount.objects.create(uid=self.mock_gc_student['profile']['id'], provider='google',
+                                     user=self.mock_student)
+        CourseStudent.objects.create(student=self.mock_student, course=self.mock_course)
+
+        imported_enrollment = import_student(self.mock_gc_student, self.mock_course)
+
+        self.assertEqual(self.mock_student, imported_enrollment.student)
+
+    def test_import_can_later_be_viewed_by_new_user(self):
+        import_student(self.mock_gc_student, self.mock_course)
+        new_acct = SocialAccount.objects.get(uid=self.mock_gc_student['profile']['id']).user
+        self.client.force_login(new_acct)
+
+        response = self.client.get(reverse('course-list'))
+
+        self.assertContains(response, self.mock_course)
