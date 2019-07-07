@@ -257,7 +257,7 @@ class CourseWorkListView(LoginRequiredMixin, generic.ListView):
     select_for_delete = []
 
     def get_queryset(self):
-        return get_list_or_404(CourseWork, course=self.kwargs['pk'])
+        return CourseWork.objects.filter(course=self.kwargs['pk'])
 
 
 class CourseWorkDeleteView(LoginRequiredMixin, generic.DeleteView):
@@ -276,6 +276,7 @@ class CourseWorkDeleteView(LoginRequiredMixin, generic.DeleteView):
         self.courseworks = self.request.POST.getlist('selected_assignments')
         queryset = self.get_queryset()
         course = queryset.values_list('course', flat=True)[0]
+        print(course)
         queryset.delete()
         return HttpResponseRedirect(reverse_lazy('coursework-list', kwargs={'pk': course}))
 
