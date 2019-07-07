@@ -7,7 +7,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from googleapiclient.errors import HttpError
 from oauth2client.client import AccessTokenCredentialsError
 from django.shortcuts import get_object_or_404
-from django.shortcuts import get_list_or_404
 from django.utils.crypto import get_random_string
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
