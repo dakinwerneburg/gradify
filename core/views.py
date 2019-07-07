@@ -10,10 +10,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import get_list_or_404
 from django.utils.crypto import get_random_string
 from django.urls import reverse_lazy
-<<<<<<< HEAD
 from django.http import HttpResponseRedirect
-=======
->>>>>>> master
 
 from core import gc_import_utils
 from googleclassroom.google_classroom import ClassroomHelper
