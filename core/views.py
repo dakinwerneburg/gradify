@@ -338,6 +338,7 @@ class StudentSubmissionUpdateView(generic.UpdateView):
     model = StudentSubmission
     form_class = StudentSubmissionUpdateForm
     template_name = 'core/studentsubmission_update.html'
+    success_url = '/course/'
 
 
 class StudentSubmissionCreateView(generic.CreateView):

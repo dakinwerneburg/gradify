@@ -71,12 +71,14 @@ class CourseWorkUpdateForm(forms.ModelForm):
             'workType': forms.Select(attrs={'class': 'form-control'}),
         }
 
+
 class StudentSubmissionUpdateForm(forms.ModelForm):
     class Meta:
         model = StudentSubmission
         fields = [
             'assignedGrade'
         ]
+
 
 class StudentSubmissionCreateForm(forms.ModelForm):
     class Meta:

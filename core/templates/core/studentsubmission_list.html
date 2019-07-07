@@ -3,10 +3,10 @@
 {% load django_bootstrap_breadcrumbs %}
 
 {% block breadcrumbs %}
-    {{ block.super }}
-    {% breadcrumb "Your Courses" "course-list" %}
-    {% breadcrumb "Course Detail" "../" %}
-    {% breadcrumb "Gradebook" "studentsubmission-list" %}
+{{ block.super }}
+{% breadcrumb "Your Courses" "course-list" %}
+{% breadcrumb "Course Detail" "../" %}
+{% breadcrumb "Gradebook" "studentsubmission-list" %}
 {% endblock %}
 
 {% block main-content %}
@@ -32,7 +32,6 @@
                             {{assignment.maxPoints }} points<br>
                             {{assignment.dueDate}} </th>
                         {% endfor %}
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,10 +46,9 @@
                             {% else %}
                             <a href="{% url 'studentsubmission-create'%}">-</a>
                             {% endif %}
-                        </a>
+                            </a>
                         </td>
                         {% endfor %}
-                        <td style="text-align: right"><a href="">{% include 'svg/pencil-edit-button.svg' %}</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -58,7 +56,8 @@
             <a href="{% url 'coursework-create' %}">Add a new assignment</a>
             {% else %}
             <h2>No Assignments</h2>
-            <p><a href="{% url 'coursework-create' %}">Add a new assignment</a> or import one from Google to view them here.</p>
+            <p><a href="{% url 'coursework-create' %}">Add a new assignment</a> or import one from Google to view them
+                here.</p>
             {% endif %}
         </div>
     </section>
