@@ -285,14 +285,6 @@ class CourseWorkUpdateView(generic.UpdateView):
     form_class = CourseWorkUpdateForm
     template_name = 'core/coursework_update.html'
 
-    def get_queryset(self):
-        self.queryset = CourseWork.objects.filter(pk=self.kwargs['pk'])
-        return self.queryset
-
-    def get_object(self, queryset=None):
-        return super().get_object(queryset=queryset)
-
-    def post(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        course = queryset.values_list('course', flat=True)[0]
-        return HttpResponseRedirect(reverse_lazy('coursework-list', kwargs={'pk': course}))
+    def get_success_url(self):
+        course = self.object.course
+        return reverse('coursework-list', kwargs={'pk': course.pk})
