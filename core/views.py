@@ -284,6 +284,7 @@ def ExportCsvListView(request):
 
     return response
 
+
 class CourseWorkListView(LoginRequiredMixin, generic.ListView):
 
     template_name = 'core/coursework_list.html'
@@ -331,4 +332,3 @@ class CourseWorkUpdateView(generic.UpdateView):
         queryset = self.get_queryset()
         course = queryset.values_list('course', flat=True)[0]
         return HttpResponseRedirect(reverse_lazy('coursework-list', kwargs={'pk': course}))
-
