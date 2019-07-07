@@ -35,7 +35,7 @@ class CoursesView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         user_id = self.request.user.id
-        return Course.objects.filter(Q(owner_id=user_id) | Q(coursestudent__student_id=user_id))
+        return Course.objects.filter(Q(owner_id=user_id) | Q(coursestudent__student_id=user_id)).distinct()
 
 
 class StudentSubmissionsView(LoginRequiredMixin, generic.ListView):

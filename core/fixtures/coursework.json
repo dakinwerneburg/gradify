@@ -13,7 +13,7 @@
       "created": "2019-06-22T15:42:28.692Z",
       "updated": "2019-06-25T12:48:14.817Z",
       "state": "P",
-      "courseWorkType": "W",
+      "workType": "W",
       "source": "G"
     }
   },
@@ -31,7 +31,7 @@
       "created": "2019-06-22T15:43:10.596Z",
       "updated": "2019-06-25T12:46:23.689Z",
       "state": "P",
-      "courseWorkType": "W",
+      "workType": "W",
       "source": "G"
     }
   },
@@ -49,7 +49,7 @@
       "created": "2019-06-22T15:43:43.077Z",
       "updated": "2019-06-23T01:49:13.981Z",
       "state": "P",
-      "courseWorkType": "Q",
+      "workType": "Q",
       "source": "G"
     }
   }

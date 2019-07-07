@@ -169,7 +169,7 @@ def filter_assignment_fields(assignment: dict):
 
 def filter_submission_fields(submission: dict):
     filtered_attrs = ['courseId', 'courseWorkId', 'userId', 'creationTime', 'updateTime', 'associatedWithDeveloper',
-                      'submissionHistory', 'content', 'courseWorkType', 'id', 'assignmentSubmission',
+                      'submissionHistory', 'content', 'workType', 'id', 'assignmentSubmission',
                       'shortAnswerSubmission', 'multipleChoiceSubmission']
 
     return filter_data(submission, filtered_attrs)

@@ -105,7 +105,7 @@ class CourseWork(models.Model):
         (WORKSHEET, 'Worksheet'),
         (FINAL, 'Final'),
     ]
-    courseWorkType = models.CharField(
+    workType = models.CharField(
         max_length=1,
         choices=COURSE_WORK_TYPE_CHOICES,
         default=UNSPECIFIED
@@ -159,6 +159,11 @@ class StudentSubmission(models.Model):
     TURNED_IN = 'T'
     RETURNED = 'R'
     RECLAIMED_BY__STUDENT = 'S'
+    COURSE_WORK_TYPE_UNSPECIFIED = 'U'
+    ASSIGNMENT = 'A'
+    SHORT_ANSWER_QUESTION = 'S'
+    MULTIPLE_CHOICE_QUESTION = 'M'
+
     SUBMISSION_STATE_CHOICES = [
         (UNSPECIFIED, 'Unspecified'),
         (NEW, 'New'),
@@ -171,6 +176,17 @@ class StudentSubmission(models.Model):
         max_length=1,
         choices=SUBMISSION_STATE_CHOICES,
         default=UNSPECIFIED
+    )
+    COURSEWORKTYPE_CHOICES = [
+        (COURSE_WORK_TYPE_UNSPECIFIED, 'Unspecified'),
+        (ASSIGNMENT, 'Assignment'),
+        (SHORT_ANSWER_QUESTION, 'Short Answer Question'),
+        (MULTIPLE_CHOICE_QUESTION, 'Multiple Choice Question'),
+    ]
+    courseWorkType = models.CharField(
+        max_length=1,
+        choices=COURSEWORKTYPE_CHOICES,
+        default=COURSE_WORK_TYPE_UNSPECIFIED
     )
 
     def __str__(self):
