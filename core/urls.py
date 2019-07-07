@@ -8,6 +8,7 @@ from . import views
 urlpatterns = [
     path('', TemplateView.as_view(template_name="core/index.html")),
     path('import/', views.gc_ingest_and_redirect, name='gc-import'),
+    path('export/', views.ExportCsvListView, name='course-export'),
     path('course/', views.CoursesView.as_view(), name='course-list'),
     path('course/<int:pk>/delete/', views.CourseDeleteView.as_view(), name="course-delete"),
     path('course/<int:pk>/gradebook/', views.StudentSubmissionsView.as_view(),
