@@ -44,3 +44,29 @@ class CourseCreateForm(forms.ModelForm):
             'startDate',
             'endDate',
         ]
+
+
+class CourseWorkDeleteForm(forms.Form):
+    assignments = forms.MultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+
+class CourseWorkUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = CourseWork
+        fields = [
+            'title',
+            'description',
+            'maxPoints',
+            'dueDate',
+            'workType',
+        ]
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'maxpoints': forms.NumberInput(attrs={'class': 'form-control'}),
+            'dueDate': forms.DateInput(attrs={'class': 'form-control', 'required': True}),
+            'workType': forms.Select(attrs={'class': 'form-control'}),
+        }
