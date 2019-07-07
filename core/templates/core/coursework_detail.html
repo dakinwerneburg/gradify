@@ -15,7 +15,7 @@
             <div class="card-body">
                 <header class="card-header">
                     <span class="light-text"><a href="{% url 'course-detail' pk=course.pk %}">{{ coursework.name }}</a></span>
-                    <h2 class="card-title">{{ coursework.title }}</h2>                  
+                    <h2 class="card-title">{{ coursework.title }}<span style="float:right"><a href="{% url 'coursework-update' pk=assignment.pk %}">{% include 'svg/pencil-edit-button.svg' %}</a></span></h2>                  
                 </header>
                 <div class="coursework-detail"> 
                     <h3>Instructions:</h3>
