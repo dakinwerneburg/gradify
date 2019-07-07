@@ -19,14 +19,6 @@
                     </span>
                 </li>
                 <li>
-                    <span class="ql-icon">
-                        {% include 'svg/invitation.svg' %}
-                    </span>
-                    <span>
-                        Send Invite
-                    </span>
-                </li>
-                <li>
                     <span class="ql-icon" style="position: relative; left: -0.16rem">
                         {% include 'svg/import.svg' %}
                     </span>
@@ -39,7 +31,7 @@
                         {% include 'svg/export.svg' %}
                     </span>
                     <span>
-                        Export Grades
+                        <a href="{%  url 'course-export' %}" target="_blank">Export Grades</a>
                     </span>
                 </li>
             </ul>

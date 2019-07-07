@@ -9,6 +9,7 @@ from oauth2client.client import AccessTokenCredentialsError
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
 from django.urls import reverse_lazy
+from django.http import HttpResponse
 
 from core import gc_import_utils
 from googleclassroom.google_classroom import ClassroomHelper
@@ -18,6 +19,7 @@ from .forms import CourseWorkCreateForm
 from .forms import CourseCreateForm
 
 import logging
+import csv
 
 logger = logging.getLogger('gradify')
 
@@ -246,3 +248,37 @@ class CourseCreateView(LoginRequiredMixin, generic.CreateView):
         course.owner = self.request.user
         course.save()
         return super(CourseCreateView, self).form_valid(form)
+
+
+@login_required
+def ExportCsvListView(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="submissions.csv"'
+    writer = csv.writer(response, delimiter=',')
+
+    user_id = request.user.id
+    courses = Course.objects.filter(Q(owner_id=user_id) | Q(coursestudent__student_id=user_id)).distinct()
+
+    writer.writerow(["Course Name",
+                     "Course Section",
+                     "Student",
+                     "Average Grade"])
+
+    for course in courses:
+        students = [s.student for s in CourseStudent.objects.filter(course_id=course.pk)]
+
+        # Get a list of all course work for this course, returns and empty array if none exits
+        coursework = CourseWork.objects.filter(course_id=course.pk).order_by('dueDate')
+
+        # Get a list of all student submissions
+        submissions = StudentSubmission.objects.filter(coursework__course_id=course.pk)
+
+        gradebook = StudentSubmissionsView.populate_gradebook(submissions, coursework, students)
+
+        for submission in gradebook:
+            writer.writerow([course.name,
+                             course.section,
+                             submission["student"],
+                             submission["average_grade"]])
+
+    return response
