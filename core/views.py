@@ -251,7 +251,6 @@ class CourseCreateView(LoginRequiredMixin, generic.CreateView):
         return super(CourseCreateView, self).form_valid(form)
 
 
-<<<<<<< core/views.py
 @login_required
 def ExportCsvListView(request):
     response = HttpResponse(content_type='text/csv')
@@ -284,7 +283,7 @@ def ExportCsvListView(request):
                              submission["average_grade"]])
 
     return response
-=======
+
 class CourseWorkListView(LoginRequiredMixin, generic.ListView):
 
     template_name = 'core/coursework_list.html'
@@ -332,4 +331,4 @@ class CourseWorkUpdateView(generic.UpdateView):
         queryset = self.get_queryset()
         course = queryset.values_list('course', flat=True)[0]
         return HttpResponseRedirect(reverse_lazy('coursework-list', kwargs={'pk': course}))
->>>>>>> core/views.py
+
