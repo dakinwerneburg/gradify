@@ -35,7 +35,7 @@ class CoursesView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         user_id = self.request.user.id
-        return Course.objects.filter(Q(owner_id=user_id) | Q(coursestudent__student_id=user_id))
+        return Course.objects.filter(Q(owner_id=user_id) | Q(coursestudent__student_id=user_id)).distinct()
 
 
 class StudentSubmissionsView(LoginRequiredMixin, generic.ListView):
@@ -201,6 +201,16 @@ def gc_ingest_and_redirect(request):
 
         for student in gc_students:
             gc_import_utils.import_student(student, saved_course)
+
+        # Get student submissions for this course
+        try:
+            gc_submissions = gc.get_course_submissions(request, saved_course.id)
+        except HttpError:
+            logger.info('User %s has insufficient permissions for submissions to %s' % (current_user, saved_course))
+            continue
+
+        for submission in gc_submissions:
+            gc_import_utils.import_submission(submission)
 
     return redirect(reverse('course-list'))
 

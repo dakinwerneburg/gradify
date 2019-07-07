@@ -2,7 +2,7 @@ from logging import getLogger
 
 from allauth.socialaccount.models import SocialAccount
 
-from core.models import Course, CourseStudent, CourseWork
+from core.models import Course, CourseStudent, CourseWork, StudentSubmission
 from users.models import CustomUser
 
 logger = getLogger('gradify')
@@ -99,6 +99,26 @@ def import_student(student: dict, course: Course):
     return enrollment
 
 
+def import_submission(submission: dict):
+    """
+    Updates or creates a student submission in the specified course. The coursework ID is retrieved
+    from the submission.
+    """
+    submission['coursework'] = CourseWork.objects.get(id=submission['courseWorkId'])
+    submission['student'] = SocialAccount.objects.get(uid=submission['userId']).user
+    submission['gcSubmissionId'] = submission['id']  # Id is not alphanumeric. Needs separate field.
+
+    filtered_submission = filter_submission_fields(submission)
+    imported_submission, created = StudentSubmission.objects.update_or_create(gcSubmissionId=submission['id'],
+                                                                              defaults=filtered_submission)
+    if created:
+        logger.info('Saved new submission %s' % imported_submission)
+    else:
+        logger.info('Updated submission %s' % imported_submission)
+
+    return imported_submission
+
+
 def get_or_create_account(student: dict) -> CustomUser:
     """
     Given a student object from GC, returns the associated user account. if it exists.
@@ -145,6 +165,14 @@ def filter_assignment_fields(assignment: dict):
                       'multipleChoiceQuestion', 'dueTime']
 
     return filter_data(assignment, filtered_attrs)
+
+
+def filter_submission_fields(submission: dict):
+    filtered_attrs = ['courseId', 'courseWorkId', 'userId', 'creationTime', 'updateTime', 'associatedWithDeveloper',
+                      'submissionHistory', 'content', 'workType', 'id', 'assignmentSubmission',
+                      'shortAnswerSubmission', 'multipleChoiceSubmission']
+
+    return filter_data(submission, filtered_attrs)
 
 
 def filter_data(data: dict, filtered_attrs):

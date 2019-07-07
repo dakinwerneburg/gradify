@@ -143,10 +143,14 @@ class StudentSubmission(models.Model):
 
     # Optional Fields
     late = models.BooleanField(default=False)
-    draftGrade = models.FloatField(blank=True)
-    assignedGrade = models.FloatField(blank=True)
+    draftGrade = models.FloatField(blank=True, null=True)
+    assignedGrade = models.FloatField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    alternateLink = models.TextField(max_length=650, blank=True)
+
+    # GC specific
+    gcSubmissionId = models.TextField(max_length=650, blank=True)
 
     # Student submission state choices enum
     UNSPECIFIED = 'U'
@@ -155,6 +159,11 @@ class StudentSubmission(models.Model):
     TURNED_IN = 'T'
     RETURNED = 'R'
     RECLAIMED_BY__STUDENT = 'S'
+    COURSE_WORK_TYPE_UNSPECIFIED = 'U'
+    ASSIGNMENT = 'A'
+    SHORT_ANSWER_QUESTION = 'S'
+    MULTIPLE_CHOICE_QUESTION = 'M'
+
     SUBMISSION_STATE_CHOICES = [
         (UNSPECIFIED, 'Unspecified'),
         (NEW, 'New'),
@@ -168,9 +177,20 @@ class StudentSubmission(models.Model):
         choices=SUBMISSION_STATE_CHOICES,
         default=UNSPECIFIED
     )
+    COURSEWORKTYPE_CHOICES = [
+        (COURSE_WORK_TYPE_UNSPECIFIED, 'Unspecified'),
+        (ASSIGNMENT, 'Assignment'),
+        (SHORT_ANSWER_QUESTION, 'Short Answer Question'),
+        (MULTIPLE_CHOICE_QUESTION, 'Multiple Choice Question'),
+    ]
+    courseWorkType = models.CharField(
+        max_length=1,
+        choices=COURSEWORKTYPE_CHOICES,
+        default=COURSE_WORK_TYPE_UNSPECIFIED
+    )
 
     def __str__(self):
-        return "%d: %s - %s" % (self.id, self.student, self.coursework)
+        return "%s: %s - %s" % (self.id, self.student, self.coursework)
 
 
 class CourseStudent(models.Model):
