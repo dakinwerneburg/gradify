@@ -340,9 +340,14 @@ class StudentSubmissionUpdateView(generic.UpdateView):
     template_name = 'core/studentsubmission_update.html'
     success_url = '/course/'
 
+    def get_success_url(self):
+        return reverse('studentsubmission-list', kwargs={'pk': self.object.coursework.course.pk})
+
 
 class StudentSubmissionCreateView(generic.CreateView):
     model = StudentSubmission
     form_class = StudentSubmissionCreateForm
     template_name = 'core/studentsubmission_create.html'
-    success_url = '/course/'
+
+    def get_success_url(self):
+        return reverse('studentsubmission-list', kwargs={'pk': self.object.coursework.course.pk})
