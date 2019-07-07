@@ -10,7 +10,10 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import get_list_or_404
 from django.utils.crypto import get_random_string
 from django.urls import reverse_lazy
+<<<<<<< HEAD
 from django.http import HttpResponseRedirect
+=======
+>>>>>>> master
 
 from core import gc_import_utils
 from googleclassroom.google_classroom import ClassroomHelper
@@ -36,7 +39,7 @@ class CoursesView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         user_id = self.request.user.id
-        return Course.objects.filter(Q(owner_id=user_id) | Q(coursestudent__student_id=user_id))
+        return Course.objects.filter(Q(owner_id=user_id) | Q(coursestudent__student_id=user_id)).distinct()
 
 
 class StudentSubmissionsView(LoginRequiredMixin, generic.ListView):
@@ -128,6 +131,11 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
         return context
 
 
+class CourseDeleteView(generic.DeleteView):
+    model = Course
+    success_url = reverse_lazy('course-list')
+
+
 class CourseRosterView(LoginRequiredMixin, generic.TemplateView):
     template_name = "core/coursestudent_list.html"
 
@@ -183,11 +191,31 @@ def gc_ingest_and_redirect(request):
             gc_coursework = gc.get_coursework(request, saved_course.id)
         except HttpError:
             # User does not have permission to get coursework for this course
-            logger.debug('No permissions for coursework in %s' % saved_course)
+            logger.info('User %s has insufficient permissions for coursework in %s' % (current_user, saved_course))
             continue
 
         for assignment in gc_coursework:
             gc_import_utils.import_assignment(assignment, saved_course)
+
+        # Get the class roster for this course
+        try:
+            gc_students = gc.get_students(request, saved_course.id)
+        except HttpError:
+            logger.info('User %s has insufficient permissions for roster of %s' % (current_user, saved_course))
+            continue
+
+        for student in gc_students:
+            gc_import_utils.import_student(student, saved_course)
+
+        # Get student submissions for this course
+        try:
+            gc_submissions = gc.get_course_submissions(request, saved_course.id)
+        except HttpError:
+            logger.info('User %s has insufficient permissions for submissions to %s' % (current_user, saved_course))
+            continue
+
+        for submission in gc_submissions:
+            gc_import_utils.import_submission(submission)
 
     return redirect(reverse('course-list'))
 
