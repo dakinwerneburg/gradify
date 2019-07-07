@@ -21,4 +21,6 @@ urlpatterns = [
     path('course/<int:pk>/assignment/', views.CourseWorkListView.as_view(), name='coursework-list'),
     path('assignment/<int:pk>/update', views.CourseWorkUpdateView.as_view(), name='coursework-update'),
     path('assignment/delete', views.CourseWorkDeleteView.as_view(), name='coursework-delete'),
+    path('gradebook/studentsubmission/<int:pk>/update/', views.StudentSubmissionUpdateView.as_view(), name='studentsubmission-update'),
+    path('gradebook/studentsubmission/create/', views.StudentSubmissionCreateView.as_view(), name='studentsubmission-create'),
 ]

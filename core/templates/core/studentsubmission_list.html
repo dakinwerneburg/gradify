@@ -32,9 +32,9 @@
                             {{assignment.maxPoints }} points<br>
                             {{assignment.dueDate}} </th>
                         {% endfor %}
+                        <th></th>
                     </tr>
                 </thead>
-
                 <tbody>
                     {% for entry in gradebook %}
                     <tr>
@@ -43,12 +43,14 @@
                         {% for submission in entry.submissions %}
                         <td>
                             {% if submission %}
-                            {{ submission.assignedGrade }}
+                            <a href="{% url 'studentsubmission-update' pk=submission.pk %}">{{ submission.assignedGrade }}</a>
                             {% else %}
-                            -
+                            <a href="{% url 'studentsubmission-create'%}">-</a>
                             {% endif %}
+                        </a>
                         </td>
                         {% endfor %}
+                        <td style="text-align: right"><a href="">{% include 'svg/pencil-edit-button.svg' %}</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

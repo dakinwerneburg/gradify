@@ -1,3 +1,5 @@
+import csv
+import logging
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import redirect
@@ -17,9 +19,7 @@ from googleclassroom.google_classroom import ClassroomHelper
 from users.models import CustomUser
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
 from .forms import CourseCreateForm, CourseWorkCreateForm, CourseWorkDeleteForm, CourseWorkUpdateForm
-
-import logging
-import csv
+from .forms import StudentSubmissionUpdateForm, StudentSubmissionCreateForm
 
 logger = logging.getLogger('gradify')
 
@@ -332,3 +332,16 @@ class CourseWorkUpdateView(generic.UpdateView):
         queryset = self.get_queryset()
         course = queryset.values_list('course', flat=True)[0]
         return HttpResponseRedirect(reverse_lazy('coursework-list', kwargs={'pk': course}))
+
+
+class StudentSubmissionUpdateView(generic.UpdateView):
+    model = StudentSubmission
+    form_class = StudentSubmissionUpdateForm
+    template_name = 'core/studentsubmission_update.html'
+
+
+class StudentSubmissionCreateView(generic.CreateView):
+    model = StudentSubmission
+    form_class = StudentSubmissionCreateForm
+    template_name = 'core/studentsubmission_create.html'
+    success_url = '/course/'
