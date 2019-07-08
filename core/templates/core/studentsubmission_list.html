@@ -42,9 +42,13 @@
                         {% for submission in entry.submissions %}
                         <td>
                             {% if submission %}
-                            <a href="{% url 'studentsubmission-update' pk=submission.pk %}">{{ submission.assignedGrade }}</a>
+                            {{ submission.assignedGrade }}
+                            <a href="{% url 'studentsubmission-update' pk=submission.pk %}">
+                                {% include 'svg/pencil-edit-button.svg' %}</a>
                             {% else %}
-                            <a href="{% url 'studentsubmission-create'%}">-</a>
+                            Create
+                            <a href="{% url 'studentsubmission-create'%}">
+                                {% include 'svg/pencil-edit-button.svg' %}</a>
                             {% endif %}
                             </a>
                         </td>
