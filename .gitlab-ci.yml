@@ -13,6 +13,8 @@ stages:
   - Static Analysis
   - Test
   - Security Audit
+  - Build
+  - Deploy
 
 flake8:
   stage: Static Analysis
