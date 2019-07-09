@@ -45,7 +45,6 @@ unit_test:
     - coverage report
 
 docker_build:
-  image: 'docker:latest'
   stage: Build
   variables:
     IMG_TAG: 'gcr.io/wired-standard-246200/gradify'
