@@ -1,0 +1,40 @@
+image: python:latest
+
+cache:
+  paths:
+  - ~/.cache/pip/
+
+before_script:
+  - python -V
+  - pip install -r requirements.txt
+  - pip install -r test-requirements.txt
+
+stages:
+  - Static Analysis
+  - Test
+  - Security Audit
+  - Build
+  - Deploy
+
+flake8:
+  stage: Static Analysis
+  script:
+  - flake8
+
+pylint:
+  stage: Static Analysis
+  allow_failure: true
+  script:
+  - pylint --ignore-patterns=.git,core/migrations,users/migrations,manage ./*.py
+
+bandit:
+  stage: Security Audit
+  allow_failure: true
+  script:
+    - bandit -s B105 -r ./core ./gradify ./users
+
+unit_test:
+  stage: Test
+  script:
+  - coverage run --omit="core/migrations/*","users/migrations/*","manage.py","core/tests/*" --source="." manage.py test --settings gradify.settings.ci
+  - coverage report
