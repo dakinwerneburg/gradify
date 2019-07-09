@@ -1,4 +1,3 @@
-image: python:latest
 
 cache:
   paths:
@@ -14,6 +13,7 @@ stages:
   - Deploy
 
 flake8:
+  image: python:latest
   stage: Static Analysis
   script:
   - pip install -r requirements.txt
@@ -21,6 +21,7 @@ flake8:
   - flake8
 
 pylint:
+  image: python:latest
   stage: Static Analysis
   allow_failure: true
   script:
@@ -29,6 +30,7 @@ pylint:
   - pylint --ignore-patterns=.git,core/migrations,users/migrations,manage ./*.py
 
 bandit:
+  image: python:latest
   stage: Security Audit
   allow_failure: true
   script:
@@ -37,6 +39,7 @@ bandit:
     - bandit -s B105 -r ./core ./gradify ./users
 
 unit_test:
+  image: python:latest
   stage: Test
   script:
     - pip install -r requirements.txt
