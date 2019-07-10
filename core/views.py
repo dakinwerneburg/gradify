@@ -156,11 +156,10 @@ class CourseWorkDetailView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         # Provides access to Assignment and Course info for the entered course_id and coursework_id
         context = super().get_context_data(**kwargs)
-        owner = self.request.user
         context['coursework'] = get_object_or_404(
             CourseWork, course=self.kwargs['pk'], pk=self.kwargs['pk2']
         )
-        context['course'] = get_object_or_404(Course, pk=self.kwargs['pk'], owner=owner)
+        context['course'] = Course.objects.get(pk=self.kwargs['pk'])
         return context
 
 
@@ -289,10 +288,14 @@ class CourseWorkListView(LoginRequiredMixin, generic.ListView):
 
     template_name = 'core/coursework_list.html'
     context_object_name = 'coursework_list'
-    select_for_delete = []
 
     def get_queryset(self):
         return CourseWork.objects.filter(course=self.kwargs['pk'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['course'] = Course.objects.get(pk=self.kwargs['pk'])
+        return context
 
 
 class CourseWorkDeleteView(LoginRequiredMixin, generic.DeleteView):
@@ -320,6 +323,7 @@ class CourseWorkUpdateView(generic.UpdateView):
     model = CourseWork
     form_class = CourseWorkUpdateForm
     template_name = 'core/coursework_update.html'
+    pk_url_kwarg = 'pk2'
 
     def get_success_url(self):
         course = self.object.course
