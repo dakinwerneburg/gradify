@@ -48,7 +48,7 @@ deploy_heroku:
   stage: Deploy
   image: wingrunr21/alpine-heroku-cli
   script:
-    - heroku login
+    - ./heroku_login
     - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/gradify-app.git
     - git push heroku HEAD:master
   environment:
