@@ -1,3 +1,7 @@
+cache:
+  paths:
+  - ~/.cache/pip/
+
 stages:
   - Static Analysis
   - Test
@@ -43,7 +47,7 @@ unit_test:
 deploy_heroku:
   stage: Deploy
   script:
-    - git remote add heroku https://heroku:$HEROKU-API-KEY@git.heroku.com/gradify-app.git
+    - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/gradify-app.git
     - git push heroku master
   environment:
     name: production
