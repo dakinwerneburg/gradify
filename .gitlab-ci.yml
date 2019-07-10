@@ -1,7 +1,3 @@
-cache:
-  paths:
-  - ~/.cache/pip/
-
 stages:
   - Static Analysis
   - Test
