@@ -21,4 +21,6 @@ urlpatterns = [
     path('course/<int:pk>/assignment/', views.CourseWorkListView.as_view(), name='coursework-list'),
     path('course/<int:pk>/assignment/<int:pk2>/update', views.CourseWorkUpdateView.as_view(), name='coursework-update'),
     path('assignment/delete', views.CourseWorkDeleteView.as_view(), name='coursework-delete'),
+    # TODO can remove after domain is registered with Google for oAuth
+    path('googleb95a6feb416ee79e.html', TemplateView.as_view(template_name='core/google_verification.html'))
 ]
