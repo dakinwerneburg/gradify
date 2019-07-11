@@ -17,6 +17,7 @@ from googleclassroom.google_classroom import ClassroomHelper
 from users.models import CustomUser
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
 from .forms import CourseCreateForm, CourseWorkCreateForm, CourseWorkDeleteForm, CourseWorkUpdateForm
+from .forms import StudentSubmissionCreateForm, StudentSubmissionUpdateForm
 
 import logging
 import csv
@@ -328,3 +329,22 @@ class CourseWorkUpdateView(generic.UpdateView):
     def get_success_url(self):
         course = self.object.course
         return reverse('coursework-list', kwargs={'pk': course.pk})
+
+
+class StudentSubmissionUpdateView(generic.UpdateView):
+    model = StudentSubmission
+    form_class = StudentSubmissionUpdateForm
+    template_name = 'core/studentsubmission_update.html'
+    success_url = '/course/'
+
+    def get_success_url(self):
+        return reverse('studentsubmission-list', kwargs={'pk': self.object.coursework.course.pk})
+
+
+class StudentSubmissionCreateView(generic.CreateView):
+    model = StudentSubmission
+    form_class = StudentSubmissionCreateForm
+    template_name = 'core/studentsubmission_create.html'
+
+    def get_success_url(self):
+        return reverse('studentsubmission-list', kwargs={'pk': self.object.coursework.course.pk})

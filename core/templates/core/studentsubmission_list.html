@@ -1,14 +1,11 @@
 {% extends 'core/quicklink_base.html' %}
-
 {% load django_bootstrap_breadcrumbs %}
-
 {% block breadcrumbs %}
 {{ block.super }}
 {% breadcrumb "Your Courses" "course-list" %}
 {% breadcrumb "Course Detail" "../" %}
 {% breadcrumb "Gradebook" "studentsubmission-list" %}
 {% endblock %}
-
 {% block main-content %}
 <div class="ql-content">
     <h1 class="bg-header bg-text">Gradebook</h1>
@@ -42,11 +39,13 @@
                         {% for submission in entry.submissions %}
                         <td>
                             {% if submission %}
-                            <a href="{% url 'studentsubmission-update' pk=submission.pk %}">{{ submission.assignedGrade }}</a>
+                            {{ submission.assignedGrade }}
+                            <a href="{% url 'studentsubmission-update' pk=submission.pk %}">
+                                {% include 'svg/pencil-edit-button.svg' %}</a>
                             {% else %}
-                            <a href="{% url 'studentsubmission-create'%}">-</a>
+                            Create
+                            <a href="{% url 'studentsubmission-create'%}">{% include 'svg/pencil-edit-button.svg' %}</a>
                             {% endif %}
-                            </a>
                         </td>
                         {% endfor %}
                     </tr>
