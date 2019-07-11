@@ -229,11 +229,19 @@ class CourseWorkCreateView(generic.CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+    def create_blank_student_submissions(self, new_coursework):
+        roster = CourseStudent.objects.filter(course=new_coursework.course)
+
+        for entry in roster:
+            new_submission = StudentSubmission(student=entry.student, coursework=new_coursework)
+            new_submission.save()
+
     def form_valid(self, form):
         coursework = form.save(commit=False)
         coursework.source = 'G'
         coursework.author = self.request.user
         coursework.save()
+        self.create_blank_student_submissions(coursework)
         return super(CourseWorkCreateView, self).form_valid(form)
 
 
@@ -335,7 +343,6 @@ class StudentSubmissionUpdateView(generic.UpdateView):
     model = StudentSubmission
     form_class = StudentSubmissionUpdateForm
     template_name = 'core/studentsubmission_update.html'
-    success_url = '/course/'
 
     def get_success_url(self):
         return reverse('studentsubmission-list', kwargs={'pk': self.object.coursework.course.pk})

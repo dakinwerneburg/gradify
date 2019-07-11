@@ -27,7 +27,7 @@
                         {% for assignment in coursework %}
                         <th> {{ assignment }} <br>
                             {{assignment.maxPoints }} points<br>
-                            {{assignment.dueDate}} </th>
+                            {{assignment.dueDate | date:"M d, Y"}} </th>
                         {% endfor %}
                     </tr>
                 </thead>
