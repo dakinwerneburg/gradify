@@ -26,7 +26,13 @@
                                 {% for assignment in coursework_list %}
                                     <tr>
                                         <td style="width: 80%">{{assignment.title}}</td>
-                                        <td><a href="{% url 'coursework-update' pk=assignment.pk %}">{% include 'svg/pencil-edit-button.svg' %}</a></td>
+                                        <td>
+                                                {% url 'coursework-update' pk=course.pk pk2=assignment.pk as update_url %}
+                                                <a href="{{update_url}}">
+                                                    {% include 'svg/pencil-edit-button.svg' %}
+                                                </a>
+                                            </a>
+                                        </td>
                                         <td style="text-align: right">
                                             <input type="checkbox" value="{{assignment.pk}}" name="selected_assignments">
                                         </td>
