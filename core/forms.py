@@ -81,10 +81,7 @@ class StudentSubmissionUpdateForm(forms.ModelForm):
 
 
 class StudentSubmissionCreateForm(forms.ModelForm):
+
     class Meta:
         model = StudentSubmission
-        fields = [
-            'student',
-            'coursework',
-            'assignedGrade'
-        ]
+        fields = ['assignedGrade']

@@ -1,0 +1,63 @@
+{% extends 'core/quicklink_base.html' %}
+
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+{% breadcrumb "Your Courses" "course-list" %}
+{% breadcrumb "Course Detail" "../" %}
+{% breadcrumb "Gradebook" "studentsubmission-list" %}
+{% endblock %}
+
+{% block main-content %}
+<div class="ql-content">
+    <h1 class="bg-header bg-text">Gradebook</h1>
+    <section class="card">
+        <div class="card-body">
+            <header class="card-header">
+                <span class="light-text">{{ course.section }}</span>
+                {# TODO add link to course details #}
+                <h2 class="card-title">{{ course.name }}</h2>
+                <time class="light-text">{{ course.startDate | date:"M d, Y" }} -
+                    {{ course.endDate | date:"M d, Y" }}</time>
+            </header>
+         <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Average</th>
+                        {% for assignment in course.coursework_set.all %}
+                        <th> {{ assignment }} <br>
+                            {{assignment.maxPoints }} points<br>
+                            {{assignment.dueDate}} </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.name }}</td>
+                        <td>{{ student.avg }}%</td>
+                        {% for submission in student.submissions %}
+                        <td>
+                            {% if submission.assignedGrade %}
+                            {{ submission.assignedGrade }}
+                         <a href="{% url 'studentsubmission-update' pk=submission.pk %}">
+                                {% include 'svg/pencil-edit-button.svg' %}</a>
+                            {% else %}
+                            Create
+                            <a href="{% url 'studentsubmission-create' student=submission.student.pk course=submission.coursework.pk %}">
+                                {% include 'svg/pencil-edit-button.svg' %}</a>
+                            {% endif %}
+                            </a>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="{% url 'coursework-create' %}">Add a new assignment</a>
+        </div>
+    </section>
+</div>
+{% endblock main-content %}
