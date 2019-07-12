@@ -14,6 +14,7 @@ from django.http import HttpResponseRedirect
 
 from core import gc_import_utils
 from googleclassroom.google_classroom import ClassroomHelper
+from gradify.settings.heroku import ACME_CHALLENGE_CONTENT
 from users.models import CustomUser
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
 from .forms import CourseCreateForm, CourseWorkCreateForm, CourseWorkDeleteForm, CourseWorkUpdateForm
@@ -185,7 +186,7 @@ def gc_ingest_and_redirect(request):
 
         # Get the coursework for this course
         try:
-            gc_coursework = gc.get_coursework(request, saved_course.id)
+            gc_coursework = gc.get_coursework(request, saved_course.googleId)
         except HttpError:
             # User does not have permission to get coursework for this course
             logger.info('User %s has insufficient permissions for coursework in %s' % (current_user, saved_course))
@@ -196,7 +197,7 @@ def gc_ingest_and_redirect(request):
 
         # Get the class roster for this course
         try:
-            gc_students = gc.get_students(request, saved_course.id)
+            gc_students = gc.get_students(request, saved_course.googleId)
         except HttpError:
             logger.info('User %s has insufficient permissions for roster of %s' % (current_user, saved_course))
             continue
@@ -206,7 +207,7 @@ def gc_ingest_and_redirect(request):
 
         # Get student submissions for this course
         try:
-            gc_submissions = gc.get_course_submissions(request, saved_course.id)
+            gc_submissions = gc.get_course_submissions(request, saved_course.googleId)
         except HttpError:
             logger.info('User %s has insufficient permissions for submissions to %s' % (current_user, saved_course))
             continue
@@ -328,3 +329,17 @@ class CourseWorkUpdateView(generic.UpdateView):
     def get_success_url(self):
         course = self.object.course
         return reverse('coursework-list', kwargs={'pk': course.pk})
+
+
+def google_verification(request):
+    """
+    Used for Google oAuth to verify the domain
+    """
+    return HttpResponse('google-site-verification: googleb95a6feb416ee79e.html')
+
+
+def acme_challenge(request):
+    """
+    Used to respond to Let's Encrypt SSL cert challenge
+    """
+    return HttpResponse(ACME_CHALLENGE_CONTENT)

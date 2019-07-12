@@ -27,6 +27,7 @@ class Course(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     # Google Classroom specific
+    googleId = models.CharField(max_length=32, blank=True, null=True)
     creationTime = models.DateTimeField(blank=True, null=True)
     updateTime = models.DateTimeField(blank=True, null=True)
     ownerId = models.CharField(max_length=254)
@@ -64,6 +65,7 @@ class CourseWork(models.Model):
     author = models.ForeignKey(to='users.CustomUser', on_delete=models.SET_NULL, null=True)
 
     # Optional Fields
+    googleId = models.TextField(max_length=32, blank=True, null=True)
     description = models.TextField(max_length=30_000, blank=True)
     alternateLink = models.TextField(max_length=650, blank=True)
     maxPoints = models.IntegerField(blank=True)
@@ -98,12 +100,14 @@ class CourseWork(models.Model):
     TEST = 'T'
     WORKSHEET = 'W'
     FINAL = 'F'
+    ASSIGNMENT = 'A'
     COURSE_WORK_TYPE_CHOICES = [
         (UNSPECIFIED, 'Unspecified'),
         (QUIZ, 'Quiz'),
         (TEST, 'Test'),
         (WORKSHEET, 'Worksheet'),
         (FINAL, 'Final'),
+        (ASSIGNMENT, 'Assignment')
     ]
     workType = models.CharField(
         max_length=1,
