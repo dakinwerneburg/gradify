@@ -24,7 +24,7 @@ def import_course(course: dict, user: CustomUser):
         course['owner'] = user
 
         # Check if the course id exists in the database. If so, it gets updated. If not, it gets created.
-        updated_course, created = Course.objects.update_or_create(id=course['id'], defaults=course)
+        updated_course, created = Course.objects.update_or_create(googleId=course['googleId'], defaults=course)
         if created:
             logger.info("Created new course owned by user %s: %s" % (user, updated_course))
         else:
@@ -34,8 +34,8 @@ def import_course(course: dict, user: CustomUser):
     else:
         try:
             # Add user as a student enrolled in the course
-            course_updated = Course.objects.filter(id=course['id']).update(**course) > 0
-            existing_course = Course.objects.get(id=course['id'])
+            course_updated = Course.objects.filter(googleId=course['googleId']).update(**course) > 0
+            existing_course = Course.objects.get(googleId=course['googleId'])
             if course_updated:
                 logger.info('Updated course %s' % existing_course)
 
@@ -68,11 +68,14 @@ def import_assignment(assignment: dict, course: Course):
     assignment['course'] = course
     assignment['author'] = course.owner
     assignment['source'] = CourseWork.GOOGLE
+    assignment['googleId'] = assignment['id']
     assignment['dueDate'] = assemble_due_date(assignment)
+    assignment['state'] = get_enum_value(assignment['state'], CourseWork.COURSE_WORK_STATE_CHOICES)
+    assignment['workType'] = get_enum_value(assignment['workType'], CourseWork.COURSE_WORK_TYPE_CHOICES)
 
     filtered_assignment = filter_assignment_fields(assignment)
 
-    saved_assignment, created = CourseWork.objects.update_or_create(id=filtered_assignment['id'],
+    saved_assignment, created = CourseWork.objects.update_or_create(googleId=filtered_assignment['googleId'],
                                                                     defaults=filtered_assignment)
     if created:
         logger.info('Saved new %s assignment: %s' % (course, saved_assignment))
@@ -104,9 +107,13 @@ def import_submission(submission: dict):
     Updates or creates a student submission in the specified course. The coursework ID is retrieved
     from the submission.
     """
-    submission['coursework'] = CourseWork.objects.get(id=submission['courseWorkId'])
+    submission = dict(submission)
+    submission['coursework'] = CourseWork.objects.get(googleId=submission['courseWorkId'])
     submission['student'] = SocialAccount.objects.get(uid=submission['userId']).user
-    submission['gcSubmissionId'] = submission['id']  # Id is not alphanumeric. Needs separate field.
+    submission['gcSubmissionId'] = submission['id']
+    submission['state'] = get_enum_value(submission['state'], StudentSubmission.SUBMISSION_STATE_CHOICES)
+    submission['courseWorkType'] = get_enum_value(submission['courseWorkType'],
+                                                  StudentSubmission.COURSEWORKTYPE_CHOICES)
 
     filtered_submission = filter_submission_fields(submission)
     imported_submission, created = StudentSubmission.objects.update_or_create(gcSubmissionId=submission['id'],
@@ -154,15 +161,27 @@ def get_or_create_account(student: dict) -> CustomUser:
 
 def filter_course_fields(course: dict):
     filtered_attrs = ['teacherGroupEmail', 'courseGroupEmail', 'teacherFolder', 'courseMaterialSets',
-                      'guardiansEnabled', 'calendarId']
+                      'guardiansEnabled', 'calendarId', 'id']
 
-    return filter_data(course, filtered_attrs)
+    filtered_course = filter_data(course, filtered_attrs)
+    filtered_course['googleId'] = course['id']
+    filtered_course['courseState'] = get_enum_value(course['courseState'], Course.COURSE_STATE_CHOICES)
+
+    return filtered_course
+
+
+def get_enum_value(find: str, choices: tuple):
+    for choice in choices:
+        if choice[1].upper() == find.upper():
+            return choice[0]
+
+    return None
 
 
 def filter_assignment_fields(assignment: dict):
     filtered_attrs = ['courseId', 'materials', 'scheduledTime', 'associatedWithDeveloper', 'assigneeMode',
                       'individualStudentOptions', 'submissionModificationMode', 'topicId', 'assignment',
-                      'multipleChoiceQuestion', 'dueTime']
+                      'multipleChoiceQuestion', 'dueTime', 'id']
 
     return filter_data(assignment, filtered_attrs)
 

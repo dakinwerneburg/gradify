@@ -186,7 +186,7 @@ def gc_ingest_and_redirect(request):
 
         # Get the coursework for this course
         try:
-            gc_coursework = gc.get_coursework(request, saved_course.id)
+            gc_coursework = gc.get_coursework(request, saved_course.googleId)
         except HttpError:
             # User does not have permission to get coursework for this course
             logger.info('User %s has insufficient permissions for coursework in %s' % (current_user, saved_course))
@@ -197,7 +197,7 @@ def gc_ingest_and_redirect(request):
 
         # Get the class roster for this course
         try:
-            gc_students = gc.get_students(request, saved_course.id)
+            gc_students = gc.get_students(request, saved_course.googleId)
         except HttpError:
             logger.info('User %s has insufficient permissions for roster of %s' % (current_user, saved_course))
             continue
@@ -207,7 +207,7 @@ def gc_ingest_and_redirect(request):
 
         # Get student submissions for this course
         try:
-            gc_submissions = gc.get_course_submissions(request, saved_course.id)
+            gc_submissions = gc.get_course_submissions(request, saved_course.googleId)
         except HttpError:
             logger.info('User %s has insufficient permissions for submissions to %s' % (current_user, saved_course))
             continue

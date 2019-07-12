@@ -11,17 +11,6 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-import sys
-
-# django_heroku requires postgres to be installed.
-# We use the following hack so we don't have to do that on our dev boxes
-# where we're using sqlite3. `runserver` is only used in dev.
-ENVIRONMENT = 'development'
-if 'runserver' not in sys.argv:
-    ENVIRONMENT = 'production'
-
-if ENVIRONMENT is 'production':
-    import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -33,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('DJANGO_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['gradify-app.herokuapp.com']
 
@@ -41,7 +30,6 @@ ALLOWED_HOSTS = ['gradify-app.herokuapp.com']
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -94,9 +82,9 @@ SOCIALACCOUNT_PROVIDERS = {
             'profile',
             'email',
             'https://www.googleapis.com/auth/classroom.courses.readonly',
-            'https://www.googleapis.com/auth/classroom.coursework.me',
-            'https://www.googleapis.com/auth/classroom.coursework.students',
-            'https://www.googleapis.com/auth/classroom.rosters',
+            'https://www.googleapis.com/auth/classroom.coursework.me.readonly',
+            'https://www.googleapis.com/auth/classroom.coursework.students.readonly',
+            'https://www.googleapis.com/auth/classroom.rosters.readonly',
             'https://www.googleapis.com/auth/classroom.profile.emails',
         ],
         'AUTH_PARAMS': {
@@ -151,24 +139,33 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
-        'simple': {
-            'format': '[{asctime}] {message}',
-            'datefmt': '%d/%b/%Y %H:%M:%S',
-            'style': '{',
+        'verbose': {
+            'format': (
+                '%(asctime)s [%(process)d] [%(levelname)s] pathname=%(pathname)s lineno=%(lineno)s '
+                'funcname=%(funcName)s %(message)s'),
+            'datefmt': '%Y-%m-%d %H:%M:%S'
         },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        }
     },
     'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple'
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
         },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        }
     },
     'loggers': {
         'gradify': {
             'handlers': ['console'],
-            'level': os.getenv('GRADIFY_LOG_LEVEL', 'INFO'),
+            'level': 'DEBUG',
         }
-    },
+    }
 }
 
 # Password validation
@@ -204,7 +201,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-
 STATIC_URL = '/static/'
 
 # Override the static files directory for production deployment
@@ -214,8 +210,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 ACME_CHALLENGE_CONTENT = os.environ.get('ACME_CHALLENGE_CONTENT')
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
 
+# django_heroku requires postgres to be installed.
+# We use the following hack so we don't have to do that on our dev boxes
+try:
+    import django_heroku
 
-if ENVIRONMENT is 'production':
-    # Activate django-heroku
     django_heroku.settings(locals(), logging=False)
+except ModuleNotFoundError:
+    pass

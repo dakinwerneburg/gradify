@@ -7,9 +7,10 @@ class MockUser:
 
 
 class MockCourse:
-    def __init__(self, _id, owner):
+    def __init__(self, owner, _id: int = 123, google_id: str = '12345'):
         self.id = _id
         self.owner = owner
+        self.googleId = google_id
 
 
 class MockCoursework:
