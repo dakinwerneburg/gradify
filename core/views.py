@@ -14,6 +14,7 @@ from django.http import HttpResponseRedirect
 
 from core import gc_import_utils
 from googleclassroom.google_classroom import ClassroomHelper
+from gradify.settings.heroku import ACME_CHALLENGE_CONTENT
 from users.models import CustomUser
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
 from .forms import CourseCreateForm, CourseWorkCreateForm, CourseWorkDeleteForm, CourseWorkUpdateForm
@@ -328,3 +329,17 @@ class CourseWorkUpdateView(generic.UpdateView):
     def get_success_url(self):
         course = self.object.course
         return reverse('coursework-list', kwargs={'pk': course.pk})
+
+
+def google_verification(request):
+    """
+    Used for Google oAuth to verify the domain
+    """
+    return HttpResponse('google-site-verification: googleb95a6feb416ee79e.html')
+
+
+def acme_challenge(request):
+    """
+    Used to respond to Let's Encrypt SSL cert challenge
+    """
+    return HttpResponse(ACME_CHALLENGE_CONTENT)

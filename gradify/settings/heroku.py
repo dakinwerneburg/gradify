@@ -11,7 +11,17 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-import django_heroku
+import sys
+
+# django_heroku requires postgres to be installed.
+# We use the following hack so we don't have to do that on our dev boxes
+# where we're using sqlite3. `runserver` is only used in dev.
+ENVIRONMENT = 'development'
+if 'runserver' not in sys.argv:
+    ENVIRONMENT = 'production'
+
+if ENVIRONMENT is 'production':
+    import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -73,10 +83,6 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 SOCIALACCOUNT_STORE_TOKENS = True
-
-ACCOUNT_FORMS = {
-    'signup': 'users.forms.CustomUserCreationForm',
-}
 
 ACCOUNT_FORMS = {
     'signup': 'users.forms.CustomUserCreationForm',
@@ -204,7 +210,12 @@ STATIC_URL = '/static/'
 # Override the static files directory for production deployment
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# HTTPS and SSL settings
+ACME_CHALLENGE_CONTENT = os.environ.get('ACME_CHALLENGE_CONTENT')
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
-# Activate django-heroku
-django_heroku.settings(locals())
+
+if ENVIRONMENT is 'production':
+    # Activate django-heroku
+    django_heroku.settings(locals(), logging=False)
