@@ -49,22 +49,31 @@ nav, .navbar-nav, .breadcrumb {
 }
 
 /* Container for pages that include Quick Links and centered content */
-
 .ql-content-container {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    grid-gap: 1.25rem;
-    margin: auto;
+    grid-auto-columns: auto;
+}
+
+@media only screen and (min-width: 600px) {
+    .ql-content-container {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        grid-gap: 1.25rem;
+        margin: auto;
+    }
 }
 
 /* Container for the Quick Links */
-
 .ql-container {
     min-width: 12rem;
     margin-left: 5rem;
 }
 
-/* Remove default ul styling for quick links */
+@media only screen and (max-width: 600px) {
+    .ql-container {
+        display: none;
+    }
+}
 
 .ql-list {
     list-style-type: none;
@@ -73,6 +82,7 @@ nav, .navbar-nav, .breadcrumb {
     line-height: 2.75rem;
 }
 
+/* Remove default ul styling for quick links */
 .ql-list .ql-icon {
     padding-right: 0.5rem;
 }
@@ -102,6 +112,11 @@ nav, .navbar-nav, .breadcrumb {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08), 0 4px 4px rgba(0, 0, 0, 0.15);
     border-radius: 5px;
     margin-bottom: 1.25rem;
+}
+@media only screen and (max-width: 600px) {
+    .card {
+        max-width: 90%;
+    }
 }
 
 .card a{
@@ -232,8 +247,10 @@ nav a:hover {
     padding-bottom: 0;
 }
 
-.card {
-    min-width: 35em;
+@media only screen and (min-width: 600px) {
+    .card {
+        min-width: 35em;
+    }
 }
 
 .login-form {
