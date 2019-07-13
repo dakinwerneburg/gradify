@@ -267,7 +267,7 @@ def export_csv_list_view(request):
     writer = csv.writer(response, delimiter=',')
 
     user_id = request.user.id
-    courses = Course.objects.filter(Q(owner_id=user_id) | Q(coursestudent__student_id=user_id)).distinct()
+    courses = Course.objects.filter(Q(owner_id=user_id)).distinct()
 
     writer.writerow(["Course Name",
                      "Course Section",
