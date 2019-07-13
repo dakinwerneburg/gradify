@@ -27,13 +27,6 @@
                 {% for entry in roster %}
                 <tr>
                     <td>{{entry.student.last_name}}, {{entry.student.first_name}}</td>
-                    <td align="right">
-                        <span class="ql-icon">
-                            {% include 'svg/close-envelope.svg' %}
-                            {% include 'svg/pencil-edit-button.svg' %}
-                            {% include 'svg/rubbish-bin.svg' %}
-                        </span>
-                    </td>
                 </tr>
                 {% endfor %}
             </table>
