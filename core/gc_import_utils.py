@@ -113,7 +113,7 @@ def import_submission(submission: dict):
     submission['gcSubmissionId'] = submission['id']
     submission['state'] = get_enum_value(submission['state'], StudentSubmission.SUBMISSION_STATE_CHOICES)
     submission['courseWorkType'] = get_enum_value(submission['courseWorkType'],
-                                                  StudentSubmission.COURSEWORKTYPE_CHOICES)
+                                                  StudentSubmission.COURSEWORK_TYPE_CHOICES)
 
     filtered_submission = filter_submission_fields(submission)
     imported_submission, created = StudentSubmission.objects.update_or_create(gcSubmissionId=submission['id'],

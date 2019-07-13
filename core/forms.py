@@ -66,7 +66,7 @@ class CourseWorkUpdateForm(forms.ModelForm):
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'}),
-            'maxpoints': forms.NumberInput(attrs={'class': 'form-control'}),
+            'maxPoints': forms.NumberInput(attrs={'class': 'form-control'}),
             'dueDate': forms.DateInput(attrs={'class': 'form-control', 'required': True}),
             'workType': forms.Select(attrs={'class': 'form-control'}),
         }

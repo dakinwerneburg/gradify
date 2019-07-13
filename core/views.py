@@ -252,7 +252,7 @@ class CourseCreateView(LoginRequiredMixin, generic.CreateView):
 
 
 @login_required
-def ExportCsvListView(request):
+def export_csv_list_view(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="submissions.csv"'
     writer = csv.writer(response, delimiter=',')

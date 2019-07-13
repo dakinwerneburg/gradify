@@ -8,7 +8,7 @@ from . import views
 urlpatterns = [
     path('', TemplateView.as_view(template_name="core/index.html"), name='home'),
     path('import/', views.gc_ingest_and_redirect, name='gc-import'),
-    path('export/', views.ExportCsvListView, name='course-export'),
+    path('export/', views.export_csv_list_view, name='course-export'),
     # Course routes
     path('course/', views.CoursesView.as_view(), name='course-list'),
     path('course/create/', views.CourseCreateView.as_view(), name='course-create'),

@@ -17,36 +17,39 @@
                 <form action="{% url 'coursework-delete' %}" method="post" id="assignments-list">{% csrf_token %}
                     <table class="table table-striped table-hover">
                         <tbody>
-                            <tr style="text-decoration: underline">
-                                <td>Assignment Title</td> 
-                                <td>Edit</td>
-                                <td>Delete</td>
+                        <tr style="text-decoration: underline">
+                            <td>Assignment Title</td>
+                            <td>Edit</td>
+                            <td>Delete</td>
+                        </tr>
+                        {% if coursework_list %}
+                            {% for assignment in coursework_list %}
+                                <tr>
+                                    <td style="width: 80%">{{ assignment.title }}</td>
+                                    <td>
+                                        {% url 'coursework-update' pk=course.pk pk2=assignment.pk as update_url %}
+                                        <a href="{{ update_url }}">
+                                            {% include 'svg/pencil-edit-button.svg' %}
+                                        </a>
+                                    </td>
+                                    <td style="text-align: right">
+                                        <input type="checkbox" aria-label="select-assignment"
+                                               value="{{ assignment.pk }}" name="selected_assignments">
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr class="generic-row">
+                                <td>No Assignments</td>
                             </tr>
-                            {% if coursework_list %}  
-                                {% for assignment in coursework_list %}
-                                    <tr>
-                                        <td style="width: 80%">{{assignment.title}}</td>
-                                        <td>
-                                                {% url 'coursework-update' pk=course.pk pk2=assignment.pk as update_url %}
-                                                <a href="{{update_url}}">
-                                                    {% include 'svg/pencil-edit-button.svg' %}
-                                                </a>
-                                            </a>
-                                        </td>
-                                        <td style="text-align: right">
-                                            <input type="checkbox" value="{{assignment.pk}}" name="selected_assignments">
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            {% else %}
-                                    <tr class="generic-row">
-                                        <td>No Assignments</td> 
-                                    </tr> 
-                            {% endif %}
+                        {% endif %}
                         </tbody>
-                            </table>
+                    </table>
                 </form>
-                <button style="float: right" class="btn btn-dark " type="submit" form="assignments-list" value="Submit" onclick="return confirm('Are You Sure you want to Delete these Assignments?')">Delete</button>
+                <button style="float: right" class="btn btn-dark " type="submit" form="assignments-list" value="Submit"
+                        onclick="return confirm('Are you sure you want to delete these assignments?')">
+                    Delete
+                </button>
             </div>
         </section>
     </div>

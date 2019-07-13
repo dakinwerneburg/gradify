@@ -181,7 +181,7 @@ class StudentSubmission(models.Model):
         choices=SUBMISSION_STATE_CHOICES,
         default=UNSPECIFIED
     )
-    COURSEWORKTYPE_CHOICES = [
+    COURSEWORK_TYPE_CHOICES = [
         (COURSE_WORK_TYPE_UNSPECIFIED, 'Unspecified'),
         (ASSIGNMENT, 'Assignment'),
         (SHORT_ANSWER_QUESTION, 'Short Answer Question'),
@@ -189,7 +189,7 @@ class StudentSubmission(models.Model):
     ]
     courseWorkType = models.CharField(
         max_length=1,
-        choices=COURSEWORKTYPE_CHOICES,
+        choices=COURSEWORK_TYPE_CHOICES,
         default=COURSE_WORK_TYPE_UNSPECIFIED
     )
 

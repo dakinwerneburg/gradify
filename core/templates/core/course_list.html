@@ -18,7 +18,7 @@
                 {% endfor %}
                 <a href="{% url 'course-create' %}">Create a new course</a>
             {% else %}
-                <h2>No courses found</h2>
+                <h3>No courses found</h3>
                 <p><a href="{% url 'course-create' %}">Create a course</a> or import one from Google Classroom to begin!</p>
             {% endif %}
             </div>
