@@ -208,4 +208,4 @@ class CourseStudent(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return "%d: %s - %s" % (self.id, self.student, self.course)
+        return "%s" % (self.student)

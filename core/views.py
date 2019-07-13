@@ -370,3 +370,8 @@ class StudentSubmissionCreateView(generic.CreateView):
 
     def get_success_url(self):
         return reverse('studentsubmission-list', kwargs={'pk': self.object.coursework.course.pk})
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['course'] = self.kwargs['pk']
+        return kwargs
