@@ -70,8 +70,12 @@ def import_assignment(assignment: dict, course: Course):
     assignment['source'] = CourseWork.GOOGLE
     assignment['googleId'] = assignment['id']
     assignment['dueDate'] = assemble_due_date(assignment)
-    assignment['state'] = get_enum_value(assignment['state'], CourseWork.COURSE_WORK_STATE_CHOICES)
-    assignment['workType'] = get_enum_value(assignment['workType'], CourseWork.COURSE_WORK_TYPE_CHOICES)
+
+    state_enum = get_enum_value(assignment['state'], CourseWork.COURSE_WORK_STATE_CHOICES)
+    assignment['state'] = state_enum or CourseWork.COURSE_WORK_STATE_UNSPECIFIED
+
+    work_type_enum = get_enum_value(assignment['workType'], CourseWork.COURSE_WORK_TYPE_CHOICES)
+    assignment['workType'] = work_type_enum or CourseWork.COURSE_WORK_TYPE_UNSPECIFIED
 
     filtered_assignment = filter_assignment_fields(assignment)
 
@@ -111,9 +115,12 @@ def import_submission(submission: dict):
     submission['coursework'] = CourseWork.objects.get(googleId=submission['courseWorkId'])
     submission['student'] = SocialAccount.objects.get(uid=submission['userId']).user
     submission['gcSubmissionId'] = submission['id']
-    submission['state'] = get_enum_value(submission['state'], StudentSubmission.SUBMISSION_STATE_CHOICES)
-    submission['courseWorkType'] = get_enum_value(submission['courseWorkType'],
-                                                  StudentSubmission.COURSEWORK_TYPE_CHOICES)
+
+    state_enum = get_enum_value(submission['state'], StudentSubmission.SUBMISSION_STATE_CHOICES)
+    submission['state'] = state_enum or StudentSubmission.SUBMISSION_STATE_UNSPECIFIED
+
+    type_enum = get_enum_value(submission['courseWorkType'], StudentSubmission.COURSEWORK_TYPE_CHOICES)
+    submission['courseWorkType'] = type_enum or StudentSubmission.COURSE_WORK_TYPE_UNSPECIFIED
 
     filtered_submission = filter_submission_fields(submission)
     imported_submission, created = StudentSubmission.objects.update_or_create(gcSubmissionId=submission['id'],
@@ -165,14 +172,16 @@ def filter_course_fields(course: dict):
 
     filtered_course = filter_data(course, filtered_attrs)
     filtered_course['googleId'] = course['id']
-    filtered_course['courseState'] = get_enum_value(course['courseState'], Course.COURSE_STATE_CHOICES)
+
+    state_enum = get_enum_value(course['courseState'], Course.COURSE_STATE_CHOICES)
+    filtered_course['courseState'] = state_enum or Course.COURSE_STATE_UNSPECIFIED
 
     return filtered_course
 
 
 def get_enum_value(find: str, choices: tuple):
     for choice in choices:
-        if choice[1].upper() == find.upper():
+        if choice[0].upper() == find.upper():
             return choice[0]
 
     return None

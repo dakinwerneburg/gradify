@@ -259,16 +259,16 @@ class ClassroomIngestViewTests(TestCase):
 
     def test_properly_sets_course_state(self):
         """
-        The course state should be properly translated
+        The course state should be saved
         """
         SocialAccount.objects.create(user=self.mock_user, provider='Google1')
 
         imported_course = import_course(self.mock_gc_course, self.mock_user)
         self.assertEqual(Course.ACTIVE, imported_course.courseState)
 
-        self.mock_gc_course['courseState'] = 'UNSPECIFIED'
+        self.mock_gc_course['courseState'] = 'PROVISIONED'
         imported_course = import_course(self.mock_gc_course, self.mock_user)
-        self.assertEqual(Course.UNSPECIFIED, imported_course.courseState)
+        self.assertEqual(Course.PROVISIONED, imported_course.courseState)
 
 
 class AssignmentIngestTests(TestCase):
@@ -359,9 +359,14 @@ class AssignmentIngestTests(TestCase):
         self.assertEqual(CourseWork.PUBLISHED, imported_assignment.state)
         self.assertEqual(CourseWork.ASSIGNMENT, imported_assignment.workType)
 
-        self.mock_gc_assignment['state'] = 'UNSPECIFIED'
+        self.mock_gc_assignment['state'] = 'PUBLISHED'
         imported_assignment = import_assignment(self.mock_gc_assignment, self.mock_course)
-        self.assertEqual(CourseWork.UNSPECIFIED, imported_assignment.state)
+        self.assertEqual(CourseWork.PUBLISHED, imported_assignment.state)
+
+    def test_import_uses_default_for_unknown_enum_val(self):
+        self.mock_gc_assignment['state'] = 'IDAHO'
+        imported_assignment = import_assignment(self.mock_gc_assignment, self.mock_course)
+        self.assertEqual(CourseWork.COURSE_WORK_STATE_UNSPECIFIED, imported_assignment.state)
 
 
 class StudentIngestTests(TestCase):
