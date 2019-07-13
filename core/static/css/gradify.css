@@ -87,6 +87,10 @@ nav, .navbar-nav, .breadcrumb {
     padding-right: 0.5rem;
 }
 
+.ql-list span {
+    font-size: 1.1rem;
+}
+
 /* Container for main content on a page that includes Quick Links */
 
 .ql-content {
