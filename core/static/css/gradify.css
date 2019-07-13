@@ -21,9 +21,6 @@ nav, .navbar-nav, .breadcrumb {
 }
 
 .nav-user {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
     font-size: 18px;
     line-height: 21px;
     display: flex;
@@ -144,8 +141,7 @@ nav, .navbar-nav, .breadcrumb {
     grid-template-columns: repeat(3, 1fr);
 }
 
-/* Course Detail Navigaion*/
-
+/* Course Detail Navigation*/
 .course-detail-nav {
     font-size: 20px;
     line-height: 23px;
@@ -160,7 +156,7 @@ nav, .navbar-nav, .breadcrumb {
     color: inherit;
 }
 
-/* Course Detail Navigaion description*/
+/* Course Detail Navigation description*/
 
 .course-detail-nav p {
     padding-top: 0;
@@ -173,7 +169,7 @@ nav, .navbar-nav, .breadcrumb {
     color: #0C0C0C;
 }
 
-/* No Styling of course detail navivation links*/
+/* No Styling of course detail navigation links*/
 
 .course-detail-nav a {
     text-decoration: none;
@@ -186,7 +182,7 @@ nav, .navbar-nav, .breadcrumb {
     max-width: 80%;
 }
 
-/* No Styling of course detail navivation links*/
+/* No Styling of course detail navigation links*/
 
 .coursework a {
     text-decoration: none;
@@ -201,17 +197,12 @@ nav, .navbar-nav, .breadcrumb {
 
 .coursework h3, span {
     font-size: 1.2rem;
-    /* Not Needed
-    padding-bottom: 1rem;
-    */
 }
 
 
 /* Navigation links */
 
 nav a, .breadcrumb a {
-    font-family: Roboto;
-    font-style: normal;
     font-weight: 300;
     font-size: 18px;
     line-height: 21px;
@@ -222,16 +213,13 @@ nav a, .breadcrumb a {
 }
 
 .breadcrumb li, .breadcrumb li .divider {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
     font-size: 18px;
     line-height: 21px;
     display: flex;
     align-items: center;
     color: #E8EFFD;
     padding-left: 3px;
-    padding-bottom: none;
+    padding-bottom: 0;
 }
 
 .card {
@@ -240,17 +228,13 @@ nav a, .breadcrumb a {
 
 .login-form {
     width: 340px;
-    margin: 30px auto;
-    margin-bottom: 15px;
+    margin: 30px auto 15px;
     background: #f7f7f7;
-    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
     padding: 30px;
 }
 
 .login-title {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
     font-size: 36px;
     line-height: 42px;
     text-align: center;
@@ -270,26 +254,23 @@ nav a, .breadcrumb a {
 }
 
 .login-btn {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 18px;
-    line-height: 21px;
+    line-height: 24px;
     align-items: center;
     text-align: center;
     color: #E9FCFA;
     background: #1BB1A5;
-    box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
     border-radius: 3px;
 }
 
-.or-seperator {
-    margin: 20px 0 10px;
+.or-separator {
+    margin-top: 20px;
+    margin-bottom: 0;
     text-align: center;
     border-top: 1px solid #ccc;
 }
 
-.or-seperator i {
+.or-separator i {
     padding: 0 10px;
     background: #f7f7f7;
     position: relative;
@@ -299,8 +280,6 @@ nav a, .breadcrumb a {
 
 .social-btn .btn {
     margin: 10px 0;
-    font-size: 15px;
-    text-align: left;
     line-height: 24px;
 }
 
@@ -310,7 +289,7 @@ nav a, .breadcrumb a {
     min-width: 15px;
 }
 
-.input-group-addon .fa {
+.input-group-add-on .fa {
     font-size: 18px;
 }
 
