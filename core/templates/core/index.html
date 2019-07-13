@@ -10,34 +10,46 @@
 {% endblock %}
 
 {% block content %}
-<div class="ql-content">
-    {% if user.is_authenticated %}
-    <h1 class="bg-header bg-text">Welcome {{ user.username }}</h1>
-    <section class="card">
-        <div class="card-body">
-            <p><a href="{% url 'course-list' %}">Courses</a></p>
-            <p><a href="{% url 'account_change_password' %}">Change Password</a></p>
-            <p><a href="{% url 'account_logout' %}">Log out</a></p>
-            <br />
-            <p><a target="_blank" href="{% url 'google_classroom_list' %}">Perform Google Integration Test</a></p>
+    <div class="ql-content-container">
+        {# Empty div is here on purpose because flexbox #}
+        <div></div>
+        <div class="ql-content">
+            {% if user.is_authenticated %}
+                <h1 class="bg-header bg-text">Welcome, {{ user.username }}!</h1>
+                <section class="card">
+                    <div class="card-body">
+                        <p>What would you like to do?</p>
+                        <ul>
+                            <li style="padding-bottom: 0.5rem">
+                                <a href="{% url 'course-list' %}">View Courses</a>
+                            </li>
+                            <li style="padding-bottom: 0.5rem">
+                                <a href="{% url 'account_change_password' %}">Change Password</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'account_logout' %}">Log out</a>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
             {% else %}
-            <div class="login-form">
-                <p align="center">{% include 'svg/graduation.svg' %}</p>
-                <p align="center">{% include 'svg/gradify-with-check.svg' %}</p>
-                <div class="text-center social-btn">
-                    <a href="{% provider_login_url 'google' %}" class="btn btn-danger btn-block"><i class="fa fa-google"></i>
-                        Sign in with <b>Google</b></a>
+                <div class="login-form">
+                    <p align="center">{% include 'svg/graduation.svg' %}</p>
+                    <p align="center">{% include 'svg/gradify-with-check.svg' %}</p>
+                    <div class="text-center social-btn">
+                        <a href="{% provider_login_url 'google' %}" class="btn btn-danger btn-block"><i
+                                class="fa fa-google"></i>
+                            Sign in with <b>Google</b></a>
+                    </div>
+                    <div class="or-seperator"><i>or</i></div>
+                    <div class="text-center">
+                        <a href="{% url 'account_login' %}" class="btn btn-block login-btn">Sign in</a>
+                    </div>
                 </div>
-                <div class="or-seperator"><i>or</i></div>
-                <div class="text-center">
-                    <a href="{% url 'account_login' %}" class="btn btn-block login-btn">Sign in</a>
+                <div class="hint-text small text-center">
+                    Don't have an account? <a href="{% url 'account_signup' %}" class="text-success">Register Now!</a>
                 </div>
-            </div>
-            <div class="hint-text small text-center">Don't have an account? <a href="{% url 'account_signup' %}"
-                    class="text-success">Register Now!</a></div>
+            {% endif %}
         </div>
-    </section>
-</div>
-
-{% endif %}
+    </div>
 {% endblock content %}
