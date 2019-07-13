@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import CourseWork, Course, StudentSubmission
+from .models import CourseWork, Course, CourseStudent, StudentSubmission
 
 
 class CourseWorkCreateForm(forms.ModelForm):
@@ -98,3 +98,9 @@ class StudentSubmissionCreateForm(forms.ModelForm):
             'coursework',
             'assignedGrade'
         ]
+
+    def __init__(self, *args, **kwargs):
+        course = kwargs.pop('course', None)
+        super().__init__(*args, **kwargs)
+        self.fields['student'] = forms.ModelChoiceField(queryset=CourseStudent.objects.filter(course_id=course))
+        self.fields['coursework'] = forms.ModelChoiceField(queryset=CourseWork.objects.filter(course_id=course))
