@@ -475,18 +475,6 @@ class StudentIngestTests(TestCase):
 
         self.assertEqual(self.mock_student, imported_enrollment.student)
 
-    def test_import_can_later_be_viewed_by_new_user(self):
-        """
-        A submission should be associated with a user if the user signs in after the submission is imported
-        """
-        import_student(self.mock_gc_student, self.mock_course)
-        new_acct = SocialAccount.objects.get(uid=self.mock_gc_student['profile']['id']).user
-        self.client.force_login(new_acct)
-
-        response = self.client.get(reverse('course-list'))
-
-        self.assertContains(response, self.mock_course)
-
 
 class SubmissionIngestTests(TestCase):
     fixtures = ['user', 'course', 'coursework']
