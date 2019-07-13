@@ -29,9 +29,15 @@
                         <th>Name</th>
                         <th>Average</th>
                         {% for assignment in coursework %}
-                        <th> {{ assignment }} <br>
+                        <th style="font-weight: lighter">
+                            <b style="font-weight: bold">{{ assignment }}</b> <br>
                             {{assignment.maxPoints }} points<br>
-                            {{assignment.dueDate}} </th>
+                            {% if assignment.dueDate %}
+                            Due {{assignment.dueDate | date:"M d"}}
+                            {% else %}
+                                No due date
+                            {% endif %}
+                        </th>
                         {% endfor %}
                     </tr>
                 </thead>
