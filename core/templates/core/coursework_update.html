@@ -4,14 +4,15 @@
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Your Courses" "course-list" %}
-    {% breadcrumb "Your Assignments" "../" %}
-    {% breadcrumb "Assignment Update" "coursework-list" %}
+    {% breadcrumb "Course Details" "course-detail" %}
+    {% breadcrumb "Assignments" "../" %}
+    {% breadcrumb "Update" "coursework-list" %}
 {% endblock %}
 
 
 {% block main-content %}
     <div class="ql-content coursework">
-        <h1 class="bg-header bg-text">Edit Assignemnt</h1>
+        <h1 class="bg-header bg-text">Edit Assignment</h1>
         <section class="card">
             <div class="card-body">
                 <form action="" method="post">{% csrf_token %}

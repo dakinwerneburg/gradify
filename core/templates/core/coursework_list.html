@@ -5,13 +5,13 @@
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Your Courses" "course-list" %}
-    {% breadcrumb "Course Detail" "../" %}
-    {% breadcrumb "Assignments List" "coursework-list" %}
+    {% breadcrumb "Course Details" "../" %}
+    {% breadcrumb "Assignments" "coursework-list" %}
 {% endblock %}
 
 {% block main-content %}
     <div class="ql-content">
-        <h1 class="bg-header bg-text">Assignements List</h1>
+        <h1 class="bg-header bg-text">Assignments List</h1>
         <section class="card">
             <div class="card-body">
                 <form action="{% url 'coursework-delete' %}" method="post" id="assignments-list">{% csrf_token %}
