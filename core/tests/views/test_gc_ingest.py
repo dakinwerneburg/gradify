@@ -1,7 +1,6 @@
 from unittest.mock import patch
 
 from django.test import TestCase
-from django.urls import reverse
 from googleapiclient.errors import HttpError
 from oauth2client.client import AccessTokenCredentialsError
 
