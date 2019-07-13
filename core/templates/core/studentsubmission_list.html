@@ -54,10 +54,10 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <a href="{% url 'course-create' %}">Add a new assignment</a>
+            <a href="{% url 'coursework-create' %}">Add a new assignment</a>
             {% else %}
             <h2>No Assignments</h2>
-            <p><a href="{% url 'course-create' %}">Add a new assignment</a> or import one from Google to view them here.</p>
+            <p><a href="{% url 'coursework-create' %}">Add a new assignment</a> or import one from Google to view them here.</p>
             {% endif %}
         </div>
     </section>
