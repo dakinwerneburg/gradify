@@ -34,16 +34,17 @@
                 </section>
             {% else %}
                 <div class="login-form">
-                    <p align="center">{% include 'svg/graduation.svg' %}</p>
-                    <p align="center">{% include 'svg/gradify-with-check.svg' %}</p>
+                    <p style="text-align: center">{% include 'svg/graduation.svg' %}</p>
+                    <p style="text-align: center">{% include 'svg/gradify-with-check.svg' %}</p>
                     <div class="text-center social-btn">
-                        <a href="{% provider_login_url 'google' %}" class="btn btn-danger btn-block"><i
-                                class="fa fa-google"></i>
-                            Sign in with <b>Google</b></a>
+                        <a href="{% provider_login_url 'google' %}" class="btn btn-danger btn-block">
+                            <i class="fa fa-google"></i>
+                            <div style="position: relative; left: -1rem;">Sign in with <b>Google</b></div>
+                        </a>
                     </div>
-                    <div class="or-seperator"><i>or</i></div>
+                    <div class="or-separator"><i>or</i></div>
                     <div class="text-center">
-                        <a href="{% url 'account_login' %}" class="btn btn-block login-btn">Sign in</a>
+                        <a href="{% url 'account_login' %}" class="btn btn-block login-btn">Sign in with <b>Gradify</b></a>
                     </div>
                 </div>
                 <div class="hint-text small text-center">
