@@ -16,10 +16,11 @@
         <div class="card-body">
             <header class="card-header">
                 <span class="light-text">{{ course.section }}</span>
-                {# TODO add link to course details #}
                 <h2 class="card-title">{{ course.name }}</h2>
+                {% if course.startDate and course.endDate %}
                 <time class="light-text">{{ course.startDate | date:"M d, Y" }} -
                     {{ course.endDate | date:"M d, Y" }}</time>
+                {% endif %}
             </header>
             {% if roster %}
             <table class="table table-striped table-hover">

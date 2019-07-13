@@ -16,8 +16,11 @@
                 <header class="card-header">
                     <span class="light-text">{{ course.section }}</span>
                     <h2 class="card-title"><a href="{% url 'course-detail' pk=course.pk %}">{{ course.name }}</a></h2>
-                    <time class="light-text">{{ course.startDate | date:"M d, Y" }} -
-                        {{ course.endDate | date:"M d, Y" }}</time>
+                    {% if course.startDate and course.endDate %}
+                        <time class="light-text">{{ course.startDate | date:"M d, Y" }} -
+                            {{ course.endDate | date:"M d, Y" }}
+                        </time>
+                    {% endif %}
                 </header>
                 <nav class="course-detail-nav">
                     <div>
