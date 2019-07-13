@@ -31,7 +31,7 @@ urlpatterns = [
     # Gradebook change routes
     path('gradebook/studentsubmission/<int:pk>/update/',
          views.StudentSubmissionUpdateView.as_view(), name='studentsubmission-update'),
-    path('gradebook/studentsubmission/create/', views.StudentSubmissionCreateView.as_view(),
+    path('gradebook/<int:pk>/studentsubmission/create/', views.StudentSubmissionCreateView.as_view(),
          name='studentsubmission-create'),
 
 ]

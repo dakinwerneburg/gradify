@@ -54,7 +54,7 @@
                                 {{ submission.assignedGrade }}
                                 {% include 'svg/pencil-edit-button.svg' %}</a>
                             {% else %}
-                            <a href="{% url 'studentsubmission-create'%}">Create
+                            <a href="{% url 'studentsubmission-create' pk=course.pk %}">Create
                                 {% include 'svg/pencil-edit-button.svg' %}</a>
                             {% endif %}
                         </td>
