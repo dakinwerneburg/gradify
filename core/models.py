@@ -17,12 +17,12 @@ class Course(models.Model):
 
     # Optional fields
     section = models.CharField(max_length=2800, blank=True)
-    descriptionHeading = models.CharField(max_length=3600, blank=True)
+    descriptionHeading = models.CharField(max_length=3600, blank=True, verbose_name="Heading")
     description = models.TextField(max_length=30_000, blank=True)
     room = models.CharField(max_length=650, blank=True)
-    alternateLink = models.CharField(max_length=650, blank=True)
-    startDate = models.DateTimeField(blank=True, null=True)
-    endDate = models.DateTimeField(blank=True, null=True)
+    alternateLink = models.CharField(max_length=650, blank=True, verbose_name="Link")
+    startDate = models.DateTimeField(blank=True, null=True, verbose_name="Start Date")
+    endDate = models.DateTimeField(blank=True, null=True, verbose_name="End Date")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -68,8 +68,8 @@ class CourseWork(models.Model):
     googleId = models.TextField(max_length=32, blank=True, null=True)
     description = models.TextField(max_length=30_000, blank=True)
     alternateLink = models.TextField(max_length=650, blank=True)
-    maxPoints = models.IntegerField(blank=True)
-    dueDate = models.DateTimeField(blank=True, null=True)
+    maxPoints = models.IntegerField(blank=True, verbose_name="Max Points")
+    dueDate = models.DateTimeField(blank=True, null=True, verbose_name="Due Date")
     creationTime = models.DateTimeField(blank=True, null=True)
     updateTime = models.DateTimeField(blank=True, null=True)
     creatorUserId = models.CharField(max_length=254)
@@ -112,7 +112,8 @@ class CourseWork(models.Model):
     workType = models.CharField(
         max_length=1,
         choices=COURSE_WORK_TYPE_CHOICES,
-        default=UNSPECIFIED
+        default=UNSPECIFIED,
+        verbose_name="Type"
     )
 
     # Course Work Source enum
@@ -181,7 +182,7 @@ class StudentSubmission(models.Model):
         choices=SUBMISSION_STATE_CHOICES,
         default=UNSPECIFIED
     )
-    COURSEWORKTYPE_CHOICES = [
+    COURSEWORK_TYPE_CHOICES = [
         (COURSE_WORK_TYPE_UNSPECIFIED, 'Unspecified'),
         (ASSIGNMENT, 'Assignment'),
         (SHORT_ANSWER_QUESTION, 'Short Answer Question'),
@@ -189,7 +190,7 @@ class StudentSubmission(models.Model):
     ]
     courseWorkType = models.CharField(
         max_length=1,
-        choices=COURSEWORKTYPE_CHOICES,
+        choices=COURSEWORK_TYPE_CHOICES,
         default=COURSE_WORK_TYPE_UNSPECIFIED
     )
 

@@ -4,13 +4,15 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Course Detail" "../" %}
-    {% breadcrumb "Assingment Detail" "coursework-detail" %}
+    {% breadcrumb "Your Courses" "course-list" %}
+    {% breadcrumb "Course Details" "../../" %}
+    {% breadcrumb "Assignments" "../" %}
+    {% breadcrumb "Assignment Details" "coursework-detail" %}
 {% endblock %}
 
 {% block main-content %}
     <div class="ql-content coursework">
-        <h1 class="bg-header bg-text">Assignment Detail</h1>
+        <h1 class="bg-header bg-text">Assignment Details</h1>
         <section class="card">
             <div class="card-body">
                 <header class="card-header">
@@ -18,17 +20,19 @@
                     <h2 class="card-title">{{ coursework.title }}
                         <span style="float:right">
                             {% url 'coursework-update' pk=course.pk pk2=assignment.pk as update_url %}
-                                <a href="{{update_url}}">
+                                <a href="{{ update_url }}">
                                     {% include 'svg/pencil-edit-button.svg' %}
                                 </a>
                         </span>
-                    </h2>  
+                    </h2>
                 </header>
-                <div class="coursework-detail"> 
+                <div class="coursework-detail">
                     <h3>Instructions:</h3>
-                    <p>{{ coursework.description}}</p>  
-                    <p>Due Date: <time class="light-text">{{ coursework.dueDate | date:"M d, Y" }}</time></p>
-                    <span>Max Points:  {{ coursework.maxPoints }}</span>
+                    <p>{{ coursework.description }}</p>
+                    <p>Due Date:
+                        <time class="light-text">{{ coursework.dueDate | date:"M d, Y" }}</time>
+                    </p>
+                    <span>Max Points: {{ coursework.maxPoints }}</span>
                 </div>
             </div>
         </section>

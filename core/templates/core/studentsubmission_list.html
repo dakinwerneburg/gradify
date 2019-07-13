@@ -5,7 +5,7 @@
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Your Courses" "course-list" %}
-    {% breadcrumb "Course Detail" "../" %}
+    {% breadcrumb "Course Details" "../" %}
     {% breadcrumb "Gradebook" "studentsubmission-list" %}
 {% endblock %}
 
@@ -16,10 +16,11 @@
         <div class="card-body">
             <header class="card-header">
                 <span class="light-text">{{ course.section }}</span>
-                {# TODO add link to course details #}
                 <h2 class="card-title">{{ course.name }}</h2>
+                {% if course.startDate and course.endDate %}
                 <time class="light-text">{{ course.startDate | date:"M d, Y" }} -
                     {{ course.endDate | date:"M d, Y" }}</time>
+                {% endif %}
             </header>
             {% if gradebook %}
             <table class="table table-striped table-hover">
@@ -28,9 +29,15 @@
                         <th>Name</th>
                         <th>Average</th>
                         {% for assignment in coursework %}
-                        <th> {{ assignment }} <br>
+                        <th style="font-weight: lighter">
+                            <b style="font-weight: bold">{{ assignment }}</b> <br>
                             {{assignment.maxPoints }} points<br>
-                            {{assignment.dueDate}} </th>
+                            {% if assignment.dueDate %}
+                            Due {{assignment.dueDate | date:"M d"}}
+                            {% else %}
+                                No due date
+                            {% endif %}
+                        </th>
                         {% endfor %}
                     </tr>
                 </thead>
@@ -55,7 +62,7 @@
             </table>
             <a href="{% url 'coursework-create' %}">Add a new assignment</a>
             {% else %}
-            <h2>No Assignments</h2>
+            <h3>No Assignments</h3>
             <p><a href="{% url 'coursework-create' %}">Add a new assignment</a> or import one from Google to view them here.</p>
             {% endif %}
         </div>
