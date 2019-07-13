@@ -212,6 +212,11 @@ nav a, .breadcrumb a {
     padding-right: 3px;
 }
 
+nav a:hover {
+    color: #E8EFFD;
+    text-decoration: underline;
+}
+
 .breadcrumb li, .breadcrumb li .divider {
     font-size: 18px;
     line-height: 21px;
