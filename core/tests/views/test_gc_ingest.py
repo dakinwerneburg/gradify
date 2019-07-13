@@ -1,7 +1,6 @@
 from unittest.mock import patch
 
 from django.test import TestCase
-from django.urls import reverse
 from googleapiclient.errors import HttpError
 from oauth2client.client import AccessTokenCredentialsError
 
@@ -259,16 +258,27 @@ class ClassroomIngestViewTests(TestCase):
 
     def test_properly_sets_course_state(self):
         """
-        The course state should be properly translated
+        The course state should be saved
         """
         SocialAccount.objects.create(user=self.mock_user, provider='Google1')
 
         imported_course = import_course(self.mock_gc_course, self.mock_user)
         self.assertEqual(Course.ACTIVE, imported_course.courseState)
 
-        self.mock_gc_course['courseState'] = 'UNSPECIFIED'
+        self.mock_gc_course['courseState'] = 'PROVISIONED'
         imported_course = import_course(self.mock_gc_course, self.mock_user)
-        self.assertEqual(Course.UNSPECIFIED, imported_course.courseState)
+        self.assertEqual(Course.PROVISIONED, imported_course.courseState)
+
+    def test_handles_unknown_enum_vals(self):
+        """
+        If an enum type has an unrecognized value, it should be set as unspecified
+        """
+        SocialAccount.objects.create(user=self.mock_user, provider='Google1')
+        self.mock_gc_course['courseState'] = 'DISARRAY'
+
+        imported_course = import_course(self.mock_gc_course, self.mock_user)
+
+        self.assertEqual(Course.COURSE_STATE_UNSPECIFIED, imported_course.courseState)
 
 
 class AssignmentIngestTests(TestCase):
@@ -359,9 +369,17 @@ class AssignmentIngestTests(TestCase):
         self.assertEqual(CourseWork.PUBLISHED, imported_assignment.state)
         self.assertEqual(CourseWork.ASSIGNMENT, imported_assignment.workType)
 
-        self.mock_gc_assignment['state'] = 'UNSPECIFIED'
+        self.mock_gc_assignment['state'] = 'PUBLISHED'
         imported_assignment = import_assignment(self.mock_gc_assignment, self.mock_course)
-        self.assertEqual(CourseWork.UNSPECIFIED, imported_assignment.state)
+        self.assertEqual(CourseWork.PUBLISHED, imported_assignment.state)
+
+    def test_import_uses_default_for_unknown_enum_val(self):
+        self.mock_gc_assignment['state'] = 'IDAHO'
+        self.mock_gc_assignment['workType'] = 'REAL_CODE'
+
+        imported_assignment = import_assignment(self.mock_gc_assignment, self.mock_course)
+        self.assertEqual(CourseWork.COURSE_WORK_STATE_UNSPECIFIED, imported_assignment.state)
+        self.assertEqual(CourseWork.COURSE_WORK_TYPE_UNSPECIFIED, imported_assignment.workType)
 
 
 class StudentIngestTests(TestCase):
@@ -455,18 +473,6 @@ class StudentIngestTests(TestCase):
         imported_enrollment = import_student(self.mock_gc_student, self.mock_course)
 
         self.assertEqual(self.mock_student, imported_enrollment.student)
-
-    def test_import_can_later_be_viewed_by_new_user(self):
-        """
-        A submission should be associated with a user if the user signs in after the submission is imported
-        """
-        import_student(self.mock_gc_student, self.mock_course)
-        new_acct = SocialAccount.objects.get(uid=self.mock_gc_student['profile']['id']).user
-        self.client.force_login(new_acct)
-
-        response = self.client.get(reverse('course-list'))
-
-        self.assertContains(response, self.mock_course)
 
 
 class SubmissionIngestTests(TestCase):
@@ -562,4 +568,10 @@ class SubmissionIngestTests(TestCase):
     def test_properly_converts_enum_fields(self):
         imported_submission = import_submission(self.mock_gc_submission)
         self.assertEqual(StudentSubmission.RETURNED, imported_submission.state)
-        self.assertEqual(CourseWork.ASSIGNMENT, imported_submission.courseWorkType)
+        self.assertEqual(StudentSubmission.ASSIGNMENT, imported_submission.courseWorkType)
+
+        self.mock_gc_submission['state'] = 'TEXAS'
+        self.mock_gc_submission['courseWorkType'] = 'REAL_CODE'
+        imported_submission = import_submission(self.mock_gc_submission)
+        self.assertEqual(StudentSubmission.SUBMISSION_STATE_UNSPECIFIED, imported_submission.state)
+        self.assertEqual(StudentSubmission.COURSE_WORK_TYPE_UNSPECIFIED, imported_submission.courseWorkType)
