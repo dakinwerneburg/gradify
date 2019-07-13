@@ -14,14 +14,17 @@
         <h1 class="bg-header bg-text">Create New Assignment</h1>
         <section class="card">
             <div class="card-body">
-                    <header class="card-header">
-                            <h2 class="card-title">{{ course.name }}</h2>                  
-                    </header>
+                <header class="card-header">
+                    <h2 class="card-title">Add Assignment</h2>
+                </header>
                 <form action="" method="post">{% csrf_token %}
-                    <table>
-                        {{ form }}
-                    </table>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    {% for field in form %}
+                        <div class="form-group">
+                            <label for="{{ field.name }}">{{ field.label }}</label>
+                            {{ field }}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
                 </form>
             </div>
         </section>

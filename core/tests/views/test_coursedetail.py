@@ -32,13 +32,16 @@ class CourseDetailViewTests(TestCase):
         self.assertContains(response, 'No Assignments')
 
     def test_links_work(self):
-        course = Course.objects.get(pk=1)
-        response = self.client.get(reverse('course-detail', kwargs={'pk': 1}))
-        course_link = '<a href="%s">' + course.name + '</a>'
-        self.assertContains(response, course_link % reverse('course-detail', kwargs={'pk': 1}), html=True)
-        self.assertContains(response, '<a href="%s">' % reverse('coursework-detail', kwargs={'pk': 1, 'pk2': 1}))
-        self.assertContains(response, '<a href="%s">View/Edit Gradebook</a>' %
-                            reverse('studentsubmission-list', kwargs={'pk': 1}), html=True)
+        mock_course: Course = Course.objects.filter(owner=3).first()
+        mock_user = mock_course.owner
+        self.client.force_login(user=mock_user)
+        mock_coursework = mock_course.coursework_set.all().first()
+        response = self.client.get(reverse('course-detail', kwargs={'pk': mock_course.id}))
+        self.assertContains(response,
+                            '<a href="%s">' % reverse('coursework-detail', kwargs={'pk': mock_course.id,
+                                                                                   'pk2': mock_coursework.id}))
+        self.assertContains(response, '<a href="%s">' %
+                            reverse('studentsubmission-list', kwargs={'pk': mock_course.id}))
 
     def test_all_assignments_listed(self):
         num_of_assignments = CourseWork.objects.filter(course=1).count()
