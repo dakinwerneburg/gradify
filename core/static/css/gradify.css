@@ -30,6 +30,10 @@ nav, .navbar-nav, .breadcrumb {
     cursor: pointer;
 }
 
+.nav-user a:hover {
+    color: inherit;
+}
+
 
 /* Container for site content */
 
@@ -133,7 +137,7 @@ nav, .navbar-nav, .breadcrumb {
     /*text-decoration: underline;*/
 }
 
-a:hover svg path {
+.card a:hover svg path {
     fill: #007bff;
 }
 
@@ -361,7 +365,6 @@ main {
 .delete-confirm-buttons {
     text-align: center;
     display: block;
-    border: solid 1px red;
 }
 
 .delete-confirm-buttons a {

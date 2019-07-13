@@ -19,8 +19,8 @@
             <div class="delete-confirm-buttons">
                 <form action="{% url 'course-delete' pk=object.pk %}" method="POST">
                     {% csrf_token %}
-                    <p><input class="btn btn-default btn-danger" type="submit" value="Delete"/></p>
-                    <p><a href="{% url 'course-detail' pk=object.pk %}">No, take me back to course details.</a></p>
+                    <input class="btn btn-danger btn-block" type="submit" value="Delete"/>
+                    <p style="padding-top: 1rem;"><a href="{% url 'course-detail' pk=object.pk %}">No, take me back to course details.</a></p>
                 </form>
             </div>
         </div>
