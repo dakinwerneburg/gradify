@@ -18,12 +18,20 @@ urlpatterns = [
          name='studentsubmission-list'),
     path('course/<int:pk>/roster/', views.CourseRosterView.as_view(), name='course-roster'),
     path('course/<int:pk>/assignment/', views.CourseWorkListView.as_view(), name='coursework-list'),
-    path('course/<int:pk>/assignment/<int:pk2>/', views.CourseWorkDetailView.as_view(), name='coursework-detail'),
-    path('course/<int:pk>/assignment/<int:pk2>/update', views.CourseWorkUpdateView.as_view(), name='coursework-update'),
+    path('course/<int:pk>/assignment/<int:pk2>/', views.CourseWorkDetailView.as_view(),
+         name='coursework-detail'),
+    path('course/<int:pk>/assignment/<int:pk2>/update', views.CourseWorkUpdateView.as_view(),
+         name='coursework-update'),
     # Assignment routes
     path('assignment/create/', views.CourseWorkCreateView.as_view(), name='coursework-create'),
     path('assignment/delete', views.CourseWorkDeleteView.as_view(), name='coursework-delete'),
     # Verification routes
     path('googleb95a6feb416ee79e.html', views.google_verification, name='google-verification'),
     re_path(r'^.well-known/acme-challenge/.*$', views.acme_challenge, name='acme-challenge'),
+    # Gradebook change routes
+    path('gradebook/studentsubmission/<int:pk>/update/',
+         views.StudentSubmissionUpdateView.as_view(), name='studentsubmission-update'),
+    path('gradebook/studentsubmission/create/', views.StudentSubmissionCreateView.as_view(),
+         name='studentsubmission-create'),
+
 ]

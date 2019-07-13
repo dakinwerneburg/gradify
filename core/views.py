@@ -18,6 +18,7 @@ from gradify.settings.heroku import ACME_CHALLENGE_CONTENT
 from users.models import CustomUser
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
 from .forms import CourseCreateForm, CourseWorkCreateForm, CourseWorkDeleteForm, CourseWorkUpdateForm
+from .forms import StudentSubmissionCreateForm, StudentSubmissionUpdateForm
 
 import logging
 import csv
@@ -229,11 +230,19 @@ class CourseWorkCreateView(generic.CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+    def create_blank_student_submissions(self, new_coursework):
+        roster = CourseStudent.objects.filter(course=new_coursework.course)
+
+        for entry in roster:
+            new_submission = StudentSubmission(student=entry.student, coursework=new_coursework)
+            new_submission.save()
+
     def form_valid(self, form):
         coursework = form.save(commit=False)
         coursework.source = 'G'
         coursework.author = self.request.user
         coursework.save()
+        self.create_blank_student_submissions(coursework)
         return super(CourseWorkCreateView, self).form_valid(form)
 
 
@@ -343,3 +352,21 @@ def acme_challenge(request):
     Used to respond to Let's Encrypt SSL cert challenge
     """
     return HttpResponse(ACME_CHALLENGE_CONTENT)
+
+
+class StudentSubmissionUpdateView(generic.UpdateView):
+    model = StudentSubmission
+    form_class = StudentSubmissionUpdateForm
+    template_name = 'core/studentsubmission_update.html'
+
+    def get_success_url(self):
+        return reverse('studentsubmission-list', kwargs={'pk': self.object.coursework.course.pk})
+
+
+class StudentSubmissionCreateView(generic.CreateView):
+    model = StudentSubmission
+    form_class = StudentSubmissionCreateForm
+    template_name = 'core/studentsubmission_create.html'
+
+    def get_success_url(self):
+        return reverse('studentsubmission-list', kwargs={'pk': self.object.coursework.course.pk})

@@ -3,10 +3,10 @@
 {% load django_bootstrap_breadcrumbs %}
 
 {% block breadcrumbs %}
-    {{ block.super }}
-    {% breadcrumb "Your Courses" "course-list" %}
-    {% breadcrumb "Course Details" "../" %}
-    {% breadcrumb "Gradebook" "studentsubmission-list" %}
+{{ block.super }}
+{% breadcrumb "Your Courses" "course-list" %}
+{% breadcrumb "Course Details" "../" %}
+{% breadcrumb "Gradebook" "studentsubmission-list" %}
 {% endblock %}
 
 {% block main-content %}
@@ -35,7 +35,7 @@
                             {% if assignment.dueDate %}
                             Due {{assignment.dueDate | date:"M d"}}
                             {% else %}
-                                No due date
+                            No due date
                             {% endif %}
                         </th>
                         {% endfor %}
@@ -50,20 +50,25 @@
                         {% for submission in entry.submissions %}
                         <td>
                             {% if submission %}
-                            {{ submission.assignedGrade }}
+                            <a href="{% url 'studentsubmission-update' pk=submission.pk %}">
+                                {{ submission.assignedGrade }}
+                                {% include 'svg/pencil-edit-button.svg' %}</a>
                             {% else %}
-                            -
+                            <a href="{% url 'studentsubmission-create'%}">Create
+                                {% include 'svg/pencil-edit-button.svg' %}</a>
                             {% endif %}
                         </td>
                         {% endfor %}
                     </tr>
+
                     {% endfor %}
                 </tbody>
             </table>
             <a href="{% url 'coursework-create' %}">Add a new assignment</a>
             {% else %}
             <h3>No Assignments</h3>
-            <p><a href="{% url 'coursework-create' %}">Add a new assignment</a> or import one from Google to view them here.</p>
+            <p><a href="{% url 'coursework-create' %}">Add a new assignment</a> or import one from Google to view them
+                here.</p>
             {% endif %}
         </div>
     </section>
