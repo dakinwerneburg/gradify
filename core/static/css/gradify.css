@@ -3,7 +3,6 @@ body {
     font-family: Roboto, sans-serif;
 }
 
-
 /* Navigation bar */
 
 .nav-icon {
@@ -109,6 +108,12 @@ nav, .navbar-nav, .breadcrumb {
     text-decoration: none; 
     color: inherit;
 }
+
+.card a:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
 
 /* Element containing card title and any other necessary details */
 
