@@ -4,13 +4,15 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Course Details" "../" %}
+    {% breadcrumb "Your Courses" "course-list" %}
+    {% breadcrumb "Course Details" "../../" %}
+    {% breadcrumb "Assignments" "../" %}
     {% breadcrumb "Assignment Details" "coursework-detail" %}
 {% endblock %}
 
 {% block main-content %}
     <div class="ql-content coursework">
-        <h1 class="bg-header bg-text">Assignment Detail</h1>
+        <h1 class="bg-header bg-text">Assignment Details</h1>
         <section class="card">
             <div class="card-body">
                 <header class="card-header">
