@@ -15,7 +15,7 @@
             <div class="card-body">
                 <header class="card-header">
                     <span class="light-text">{{ course.section }}</span>
-                    <h2 class="card-title"><a href="{% url 'course-detail' pk=course.pk %}">{{ course.name }}</a></h2>
+                    <h2 class="card-title">{{ course.name }}</h2>
                     {% if course.startDate and course.endDate %}
                         <time class="light-text">{{ course.startDate | date:"M d, Y" }} -
                             {{ course.endDate | date:"M d, Y" }}
@@ -24,48 +24,56 @@
                 </header>
                 <nav class="course-detail-nav">
                     <div>
-                        <span>{% include 'svg/course-details-gradebook.svg' %}<a href="{% url 'studentsubmission-list' pk=course.pk %}">View/Edit Gradebook</a></span>
-                        <p>Display all enrolled students and view/edit their assignment grades in one convenient location.
-                        </p>
-                    </div>
-                    {# TODO need to decide on what to do with view/edit assignment navigation link #}
-                    <div>
-                        <span>{% include 'svg/course-details-book.svg' %}<a href="{% url 'coursework-list' pk=course.pk%}">View/Edit Assignments</a></span>
-                        <p>Display a list of course assignments. Add a new assignment or edit/delete existing assignments.
-                        </p>
+                        <a href="{% url 'studentsubmission-list' pk=course.pk %}">{% include 'svg/course-details-gradebook.svg' %}View/Edit
+                            Gradebook</a>
+                        <p>Display all enrolled students and view/edit their assignment grades in one convenient
+                            location.</p>
                     </div>
                     <div>
-                        {# TODO add link to class roster #}
-                        <span>{% include 'svg/course-details-people.svg' %}<a href="{% url 'course-roster' pk=course.pk %}">View/Edit Class Roster</a></span>
-                        <p>View a list of students enrolled in the class. Add or remove students from the class roster.</p>
+                        <a href="{% url 'coursework-list' pk=course.pk %}">{% include 'svg/course-details-book.svg' %}View/Edit
+                            Assignments</a>
+                        <p>Display a list of course assignments. Add a new assignment or edit/delete existing
+                            assignments.</p>
                     </div>
                     <div>
-                        {# TODO add link to class roster #}
-                        <span>{% include 'svg/rubbish-bin.svg' %}<a href="{% url 'course-delete' pk=course.pk %}">Delete This Course</a></span>
+                        <a href="{% url 'course-roster' pk=course.pk %}">{% include 'svg/course-details-people.svg' %}View/Edit
+                            Class Roster</a>
+                        <p>View a list of students enrolled in the class. Add or remove students from the class
+                            roster.</p>
+                    </div>
+                    <div>
+                        <a class="course-detail-delete" href="{% url 'course-delete' pk=course.pk %}">{% include 'svg/rubbish-bin.svg' %}Delete This
+                            Course</a>
                         <p>Delete this course and all associated data.</p>
                     </div>
                 </nav>
                 <details>
-                <summary class="light-text">Upcoming Assignments</summary>
-                <table class="table table-striped table-hover">
-                    <tbody>
-                        {% if coursework %}  
-                                    {% for assignment in coursework %}
-                                    <tr class="generic-row">
-                                        <td>{{assignment.dueDate}}</td>
-                                        <td style="text-align: center">{{assignment.title}}</td>
-                                        <td style="text-align: right">
-                                            <a href="{% url 'coursework-detail' pk=course.pk pk2=assignment.pk%}">{% include 'svg/go-arrow.svg' %}</a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                {% else %}
-                                    <tr class="generic-row">
-                                        <td>No Assignments</td> 
-                                    </tr> 
-                                {% endif %}
-                    </tbody>
-                </table>
+                    <summary class="light-text">Upcoming Assignments</summary>
+                    <table class="table table-striped table-hover">
+                        <tbody>
+                        {% if coursework %}
+                            {% for assignment in coursework %}
+                                <tr class="generic-row">
+                                    <td>{{ assignment.title }}</td>
+                                    <td style="text-align: center">
+                                        {% if assignment.dueDate %}
+                                            {{ assignment.dueDate | date:"M d" }}
+                                        {% else %}
+                                            No due date
+                                        {% endif %}
+                                    </td>
+                                    <td style="text-align: right">
+                                        <a href="{% url 'coursework-detail' pk=course.pk pk2=assignment.pk %}">{% include 'svg/go-arrow.svg' %}</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr class="generic-row">
+                                <td>No Assignments</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
                 </details>
             </div>
         </section>
