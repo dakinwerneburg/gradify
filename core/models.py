@@ -149,7 +149,7 @@ class StudentSubmission(models.Model):
     # Optional Fields
     late = models.BooleanField(default=False)
     draftGrade = models.FloatField(blank=True, null=True)
-    assignedGrade = models.FloatField(blank=True, null=True)
+    assignedGrade = models.FloatField(blank=True, null=True, verbose_name="Assigned Grade")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     alternateLink = models.TextField(max_length=650, blank=True)

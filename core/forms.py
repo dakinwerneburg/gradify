@@ -88,6 +88,9 @@ class StudentSubmissionUpdateForm(forms.ModelForm):
         fields = [
             'assignedGrade'
         ]
+        widgets = {
+            'assignedGrade': forms.TextInput(attrs={'class': 'form-control'})
+        }
 
 
 class StudentSubmissionCreateForm(forms.ModelForm):
