@@ -1,6 +1,13 @@
+image: python:latest
+
 cache:
   paths:
   - ~/.cache/pip/
+
+before_script:
+  - python -V
+  - pip install -r requirements.txt
+  - pip install -r test-requirements.txt
 
 stages:
   - Static Analysis
@@ -11,51 +18,24 @@ stages:
 
 flake8:
   stage: Static Analysis
-  image: python:latest
   script:
-  - pip install -r requirements.txt
-  - pip install -r test-requirements.txt
   - flake8
 
 pylint:
   stage: Static Analysis
   allow_failure: true
-  image: python:latest
   script:
-  - pip install -r requirements.txt
-  - pip install -r test-requirements.txt
   - pylint --ignore-patterns=.git,core/migrations,users/migrations,manage ./*.py
 
 bandit:
   stage: Security Audit
   allow_failure: true
-  image: python:latest
   script:
-    - pip install -r requirements.txt
-    - pip install -r test-requirements.txt
     - bandit -s B105 -r ./core ./gradify ./users
 
 unit_test:
-  image: python:latest
   stage: Test
   script:
-  - pip install -r requirements.txt
-  - pip install -r test-requirements.txt
   - coverage run --omit="core/migrations/*","users/migrations/*","manage.py","core/tests/*" --source="." manage.py test --settings gradify.settings.ci
   - coverage report
-
-deploy_heroku:
-  stage: Deploy
-  image: 
-    name: wingrunr21/alpine-heroku-cli
-    entrypoint: ["/bin/sh"]
-  script:
-    - ./heroku_login
-    - git remote add heroku https://heroku:$HEROKU_KEY@git.heroku.com/gradify-app.git
-    - git push heroku HEAD:master
-  environment:
-    name: production
-    url: https://gradify-app.herokuapp.com/
-#  only:
-#    - master
 
