@@ -1,5 +1,6 @@
 from allauth.socialaccount.models import SocialAccount
 from django.views.generic.base import TemplateView
+
 from googleclassroom.google_classroom import ClassroomHelper
 
 
