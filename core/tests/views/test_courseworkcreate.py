@@ -5,7 +5,7 @@ from users.models import CustomUser
 
 
 class CourseWorkCreateTests(TestCase):
-    fixtures = ['classroom', 'course', 'coursework', 'user']
+    fixtures = ['course', 'coursework', 'user']
 
     def setUp(self):
         self.client.force_login(CustomUser.objects.get(username='teacher1'))
