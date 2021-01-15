@@ -22,9 +22,9 @@ class CourseListViewTests(TestCase):
         self.assertContains(response, course_names[0])
         self.assertContains(response, course_names[1])
 
-    def test_owned_and_enrolled_courses_listed(self):
+    def test_owned_and_enrolled_courses_not_listed(self):
         """
-        The course list should contain courses that the user owns as well as courses
+        The course list should contain courses that the user owns and not courses
         that the user is enrolled in
         """
         Course.objects.all().delete()
@@ -35,7 +35,7 @@ class CourseListViewTests(TestCase):
         response = self.client.get(reverse('course-list'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, owned_course)
-        self.assertContains(response, enrolled_course)
+        self.assertNotContains(response, enrolled_course)
 
     def test_no_courses(self):
         """

@@ -17,35 +17,40 @@ class Course(models.Model):
 
     # Optional fields
     section = models.CharField(max_length=2800, blank=True)
-    descriptionHeading = models.CharField(max_length=3600, blank=True)
+    descriptionHeading = models.CharField(max_length=3600, blank=True, verbose_name="Heading")
     description = models.TextField(max_length=30_000, blank=True)
     room = models.CharField(max_length=650, blank=True)
-    alternateLink = models.CharField(max_length=650, blank=True)
-    startDate = models.DateTimeField(blank=True, null=True)
-    endDate = models.DateTimeField(blank=True, null=True)
+    alternateLink = models.CharField(max_length=650, blank=True, verbose_name="Link")
+    startDate = models.DateTimeField(blank=True, null=True, verbose_name="Start Date")
+    endDate = models.DateTimeField(blank=True, null=True, verbose_name="End Date")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     # Google Classroom specific
+    googleId = models.CharField(max_length=32, blank=True, null=True)
     creationTime = models.DateTimeField(blank=True, null=True)
     updateTime = models.DateTimeField(blank=True, null=True)
     ownerId = models.CharField(max_length=254)
 
     # Course state choices enum
-    UNSPECIFIED = 'U'
-    ACTIVE = 'A'
-    ARCHIVED = 'R'
-    SUSPENDED = 'S'
+    COURSE_STATE_UNSPECIFIED = 'COURSE_STATE_UNSPECIFIED'
+    ACTIVE = 'ACTIVE'
+    ARCHIVED = 'ARCHIVED'
+    PROVISIONED = 'PROVISIONED'
+    DECLINED = 'DECLINED'
+    SUSPENDED = 'SUSPENDED'
     COURSE_STATE_CHOICES = [
-        (UNSPECIFIED, 'Unspecified'),
+        (COURSE_STATE_UNSPECIFIED, 'Unspecified'),
         (ACTIVE, 'Active'),
         (ARCHIVED, 'Archived'),
+        (PROVISIONED, 'Provisioned'),
+        (DECLINED, 'Declined'),
         (SUSPENDED, 'Suspended')
     ]
     courseState = models.CharField(
-        max_length=1,
+        max_length=64,
         choices=COURSE_STATE_CHOICES,
-        default=UNSPECIFIED
+        default=COURSE_STATE_UNSPECIFIED
     )
 
     def __str__(self):
@@ -64,10 +69,11 @@ class CourseWork(models.Model):
     author = models.ForeignKey(to='users.CustomUser', on_delete=models.SET_NULL, null=True)
 
     # Optional Fields
+    googleId = models.TextField(max_length=32, blank=True, null=True)
     description = models.TextField(max_length=30_000, blank=True)
     alternateLink = models.TextField(max_length=650, blank=True)
-    maxPoints = models.IntegerField(blank=True)
-    dueDate = models.DateTimeField(blank=True, null=True)
+    maxPoints = models.IntegerField(blank=True, verbose_name="Max Points")
+    dueDate = models.DateTimeField(blank=True, null=True, verbose_name="Due Date")
     creationTime = models.DateTimeField(blank=True, null=True)
     updateTime = models.DateTimeField(blank=True, null=True)
     creatorUserId = models.CharField(max_length=254)
@@ -76,54 +82,53 @@ class CourseWork(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     # Course work state choices enum
-    UNSPECIFIED = 'U'
-    PUBLISHED = 'P'
-    DRAFT = 'D'
-    DELETED = 'X'
+    COURSE_WORK_STATE_UNSPECIFIED = 'COURSE_WORK_STATE_UNSPECIFIED'
+    PUBLISHED = 'PUBLISHED'
+    DRAFT = 'DRAFT'
+    DELETED = 'DELETED'
     COURSE_WORK_STATE_CHOICES = [
-        (UNSPECIFIED, 'Unspecified'),
+        (COURSE_WORK_STATE_UNSPECIFIED, 'Unspecified'),
         (PUBLISHED, 'Published'),
         (DRAFT, 'Draft'),
         (DELETED, 'Deleted'),
     ]
     state = models.CharField(
-        max_length=1,
+        max_length=64,
         choices=COURSE_WORK_STATE_CHOICES,
-        default=UNSPECIFIED
+        default=COURSE_WORK_STATE_UNSPECIFIED
     )
 
     # Course work type choices enum
-    UNSPECIFIED = 'U'
-    QUIZ = 'Q'
-    TEST = 'T'
-    WORKSHEET = 'W'
-    FINAL = 'F'
+    COURSE_WORK_TYPE_UNSPECIFIED = 'COURSE_WORK_TYPE_UNSPECIFIED'
+    ASSIGNMENT = 'ASSIGNMENT'
+    SHORT_ANSWER_QUESTION = 'SHORT_ANSWER_QUESTION'
+    MULTIPLE_CHOICE_QUESTION = 'MULTIPLE_CHOICE_QUESTION'
     COURSE_WORK_TYPE_CHOICES = [
-        (UNSPECIFIED, 'Unspecified'),
-        (QUIZ, 'Quiz'),
-        (TEST, 'Test'),
-        (WORKSHEET, 'Worksheet'),
-        (FINAL, 'Final'),
+        (COURSE_WORK_TYPE_UNSPECIFIED, 'Unspecified'),
+        (ASSIGNMENT, 'Assignment'),
+        (SHORT_ANSWER_QUESTION, 'Short Answer Question'),
+        (MULTIPLE_CHOICE_QUESTION, 'Multiple Choice Question'),
     ]
     workType = models.CharField(
-        max_length=1,
+        max_length=64,
         choices=COURSE_WORK_TYPE_CHOICES,
-        default=UNSPECIFIED
+        default=COURSE_WORK_TYPE_UNSPECIFIED,
+        verbose_name="Work Type"
     )
 
     # Course Work Source enum
-    UNSPECIFIED = 'U'
+    COURSE_WORK_SOURCE_UNSPECIFIED = 'U'
     GOOGLE = 'C'
     GRADIFY = 'G'
     COURSE_WORK_SOURCE_CHOICES = [
-        (UNSPECIFIED, 'Unspecified'),
+        (COURSE_WORK_SOURCE_UNSPECIFIED, 'Unspecified'),
         (GOOGLE, 'Google Classroom'),
         (GRADIFY, 'Gradify'),
     ]
     source = models.CharField(
         max_length=1,
         choices=COURSE_WORK_SOURCE_CHOICES,
-        default=UNSPECIFIED
+        default=COURSE_WORK_SOURCE_UNSPECIFIED
     )
 
     def __str__(self):
@@ -144,7 +149,7 @@ class StudentSubmission(models.Model):
     # Optional Fields
     late = models.BooleanField(default=False)
     draftGrade = models.FloatField(blank=True, null=True)
-    assignedGrade = models.FloatField(blank=True, null=True)
+    assignedGrade = models.FloatField(blank=True, null=True, verbose_name="Assigned Grade")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     alternateLink = models.TextField(max_length=650, blank=True)
@@ -153,39 +158,40 @@ class StudentSubmission(models.Model):
     gcSubmissionId = models.TextField(max_length=650, blank=True)
 
     # Student submission state choices enum
-    UNSPECIFIED = 'U'
-    NEW = 'N'
-    CREATED = 'C'
-    TURNED_IN = 'T'
-    RETURNED = 'R'
-    RECLAIMED_BY__STUDENT = 'S'
-    COURSE_WORK_TYPE_UNSPECIFIED = 'U'
-    ASSIGNMENT = 'A'
-    SHORT_ANSWER_QUESTION = 'S'
-    MULTIPLE_CHOICE_QUESTION = 'M'
+    SUBMISSION_STATE_UNSPECIFIED = 'SUBMISSION_STATE_UNSPECIFIED'
+    NEW = 'NEW'
+    CREATED = 'CREATED'
+    TURNED_IN = 'TURNED_IN'
+    RETURNED = 'RETURNED'
+    RECLAIMED_BY_STUDENT = 'RECLAIMED_BY_STUDENT'
 
     SUBMISSION_STATE_CHOICES = [
-        (UNSPECIFIED, 'Unspecified'),
+        (SUBMISSION_STATE_UNSPECIFIED, 'Unspecified'),
         (NEW, 'New'),
         (CREATED, 'Created'),
         (TURNED_IN, 'Turned In'),
         (RETURNED, 'Returned'),
-        (RECLAIMED_BY__STUDENT, 'Reclaimed by Student'),
+        (RECLAIMED_BY_STUDENT, 'Reclaimed by Student'),
     ]
     state = models.CharField(
-        max_length=1,
+        max_length=64,
         choices=SUBMISSION_STATE_CHOICES,
-        default=UNSPECIFIED
+        default=SUBMISSION_STATE_UNSPECIFIED
     )
-    COURSEWORKTYPE_CHOICES = [
+
+    COURSE_WORK_TYPE_UNSPECIFIED = 'COURSE_WORK_TYPE_UNSPECIFIED'
+    ASSIGNMENT = 'ASSIGNMENT'
+    SHORT_ANSWER_QUESTION = 'SHORT_ANSWER_QUESTION'
+    MULTIPLE_CHOICE_QUESTION = 'MULTIPLE_CHOICE_QUESTION'
+    COURSEWORK_TYPE_CHOICES = [
         (COURSE_WORK_TYPE_UNSPECIFIED, 'Unspecified'),
         (ASSIGNMENT, 'Assignment'),
         (SHORT_ANSWER_QUESTION, 'Short Answer Question'),
         (MULTIPLE_CHOICE_QUESTION, 'Multiple Choice Question'),
     ]
     courseWorkType = models.CharField(
-        max_length=1,
-        choices=COURSEWORKTYPE_CHOICES,
+        max_length=64,
+        choices=COURSEWORK_TYPE_CHOICES,
         default=COURSE_WORK_TYPE_UNSPECIFIED
     )
 
@@ -203,4 +209,5 @@ class CourseStudent(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return "%d: %s - %s" % (self.id, self.student, self.course)
+        return "%s" % (self.student)
+
