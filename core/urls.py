@@ -35,4 +35,3 @@ urlpatterns = [
          name='studentsubmission-create'),
 
 ]
-

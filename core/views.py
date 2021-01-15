@@ -42,6 +42,42 @@ class CoursesView(LoginRequiredMixin, generic.ListView):
         return Course.objects.filter(Q(owner_id=user_id)).distinct()
 
 
+class GradebookDetailView(LoginRequiredMixin, generic.DetailView):
+    template_name = 'core/gradebook_list.html'
+    model = Course
+
+    def get_context_data(self, **kwargs):
+        """
+        Augment the context with a list of course work in the correct order
+        """
+        context = super().get_context_data(**kwargs)
+        course = Course.objects.get(pk=self.kwargs['pk'])
+        students = []
+        for record in course.coursestudent_set.all():
+            name = record.student.get_full_name()
+            grades = []
+            for assignment in course.coursework_set.all():
+                entry = record.student.studentsubmission_set.filter(
+                    coursework=assignment)
+                if not entry:
+                    ss = StudentSubmission()
+                    ss.assignedGrade = None
+                    ss.student = record.student
+                    ss.coursework = assignment
+                    grades.append(ss)
+                else:
+                    grades.append(entry[0])
+
+            points_available = [item.coursework.maxPoints for item in grades if
+                                item.assignedGrade]
+            points_earned = [item.assignedGrade for item in grades if item.assignedGrade]
+
+            avg = round(sum(points_earned) / sum(points_available) * 100.0, 2)
+            students.append({'name': name, 'avg': avg, 'submissions': grades})
+        context["students"] = students
+        return context
+
+
 class StudentSubmissionsView(LoginRequiredMixin, generic.ListView):
     """
     This view represents the student submissions for a course.
@@ -367,6 +403,13 @@ class StudentSubmissionCreateView(generic.CreateView):
     model = StudentSubmission
     form_class = StudentSubmissionCreateForm
     template_name = 'core/studentsubmission_create.html'
+
+    def form_valid(self, form):
+        student = CustomUser.objects.get(pk=self.kwargs['student'])
+        coursework = CourseWork.objects.get(pk=self.kwargs['course'])
+        form.instance.student = student
+        form.instance.coursework = coursework
+        return super(StudentSubmissionCreateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse('studentsubmission-list', kwargs={'pk': self.object.coursework.course.pk})

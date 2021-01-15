@@ -131,6 +131,9 @@ class CourseWork(models.Model):
         default=COURSE_WORK_SOURCE_UNSPECIFIED
     )
 
+    class Meta:
+        ordering = ['dueDate']
+
     def __str__(self):
         return self.title
 
