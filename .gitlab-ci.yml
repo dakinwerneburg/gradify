@@ -1,76 +1,41 @@
-#
-#cache:
-#  paths:
-#  - ~/.cache/pip/
-#
-#before_script:
-#
+image: python:latest
+
+cache:
+  paths:
+  - ~/.cache/pip/
+
+before_script:
+  - python -V
+  - pip install -r requirements.txt
+  - pip install -r test-requirements.txt
+
 stages:
-#  - Static Analysis
-#  - Test
-#  - Security Audit
+  - Static Analysis
+  - Test
+  - Security Audit
   - Build
   - Deploy
-#
-#flake8:
-#  image: python:latest
-#  stage: Static Analysis
-#  script:
-#  - pip install -r requirements.txt
-#  - pip install -r test-requirements.txt
-#  - flake8
-#
-#pylint:
-#  image: python:latest
-#  stage: Static Analysis
-#  allow_failure: true
-#  script:
-#  - pip install -r requirements.txt
-#  - pip install -r test-requirements.txt
-#  - pylint --ignore-patterns=.git,core/migrations,users/migrations,manage ./*.py
-#
-#bandit:
-#  image: python:latest
-#  stage: Security Audit
-#  allow_failure: true
-#  script:
-#    - pip install -r requirements.txt
-#    - pip install -r test-requirements.txt
-#    - bandit -s B105 -r ./core ./gradify ./users
-#
-#unit_test:
-#  image: python:latest
-#  stage: Test
-#  script:
-#    - pip install -r requirements.txt
-#    - pip install -r test-requirements.txt
-#    - coverage run --omit="core/migrations/*","users/migrations/*","manage.py","core/tests/*" --source="." manage.py test --settings gradify.settings.ci
-#    - coverage report
 
-docker_build:
-  stage: Build
-  variables:
-    IMG_TAG: 'gcr.io/wired-standard-246200/gradify'
+flake8:
+  stage: Static Analysis
   script:
-    - docker build --cache-from "${IMG_TAG}" -t "${IMG_TAG}" .
-    - echo "$SERVICE_KEY" > key.json
-    - docker login -u _json_key --password-stdin https://us.gcr.io < key.json
-    - docker push "${IMG_TAG}"
+  - flake8
 
-deploy_container:
-  image: 'google/cloud-sdk'
-  stage: Deploy
-  variables:
-    IMG_TAG: 'gcr.io/wired-standard-246200/gradify'
+pylint:
+  stage: Static Analysis
+  allow_failure: true
   script:
-    - echo "$SERVICE_KEY" > key.json
-    - gcloud auth activate-service-account --key-file=key.json
-    - gcloud config set project wired-standard-246200
-    - gcloud config set container/cluster gradify-cluster
-    - gcloud config set compute/zone us-east4-c
-    - gcloud container clusters get-credentials gradify-cluster --zone us-east4-c
+  - pylint --ignore-patterns=.git,core/migrations,users/migrations,manage ./*.py
 
-    - cat kubernetes/deployment.yaml | kubectl apply -f -
+bandit:
+  stage: Security Audit
+  allow_failure: true
+  script:
+    - bandit -s B105 -r ./core ./gradify ./users
 
-  environment:
-    name: production
+unit_test:
+  stage: Test
+  script:
+  - coverage run --omit="core/migrations/*","users/migrations/*","manage.py","core/tests/*" --source="." manage.py test --settings gradify.settings.ci
+  - coverage report
+
