@@ -1,5 +1,3 @@
-import csv
-import logging
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import redirect
@@ -16,10 +14,14 @@ from django.http import HttpResponseRedirect
 
 from core import gc_import_utils
 from googleclassroom.google_classroom import ClassroomHelper
+from gradify.settings.heroku import ACME_CHALLENGE_CONTENT
 from users.models import CustomUser
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
 from .forms import CourseCreateForm, CourseWorkCreateForm, CourseWorkDeleteForm, CourseWorkUpdateForm
-from .forms import StudentSubmissionUpdateForm, StudentSubmissionCreateForm
+from .forms import StudentSubmissionCreateForm, StudentSubmissionUpdateForm
+
+import logging
+import csv
 
 logger = logging.getLogger('gradify')
 
@@ -37,7 +39,7 @@ class CoursesView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         user_id = self.request.user.id
-        return Course.objects.filter(Q(owner_id=user_id) | Q(coursestudent__student_id=user_id)).distinct()
+        return Course.objects.filter(Q(owner_id=user_id)).distinct()
 
 
 class StudentSubmissionsView(LoginRequiredMixin, generic.ListView):
@@ -156,11 +158,10 @@ class CourseWorkDetailView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         # Provides access to Assignment and Course info for the entered course_id and coursework_id
         context = super().get_context_data(**kwargs)
-        owner = self.request.user
         context['coursework'] = get_object_or_404(
             CourseWork, course=self.kwargs['pk'], pk=self.kwargs['pk2']
         )
-        context['course'] = get_object_or_404(Course, pk=self.kwargs['pk'], owner=owner)
+        context['course'] = Course.objects.get(pk=self.kwargs['pk'])
         return context
 
 
@@ -186,7 +187,7 @@ def gc_ingest_and_redirect(request):
 
         # Get the coursework for this course
         try:
-            gc_coursework = gc.get_coursework(request, saved_course.id)
+            gc_coursework = gc.get_coursework(request, saved_course.googleId)
         except HttpError:
             # User does not have permission to get coursework for this course
             logger.info('User %s has insufficient permissions for coursework in %s' % (current_user, saved_course))
@@ -197,7 +198,7 @@ def gc_ingest_and_redirect(request):
 
         # Get the class roster for this course
         try:
-            gc_students = gc.get_students(request, saved_course.id)
+            gc_students = gc.get_students(request, saved_course.googleId)
         except HttpError:
             logger.info('User %s has insufficient permissions for roster of %s' % (current_user, saved_course))
             continue
@@ -207,7 +208,7 @@ def gc_ingest_and_redirect(request):
 
         # Get student submissions for this course
         try:
-            gc_submissions = gc.get_course_submissions(request, saved_course.id)
+            gc_submissions = gc.get_course_submissions(request, saved_course.googleId)
         except HttpError:
             logger.info('User %s has insufficient permissions for submissions to %s' % (current_user, saved_course))
             continue
@@ -229,11 +230,19 @@ class CourseWorkCreateView(generic.CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+    def create_blank_student_submissions(self, new_coursework):
+        roster = CourseStudent.objects.filter(course=new_coursework.course)
+
+        for entry in roster:
+            new_submission = StudentSubmission(student=entry.student, coursework=new_coursework)
+            new_submission.save()
+
     def form_valid(self, form):
         coursework = form.save(commit=False)
         coursework.source = 'G'
         coursework.author = self.request.user
         coursework.save()
+        self.create_blank_student_submissions(coursework)
         return super(CourseWorkCreateView, self).form_valid(form)
 
 
@@ -252,13 +261,13 @@ class CourseCreateView(LoginRequiredMixin, generic.CreateView):
 
 
 @login_required
-def ExportCsvListView(request):
+def export_csv_list_view(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="submissions.csv"'
     writer = csv.writer(response, delimiter=',')
 
     user_id = request.user.id
-    courses = Course.objects.filter(Q(owner_id=user_id) | Q(coursestudent__student_id=user_id)).distinct()
+    courses = Course.objects.filter(Q(owner_id=user_id)).distinct()
 
     writer.writerow(["Course Name",
                      "Course Section",
@@ -289,10 +298,14 @@ class CourseWorkListView(LoginRequiredMixin, generic.ListView):
 
     template_name = 'core/coursework_list.html'
     context_object_name = 'coursework_list'
-    select_for_delete = []
 
     def get_queryset(self):
         return CourseWork.objects.filter(course=self.kwargs['pk'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['course'] = Course.objects.get(pk=self.kwargs['pk'])
+        return context
 
 
 class CourseWorkDeleteView(LoginRequiredMixin, generic.DeleteView):
@@ -320,25 +333,31 @@ class CourseWorkUpdateView(generic.UpdateView):
     model = CourseWork
     form_class = CourseWorkUpdateForm
     template_name = 'core/coursework_update.html'
+    pk_url_kwarg = 'pk2'
 
-    def get_queryset(self):
-        self.queryset = CourseWork.objects.filter(pk=self.kwargs['pk'])
-        return self.queryset
+    def get_success_url(self):
+        course = self.object.course
+        return reverse('coursework-list', kwargs={'pk': course.pk})
 
-    def get_object(self, queryset=None):
-        return super().get_object(queryset=queryset)
 
-    def post(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        course = queryset.values_list('course', flat=True)[0]
-        return HttpResponseRedirect(reverse_lazy('coursework-list', kwargs={'pk': course}))
+def google_verification(request):
+    """
+    Used for Google oAuth to verify the domain
+    """
+    return HttpResponse('google-site-verification: googleb95a6feb416ee79e.html')
+
+
+def acme_challenge(request):
+    """
+    Used to respond to Let's Encrypt SSL cert challenge
+    """
+    return HttpResponse(ACME_CHALLENGE_CONTENT)
 
 
 class StudentSubmissionUpdateView(generic.UpdateView):
     model = StudentSubmission
     form_class = StudentSubmissionUpdateForm
     template_name = 'core/studentsubmission_update.html'
-    success_url = '/course/'
 
     def get_success_url(self):
         return reverse('studentsubmission-list', kwargs={'pk': self.object.coursework.course.pk})
@@ -351,3 +370,9 @@ class StudentSubmissionCreateView(generic.CreateView):
 
     def get_success_url(self):
         return reverse('studentsubmission-list', kwargs={'pk': self.object.coursework.course.pk})
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['course'] = self.kwargs['pk']
+        return kwargs
+
