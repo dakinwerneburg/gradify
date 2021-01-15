@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import CourseWork, Course
+from .models import CourseWork, Course, StudentSubmission
 
 
 class CourseWorkCreateForm(forms.ModelForm):
@@ -70,3 +70,21 @@ class CourseWorkUpdateForm(forms.ModelForm):
             'dueDate': forms.DateInput(attrs={'class': 'form-control', 'required': True}),
             'workType': forms.Select(attrs={'class': 'form-control'}),
         }
+
+
+class StudentSubmissionUpdateForm(forms.ModelForm):
+    class Meta:
+        model = StudentSubmission
+        fields = [
+            'assignedGrade'
+        ]
+
+
+class StudentSubmissionCreateForm(forms.ModelForm):
+    class Meta:
+        model = StudentSubmission
+        fields = [
+            'student',
+            'coursework',
+            'assignedGrade'
+        ]

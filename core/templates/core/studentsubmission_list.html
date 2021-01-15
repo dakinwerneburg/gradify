@@ -3,10 +3,10 @@
 {% load django_bootstrap_breadcrumbs %}
 
 {% block breadcrumbs %}
-    {{ block.super }}
-    {% breadcrumb "Your Courses" "course-list" %}
-    {% breadcrumb "Course Detail" "../" %}
-    {% breadcrumb "Gradebook" "studentsubmission-list" %}
+{{ block.super }}
+{% breadcrumb "Your Courses" "course-list" %}
+{% breadcrumb "Course Detail" "../" %}
+{% breadcrumb "Gradebook" "studentsubmission-list" %}
 {% endblock %}
 
 {% block main-content %}
@@ -34,7 +34,6 @@
                         {% endfor %}
                     </tr>
                 </thead>
-
                 <tbody>
                     {% for entry in gradebook %}
                     <tr>
@@ -44,9 +43,14 @@
                         <td>
                             {% if submission %}
                             {{ submission.assignedGrade }}
+                            <a href="{% url 'studentsubmission-update' pk=submission.pk %}">
+                                {% include 'svg/pencil-edit-button.svg' %}</a>
                             {% else %}
-                            -
+                            Create
+                            <a href="{% url 'studentsubmission-create'%}">
+                                {% include 'svg/pencil-edit-button.svg' %}</a>
                             {% endif %}
+                            </a>
                         </td>
                         {% endfor %}
                     </tr>
@@ -56,7 +60,8 @@
             <a href="{% url 'coursework-create' %}">Add a new assignment</a>
             {% else %}
             <h2>No Assignments</h2>
-            <p><a href="{% url 'coursework-create' %}">Add a new assignment</a> or import one from Google to view them here.</p>
+            <p><a href="{% url 'coursework-create' %}">Add a new assignment</a> or import one from Google to view them
+                here.</p>
             {% endif %}
         </div>
     </section>
