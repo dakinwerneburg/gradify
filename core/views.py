@@ -14,6 +14,7 @@ from django.http import HttpResponseRedirect
 
 from core import gc_import_utils
 from googleclassroom.google_classroom import ClassroomHelper
+from gradify.settings.heroku import ACME_CHALLENGE_CONTENT
 from users.models import CustomUser
 from .models import Course, StudentSubmission, CourseWork, CourseStudent
 from .forms import CourseCreateForm, CourseWorkCreateForm, CourseWorkDeleteForm, CourseWorkUpdateForm
@@ -38,7 +39,7 @@ class CoursesView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         user_id = self.request.user.id
-        return Course.objects.filter(Q(owner_id=user_id) | Q(coursestudent__student_id=user_id)).distinct()
+        return Course.objects.filter(Q(owner_id=user_id)).distinct()
 
 
 class StudentSubmissionsView(LoginRequiredMixin, generic.ListView):
@@ -186,7 +187,7 @@ def gc_ingest_and_redirect(request):
 
         # Get the coursework for this course
         try:
-            gc_coursework = gc.get_coursework(request, saved_course.id)
+            gc_coursework = gc.get_coursework(request, saved_course.googleId)
         except HttpError:
             # User does not have permission to get coursework for this course
             logger.info('User %s has insufficient permissions for coursework in %s' % (current_user, saved_course))
@@ -197,7 +198,7 @@ def gc_ingest_and_redirect(request):
 
         # Get the class roster for this course
         try:
-            gc_students = gc.get_students(request, saved_course.id)
+            gc_students = gc.get_students(request, saved_course.googleId)
         except HttpError:
             logger.info('User %s has insufficient permissions for roster of %s' % (current_user, saved_course))
             continue
@@ -207,7 +208,7 @@ def gc_ingest_and_redirect(request):
 
         # Get student submissions for this course
         try:
-            gc_submissions = gc.get_course_submissions(request, saved_course.id)
+            gc_submissions = gc.get_course_submissions(request, saved_course.googleId)
         except HttpError:
             logger.info('User %s has insufficient permissions for submissions to %s' % (current_user, saved_course))
             continue
@@ -260,13 +261,13 @@ class CourseCreateView(LoginRequiredMixin, generic.CreateView):
 
 
 @login_required
-def ExportCsvListView(request):
+def export_csv_list_view(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="submissions.csv"'
     writer = csv.writer(response, delimiter=',')
 
     user_id = request.user.id
-    courses = Course.objects.filter(Q(owner_id=user_id) | Q(coursestudent__student_id=user_id)).distinct()
+    courses = Course.objects.filter(Q(owner_id=user_id)).distinct()
 
     writer.writerow(["Course Name",
                      "Course Section",
@@ -339,6 +340,20 @@ class CourseWorkUpdateView(generic.UpdateView):
         return reverse('coursework-list', kwargs={'pk': course.pk})
 
 
+def google_verification(request):
+    """
+    Used for Google oAuth to verify the domain
+    """
+    return HttpResponse('google-site-verification: googleb95a6feb416ee79e.html')
+
+
+def acme_challenge(request):
+    """
+    Used to respond to Let's Encrypt SSL cert challenge
+    """
+    return HttpResponse(ACME_CHALLENGE_CONTENT)
+
+
 class StudentSubmissionUpdateView(generic.UpdateView):
     model = StudentSubmission
     form_class = StudentSubmissionUpdateForm
@@ -355,3 +370,8 @@ class StudentSubmissionCreateView(generic.CreateView):
 
     def get_success_url(self):
         return reverse('studentsubmission-list', kwargs={'pk': self.object.coursework.course.pk})
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['course'] = self.kwargs['pk']
+        return kwargs

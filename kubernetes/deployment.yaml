@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gradify
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gradify
+  template:
+    metadata:
+      labels:
+        app: gradify
+    spec:
+      containers:
+        - name: gradify
+          image: 'gcr.io/wired-standard-246200/gradify'
+          ports:
+            - containerPort: 8000
