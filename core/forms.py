@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import CourseWork, Course, StudentSubmission
+from .models import CourseWork, Course, CourseStudent, StudentSubmission
 
 
 class CourseWorkCreateForm(forms.ModelForm):
@@ -16,11 +16,10 @@ class CourseWorkCreateForm(forms.ModelForm):
             'workType',
         ]
         widgets = {
-            'course': forms.Select(attrs={'class': 'form-control'}),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'}),
-            'maxPoints': forms.NumberInput(attrs={'class': 'form-control', 'value': 0}),
-            'dueDate': forms.DateTimeInput(attrs={'class': 'form-control', 'required': True}),
+            'maxPoints': forms.NumberInput(attrs={'class': 'form-control', 'value': 0, 'min': 0}),
+            'dueDate': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'date', 'required': True}),
             'workType': forms.Select(attrs={'class': 'form-control'}),
         }
 
@@ -28,6 +27,7 @@ class CourseWorkCreateForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         self.fields['course'] = forms.ModelChoiceField(queryset=Course.objects.filter(owner=user))
+        self.fields['course'].widget.attrs = {'class': 'form-control'}
 
 
 class CourseCreateForm(forms.ModelForm):
@@ -44,6 +44,16 @@ class CourseCreateForm(forms.ModelForm):
             'startDate',
             'endDate',
         ]
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'section': forms.TextInput(attrs={'class': 'form-control'}),
+            'descriptionHeading': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'room': forms.TextInput(attrs={'class': 'form-control'}),
+            'alternateLink': forms.TextInput(attrs={'class': 'form-control'}),
+            'startDate': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'endDate': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'date'}),
+        }
 
 
 class CourseWorkDeleteForm(forms.Form):
@@ -66,8 +76,8 @@ class CourseWorkUpdateForm(forms.ModelForm):
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'}),
-            'maxpoints': forms.NumberInput(attrs={'class': 'form-control'}),
-            'dueDate': forms.DateInput(attrs={'class': 'form-control', 'required': True}),
+            'maxPoints': forms.NumberInput(attrs={'class': 'form-control'}),
+            'dueDate': forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'required': True}),
             'workType': forms.Select(attrs={'class': 'form-control'}),
         }
 
@@ -78,10 +88,22 @@ class StudentSubmissionUpdateForm(forms.ModelForm):
         fields = [
             'assignedGrade'
         ]
+        widgets = {
+            'assignedGrade': forms.TextInput(attrs={'class': 'form-control'})
+        }
 
 
 class StudentSubmissionCreateForm(forms.ModelForm):
-
     class Meta:
         model = StudentSubmission
-        fields = ['assignedGrade']
+        fields = [
+            'student',
+            'coursework',
+            'assignedGrade'
+        ]
+
+    def __init__(self, *args, **kwargs):
+        course = kwargs.pop('course', None)
+        super().__init__(*args, **kwargs)
+        self.fields['student'] = forms.ModelChoiceField(queryset=CourseStudent.objects.filter(course_id=course))
+        self.fields['coursework'] = forms.ModelChoiceField(queryset=CourseWork.objects.filter(course_id=course))

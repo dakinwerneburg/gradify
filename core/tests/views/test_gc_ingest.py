@@ -1,7 +1,6 @@
 from unittest.mock import patch
 
 from django.test import TestCase
-from django.urls import reverse
 from googleapiclient.errors import HttpError
 from oauth2client.client import AccessTokenCredentialsError
 
@@ -33,7 +32,7 @@ class ClassroomIngestViewTests(TestCase):
             "creationTime": "2019-07-05 12:00Z",
             "updateTime": "2019-07-05 12:00Z",
             "enrollmentCode": "thecode",
-            "courseState": 1,
+            "courseState": 'ACTIVE',
             "alternateLink": "https://alink.com",
             "teacherGroupEmail": "group@gmail.com",
             "courseGroupEmail": "group@gmail.com",
@@ -80,7 +79,7 @@ class ClassroomIngestViewTests(TestCase):
         gc_instance.is_google_user.return_value = True
         gc_instance.get_courses.return_value = [{'data': 'is_fake'}]
         gc_instance.get_coursework.side_effect = HttpError('', b'')
-        mock_import_course.return_value = MockCourse(12345, owner=self.mock_user)
+        mock_import_course.return_value = MockCourse(owner=self.mock_user)
 
         response = self.client.get('/import', follow=True)
 
@@ -101,7 +100,7 @@ class ClassroomIngestViewTests(TestCase):
         gc_instance.get_courses.return_value = [{'data': 'is_fake'}]
         gc_instance.get_coursework.return_value = self.mock_gc_course
         gc_instance.get_students.side_effect = HttpError('', b'')
-        mock_import_course.return_value = MockCourse(12345, owner=self.mock_user)
+        mock_import_course.return_value = MockCourse(owner=self.mock_user)
         mock_import_assignment.returnValue = None
 
         response = self.client.get('/import', follow=True)
@@ -125,7 +124,7 @@ class ClassroomIngestViewTests(TestCase):
         gc_instance.get_coursework.return_value = self.mock_gc_course
         gc_instance.get_students.return_value = []
         gc_instance.get_course_submissions.side_effect = HttpError('', b'')
-        mock_import_course.return_value = MockCourse(12345, owner=self.mock_user)
+        mock_import_course.return_value = MockCourse(owner=self.mock_user)
         mock_import_assignment.returnValue = None
         mock_import_student.returnValue = None
 
@@ -152,7 +151,7 @@ class ClassroomIngestViewTests(TestCase):
         gc_instance.get_coursework.return_value = [{'data': 'is_fake'}]
         gc_instance.get_students.return_value = [{'data': 'is_fake'}]
         gc_instance.get_course_submissions.return_value = [{'data': 'is_fake'}]
-        mock_import_course.return_value = MockCourse(12345, owner=self.mock_user)
+        mock_import_course.return_value = MockCourse(owner=self.mock_user)
         mock_import_assignment.returnValue = mock_coursework
         mock_import_student.returnValue = MockUser(19503)
         mock_import_submission.returnValue = MockSubmission(19503, mock_coursework, 5)
@@ -248,6 +247,39 @@ class ClassroomIngestViewTests(TestCase):
         filtered_course = filter_course_fields(self.mock_gc_course)
         self.assertNotIn('teacherGroupEmail', filtered_course)
 
+    def test_does_not_user_google_id_as_pk(self):
+        """
+        The Google ID should not be used as the PK. It should be saved as a separate field.
+        """
+        SocialAccount.objects.create(user=self.mock_user, provider='Google1')
+        imported_course = import_course(self.mock_gc_course, self.mock_user)
+        self.assertNotEqual(imported_course.id, self.mock_gc_course['id'])
+        self.assertEqual(imported_course.googleId, self.mock_gc_course['id'])
+
+    def test_properly_sets_course_state(self):
+        """
+        The course state should be saved
+        """
+        SocialAccount.objects.create(user=self.mock_user, provider='Google1')
+
+        imported_course = import_course(self.mock_gc_course, self.mock_user)
+        self.assertEqual(Course.ACTIVE, imported_course.courseState)
+
+        self.mock_gc_course['courseState'] = 'PROVISIONED'
+        imported_course = import_course(self.mock_gc_course, self.mock_user)
+        self.assertEqual(Course.PROVISIONED, imported_course.courseState)
+
+    def test_handles_unknown_enum_vals(self):
+        """
+        If an enum type has an unrecognized value, it should be set as unspecified
+        """
+        SocialAccount.objects.create(user=self.mock_user, provider='Google1')
+        self.mock_gc_course['courseState'] = 'DISARRAY'
+
+        imported_course = import_course(self.mock_gc_course, self.mock_user)
+
+        self.assertEqual(Course.COURSE_STATE_UNSPECIFIED, imported_course.courseState)
+
 
 class AssignmentIngestTests(TestCase):
     fixtures = ['user', 'course']
@@ -262,7 +294,7 @@ class AssignmentIngestTests(TestCase):
             'title': 'Homework 1',
             'description': 'Answer the questions',
             'materials': [],
-            'state': 1,
+            'state': 'PUBLISHED',
             'alternateLink': 'https://thelink.com',
             'creationTime': '2019-07-05 12:00Z',
             'updateTime': '2019-07-05 12:00Z',
@@ -270,11 +302,11 @@ class AssignmentIngestTests(TestCase):
             'dueTime': {'hours': 11, 'minutes': 30, 'seconds': 0, 'nanos': 0},
             'scheduledTime': '2019-07-05 12:00Z',
             'maxPoints': 10,
-            'workType': 1,
+            'workType': 'ASSIGNMENT',
             'associatedWithDeveloper': True,
-            'assigneeMode': 1,
+            'assigneeMode': 'ALL_STUDENTS',
             'individualStudentOptions': {},
-            'submissionModificationMode': 1,
+            'submissionModificationMode': 'MODIFIABLE_UNTIL_TURNED_IN',
             'creatorUserId': '69420',
             'topicId': '1337',
             'assignment': {},
@@ -323,6 +355,31 @@ class AssignmentIngestTests(TestCase):
         del self.mock_gc_assignment['dueTime']
         saved_assignment: CourseWork = import_assignment(self.mock_gc_assignment, self.mock_course)
         self.assertEqual(saved_assignment.dueDate, None)
+
+    def test_does_not_user_google_id_as_pk(self):
+        """
+        The Google ID should not be used as the PK. It should be saved as a separate field.
+        """
+        imported_assignment = import_assignment(self.mock_gc_assignment, self.mock_course)
+        self.assertNotEqual(imported_assignment.id, self.mock_gc_assignment['id'])
+        self.assertEqual(imported_assignment.googleId, self.mock_gc_assignment['id'])
+
+    def test_properly_converts_enum_fields(self):
+        imported_assignment = import_assignment(self.mock_gc_assignment, self.mock_course)
+        self.assertEqual(CourseWork.PUBLISHED, imported_assignment.state)
+        self.assertEqual(CourseWork.ASSIGNMENT, imported_assignment.workType)
+
+        self.mock_gc_assignment['state'] = 'PUBLISHED'
+        imported_assignment = import_assignment(self.mock_gc_assignment, self.mock_course)
+        self.assertEqual(CourseWork.PUBLISHED, imported_assignment.state)
+
+    def test_import_uses_default_for_unknown_enum_val(self):
+        self.mock_gc_assignment['state'] = 'IDAHO'
+        self.mock_gc_assignment['workType'] = 'REAL_CODE'
+
+        imported_assignment = import_assignment(self.mock_gc_assignment, self.mock_course)
+        self.assertEqual(CourseWork.COURSE_WORK_STATE_UNSPECIFIED, imported_assignment.state)
+        self.assertEqual(CourseWork.COURSE_WORK_TYPE_UNSPECIFIED, imported_assignment.workType)
 
 
 class StudentIngestTests(TestCase):
@@ -417,18 +474,6 @@ class StudentIngestTests(TestCase):
 
         self.assertEqual(self.mock_student, imported_enrollment.student)
 
-    def test_import_can_later_be_viewed_by_new_user(self):
-        """
-        A submission should be associated with a user if the user signs in after the submission is imported
-        """
-        import_student(self.mock_gc_student, self.mock_course)
-        new_acct = SocialAccount.objects.get(uid=self.mock_gc_student['profile']['id']).user
-        self.client.force_login(new_acct)
-
-        response = self.client.get(reverse('course-list'))
-
-        self.assertContains(response, self.mock_course)
-
 
 class SubmissionIngestTests(TestCase):
     fixtures = ['user', 'course', 'coursework']
@@ -439,17 +484,17 @@ class SubmissionIngestTests(TestCase):
         self.mock_student = CustomUser.objects.first()
         self.mock_gc_submission = {
             'courseId': str(self.mock_course.id),
-            'courseWorkId': str(self.mock_coursework.id),
+            'courseWorkId': str(self.mock_coursework.googleId),
             'id': 'Cg4IjpW9iYoBEIrS6qSKAQ',
             'userId': '12345',  # Google ID
             'creationTime': '',
             'updateTime': '',
-            'state': 1,
+            'state': 'RETURNED',
             'late': False,
             'draftGrade': 8,
             'assignedGrade': 8,
             'alternateLink': 'https://somelink',
-            'workType': 1,
+            'courseWorkType': 'ASSIGNMENT',
             'associatedWithDeveloper': True,
             'submissionHistory': [],
             'assignmentSubmission': {},
@@ -463,12 +508,12 @@ class SubmissionIngestTests(TestCase):
         New submissions should be saved to the database
         """
         og_submission_count = len(
-            StudentSubmission.objects.filter(coursework_id=self.mock_gc_submission['courseWorkId']))
+            StudentSubmission.objects.filter(coursework__googleId=self.mock_gc_submission['courseWorkId']))
 
         import_submission(self.mock_gc_submission)
 
         updated_submission_count = len(
-            StudentSubmission.objects.filter(coursework_id=self.mock_gc_submission['courseWorkId']))
+            StudentSubmission.objects.filter(coursework__googleId=self.mock_gc_submission['courseWorkId']))
         self.assertEqual(og_submission_count + 1, updated_submission_count)
 
     def test_import_existing_submission(self):
@@ -496,17 +541,17 @@ class SubmissionIngestTests(TestCase):
         submission1 = self.mock_gc_submission
         submission2 = {
             'courseId': str(self.mock_course.id),
-            'courseWorkId': str(self.mock_coursework.id),
+            'courseWorkId': str(self.mock_coursework.googleId),
             'id': 'asdfasfda01924',
             'userId': mock_google_id,  # Google ID
             'creationTime': '',
             'updateTime': '',
-            'state': 1,
+            'state': 'RETURNED',
             'late': False,
             'draftGrade': 8,
             'assignedGrade': 8,
             'alternateLink': 'https://somelink',
-            'workType': 1,
+            'courseWorkType': 'ASSIGNMENT',
             'associatedWithDeveloper': True,
             'submissionHistory': [],
             'assignmentSubmission': {},
@@ -519,3 +564,15 @@ class SubmissionIngestTests(TestCase):
 
         new_submission_count = len(StudentSubmission.objects.filter(coursework=self.mock_coursework))
         self.assertEqual(new_submission_count, og_submission_count + 2)
+
+    def test_properly_converts_enum_fields(self):
+        imported_submission = import_submission(self.mock_gc_submission)
+        self.assertEqual(StudentSubmission.RETURNED, imported_submission.state)
+        self.assertEqual(StudentSubmission.ASSIGNMENT, imported_submission.courseWorkType)
+
+        self.mock_gc_submission['state'] = 'TEXAS'
+        self.mock_gc_submission['courseWorkType'] = 'REAL_CODE'
+        imported_submission = import_submission(self.mock_gc_submission)
+        self.assertEqual(StudentSubmission.SUBMISSION_STATE_UNSPECIFIED, imported_submission.state)
+        self.assertEqual(StudentSubmission.COURSE_WORK_TYPE_UNSPECIFIED, imported_submission.courseWorkType)
+

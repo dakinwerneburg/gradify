@@ -5,7 +5,7 @@
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Your Courses" "course-list" %}
-    {% breadcrumb "Create Courses" "course-Create" %}
+    {% breadcrumb "Create" "course-Create" %}
 {% endblock %}
 
 {% block main-content %}
@@ -14,15 +14,19 @@
         <section class="card">
             <div class="card-body">
                 <header class="card-header">
-                        <h2 class="card-title">Add Course</h2>
+                    <h2 class="card-title">Add Course</h2>
                 </header>
-                <form class ="course-create" action="" method="post">{% csrf_token %}
-                    <table>
-                        {{ form }}
-                    </table>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                <form action="" method="post">{% csrf_token %}
+                    {% for field in form %}
+                        <div class="form-group">
+                            <label for="{{ field.name }}">{{ field.label }}</label>
+                            {{ field }}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
                 </form>
             </div>
         </section>
     </div>
 {% endblock main-content %}
+
