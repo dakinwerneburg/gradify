@@ -375,4 +375,3 @@ class StudentSubmissionCreateView(generic.CreateView):
         kwargs = super().get_form_kwargs()
         kwargs['course'] = self.kwargs['pk']
         return kwargs
-
