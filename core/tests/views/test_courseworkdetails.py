@@ -13,7 +13,7 @@ class CourseWorkDetailViewTests(TestCase):
         self.client.force_login(CustomUser.objects.get(username='teacher1'))
 
     def test_coursework_exists(self):
-        response = self.client.get('/course/1/assignment/1/')
+        response = self.client.get('/course/1/1/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'core/coursework_detail.html')
 

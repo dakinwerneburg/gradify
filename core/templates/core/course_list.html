@@ -4,25 +4,23 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Your Courses" "course-list" %}
 {% endblock %}
 
 {% block main-content %}
     <div class="ql-content">
         <h1 class="bg-header bg-text">Your Courses</h1>
-        {% if course_list %}
-            {% for course in course_list %}
-                {% include 'core/course_overview_card.html' %}
-            {% endfor %}
-            <a href="{% url 'course-create' %}">Create a new course</a>
-        {% else %}
-            <section class="card">
-                <div class="card-body">
-                    <h3>No courses found</h3>
-                    <p><a href="{% url 'course-create' %}">Create a course</a> or import one from Google Classroom to
-                        begin!</p>
-                </div>
-            </section>
-        {% endif %}
+        <section class="card">
+            <div class="card-body">
+            {% if course_list %}
+                {% for course in course_list %}
+                    {% include 'core/course_overview_card.html' %}
+                {% endfor %}
+                <a href="{% url 'course-create' %}">Create a new course</a>
+            {% else %}
+                <h2>No courses found</h2>
+                <p><a href="{% url 'course-create' %}">Create a course</a> or import one from Google Classroom to begin!</p>
+            {% endif %}
+            </div>
+        </section>
     </div>
 {% endblock main-content %}

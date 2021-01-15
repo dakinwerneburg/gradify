@@ -575,3 +575,4 @@ class SubmissionIngestTests(TestCase):
         imported_submission = import_submission(self.mock_gc_submission)
         self.assertEqual(StudentSubmission.SUBMISSION_STATE_UNSPECIFIED, imported_submission.state)
         self.assertEqual(StudentSubmission.COURSE_WORK_TYPE_UNSPECIFIED, imported_submission.courseWorkType)
+

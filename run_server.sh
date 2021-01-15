@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-# Gets run during Heroku deployment
 
 # Run migrations
 python manage.py migrate
@@ -11,4 +10,5 @@ echo "from django.contrib.auth import get_user_model; User = get_user_model(); U
 echo "from django.contrib.sites.models import Site; from allauth.socialaccount.models import SocialApp; heroku_site = Site.objects.create(domain='herokuapp.com', name='heroku'); allauth_app = SocialApp.objects.create(client_id='$GC_CLIENT_ID', provider='google', name='google_classroom', secret='$GC_SECRET'); allauth_app.sites.add(heroku_site); allauth_app.save" | python manage.py shell
 
 # Run the server
-gunicorn --bind 0.0.0.0:$PORT gradify.wsgi
+python manage.py runserver --settings gradify.settings.heroku 0.0.0.0:$PORT
+

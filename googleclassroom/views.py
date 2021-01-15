@@ -1,6 +1,5 @@
 from allauth.socialaccount.models import SocialAccount
 from django.views.generic.base import TemplateView
-from oauth2client.client import AccessTokenCredentialsError
 
 from googleclassroom.google_classroom import ClassroomHelper
 
@@ -23,16 +22,11 @@ class CourseTestView(TemplateView):
 
             usr = self.request.user.id
             user_details = SocialAccount.objects.filter(user=usr).first()
-            try:
-                context['courses'] = ch.get_courses(self.request)
-                context['name'] = user_details.extra_data["name"]
-                context['email'] = user_details.extra_data["email"]
-                context['picture'] = user_details.extra_data["picture"]
-            except AccessTokenCredentialsError:
-                context['message'] = 'Your session has expired. Please log in again'
-                context['name'] = ''
-                context['email'] = ''
-                context['picture'] = ''
-                context['courses'] = ''
+
+            context['name'] = user_details.extra_data["name"]
+            context['email'] = user_details.extra_data["email"]
+            context['picture'] = user_details.extra_data["picture"]
+
+            context['courses'] = ch.get_courses(self.request)
 
         return context

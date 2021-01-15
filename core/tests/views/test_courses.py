@@ -47,7 +47,10 @@ class CourseListViewTests(TestCase):
         self.assertContains(response, 'No courses found')
 
     def test_links_work(self):
+        course = Course.objects.get(pk=1)
         response = self.client.get(reverse('course-detail', kwargs={'pk': 1}))
+        course_link = '<a href="%s">' + course.name + '</a>'
+        self.assertContains(response, course_link % reverse('course-detail', kwargs={'pk': 1}), html=True)
         self.assertContains(response, '<a href="%s">' % reverse('coursework-detail', kwargs={'pk': 1, 'pk2': 1}))
 
     def test_all_assignments_listed(self):
